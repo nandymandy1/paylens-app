@@ -1,6 +1,16 @@
 import axios, { AxiosError, type AxiosInstance, type InternalAxiosRequestConfig } from "axios";
 
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:4000/api/v1";
+const configuredBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+if (!configuredBaseUrl && process.env.NODE_ENV === "production") {
+  // NEXT_PUBLIC_* values are inlined at build time: a production bundle built
+  // without this variable would silently target localhost. Fail fast instead.
+  throw new Error(
+    "NEXT_PUBLIC_API_BASE_URL is required in production (e.g. https://api.example.com/api/v1)",
+  );
+}
+
+export const API_BASE_URL = configuredBaseUrl || "http://localhost:4000/api/v1";
 
 export class ApiError extends Error {
   readonly code: string;
