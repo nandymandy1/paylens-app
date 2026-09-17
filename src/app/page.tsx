@@ -18,7 +18,7 @@ const Home: FC = () => {
         </p>
         <Link
           className="mt-8 inline-flex min-h-10 items-center justify-center rounded-sm bg-primary px-4 font-mono text-sm font-medium tracking-[0.005em] text-on-primary uppercase transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus/60"
-          href="/components"
+          href="/showcase"
         >
           Explore components
         </Link>
