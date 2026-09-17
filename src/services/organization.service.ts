@@ -16,12 +16,10 @@ export const createOrganization = async (
   input: CreateOrganizationInput,
 ): Promise<{
   organization: { id: string; name: string; slug: string };
-  accessToken: string | null;
 }> => {
   const { data } = await api.post<
     Envelope<{
       organization: { id: string; name: string; slug: string };
-      accessToken: string | null;
     }>
   >("/organizations", input);
 
