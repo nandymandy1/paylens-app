@@ -20,15 +20,16 @@ import {
   organizationKeys,
   revokeInvitation,
 } from "@/services/organization.service";
+import { ORGANIZATION_ROLES, type OrganizationRole } from "@/types/organization.type";
 
 const inviteSchema = z.object({
   email: z.string().trim().toLowerCase().pipe(z.email("Enter a valid email address")),
-  role: z.enum(["HR_ADMIN", "HR_MANAGER", "MANAGER", "EMPLOYEE", "VIEWER_AUDITOR"]),
+  role: z.enum(ORGANIZATION_ROLES).exclude(["TENANT_OWNER"]),
 });
 
 type InviteInput = z.infer<typeof inviteSchema>;
 
-const ROLE_OPTIONS = ["HR_ADMIN", "HR_MANAGER", "MANAGER", "EMPLOYEE", "VIEWER_AUDITOR"] as const;
+const ROLE_OPTIONS = ORGANIZATION_ROLES.filter((role) => role !== "TENANT_OWNER");
 
 const MembersPage: FC = () => {
   const queryClient = useQueryClient();
@@ -69,7 +70,8 @@ const MembersPage: FC = () => {
   });
 
   const changeRole = useMutation({
-    mutationFn: ({ id, role }: { id: string; role: string }) => changeMemberRole(id, role),
+    mutationFn: ({ id, role }: { id: string; role: OrganizationRole }) =>
+      changeMemberRole(id, role),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: organizationKeys.members() });
     },
@@ -166,7 +168,10 @@ const MembersPage: FC = () => {
                     className="min-h-9 rounded-sm border border-hairline bg-surface px-2 text-sm"
                     defaultValue={member.role}
                     onChange={(event) =>
-                      changeRole.mutate({ id: member.id, role: event.target.value })
+                      changeRole.mutate({
+                        id: member.id,
+                        role: event.target.value as OrganizationRole,
+                      })
                     }
                   >
                     {ROLE_OPTIONS.map((role) => (

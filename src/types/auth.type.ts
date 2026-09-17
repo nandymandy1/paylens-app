@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { Organization, OrganizationRole } from "@/types/organization.type";
 
 export const loginSchema = z.object({
   email: z.string().trim().toLowerCase().pipe(z.email("Enter a valid email address")),
@@ -71,15 +72,15 @@ export type MembershipSummary = {
   organizationId: string;
   organizationName: string;
   organizationSlug: string;
-  role: string;
+  role: OrganizationRole;
   status: string;
 };
 
 export type MeResponse = {
   user: SafeUser;
   memberships: MembershipSummary[];
-  activeOrganization: { id: string; name: string; slug: string } | null;
-  activeMembership: { id: string; role: string; status: string } | null;
+  activeOrganization: Organization | null;
+  activeMembership: { id: string; role: OrganizationRole; status: string } | null;
   onboardingRequired: boolean;
   organizationSelectionRequired: boolean;
 };
@@ -88,6 +89,6 @@ export type InvitationPreview = {
   id: string;
   organization: { id: string; name: string };
   email: string;
-  role: string;
+  role: OrganizationRole;
   expiresAt: string;
 };

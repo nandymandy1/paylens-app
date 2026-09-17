@@ -1,16 +1,12 @@
 import api from "@/services/api";
+import type { BaseResponseWithData } from "@/types/api-response.types";
 import type {
   CreateOrganizationInput,
+  Organization,
   OrganizationInvitationSummary,
   OrganizationMember,
-  Organization,
+  OrganizationRole,
 } from "@/types/organization.type";
-
-type Envelope<T> = {
-  data: T;
-  success: true;
-  requestId?: string;
-};
 
 export const organizationKeys = {
   members: () => ["organizations", "members"] as const,
@@ -22,7 +18,7 @@ export const createOrganization = async (
 ): Promise<{
   organization: Organization;
 }> => {
-  const { data } = await api.post<Envelope<{ organization: Organization }>>(
+  const { data } = await api.post<BaseResponseWithData<{ organization: Organization }>>(
     "/organizations",
     input,
   );
@@ -31,13 +27,15 @@ export const createOrganization = async (
 };
 
 export const fetchMembers = async (): Promise<OrganizationMember[]> => {
-  const { data } = await api.get<Envelope<OrganizationMember[]>>("/organizations/current/members");
+  const { data } = await api.get<BaseResponseWithData<OrganizationMember[]>>(
+    "/organizations/current/members",
+  );
 
   return data.data;
 };
 
 export const fetchInvitations = async (): Promise<OrganizationInvitationSummary[]> => {
-  const { data } = await api.get<Envelope<OrganizationInvitationSummary[]>>(
+  const { data } = await api.get<BaseResponseWithData<OrganizationInvitationSummary[]>>(
     "/organizations/current/invitations",
   );
 
@@ -46,9 +44,9 @@ export const fetchInvitations = async (): Promise<OrganizationInvitationSummary[
 
 export const inviteMember = async (
   email: string,
-  role: string,
+  role: OrganizationRole,
 ): Promise<OrganizationInvitationSummary> => {
-  const { data } = await api.post<Envelope<OrganizationInvitationSummary>>(
+  const { data } = await api.post<BaseResponseWithData<OrganizationInvitationSummary>>(
     "/organizations/current/invitations",
     { email, role },
   );
@@ -62,12 +60,11 @@ export const revokeInvitation = async (id: string): Promise<void> => {
 
 export const changeMemberRole = async (
   id: string,
-  role: string,
-): Promise<{ id: string; role: string; status: string }> => {
-  const { data } = await api.patch<Envelope<{ id: string; role: string; status: string }>>(
-    `/organizations/current/members/${id}/role`,
-    { role },
-  );
+  role: OrganizationRole,
+): Promise<{ id: string; role: OrganizationRole; status: string }> => {
+  const { data } = await api.patch<
+    BaseResponseWithData<{ id: string; role: OrganizationRole; status: string }>
+  >(`/organizations/current/members/${id}/role`, { role });
 
   return data.data;
 };
