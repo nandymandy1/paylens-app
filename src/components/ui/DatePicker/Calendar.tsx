@@ -27,10 +27,8 @@ const Calendar: FC<DayPickerProps> = (props) => (
       range_start: "bg-primary text-on-primary",
       root: "relative w-full",
       selected: "bg-primary text-on-primary",
-      today:
-        "font-medium underline decoration-accent-periwinkle underline-offset-4",
-      weekday:
-        "w-9 pb-2 text-center text-[11px] font-medium tracking-[0.05em] text-body uppercase",
+      today: "font-medium underline decoration-accent-periwinkle underline-offset-4",
+      weekday: "w-9 pb-2 text-center text-[11px] font-medium tracking-[0.05em] text-body uppercase",
       weekdays: "border-b border-hairline",
       week: "mt-1",
       weeks: "pt-2",

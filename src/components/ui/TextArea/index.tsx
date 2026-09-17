@@ -23,17 +23,10 @@ const TextArea: FC<TextAreaProps> = ({
 }) => {
   const generatedId = useId();
   const id = providedId ?? `textarea-${generatedId}`;
-  const invalid =
-    Boolean(error) || ariaInvalid === true || ariaInvalid === "true";
+  const invalid = Boolean(error) || ariaInvalid === true || ariaInvalid === "true";
 
   return (
-    <FormField
-      error={error}
-      helpText={helpText}
-      id={id}
-      label={label}
-      required={required}
-    >
+    <FormField error={error} helpText={helpText} id={id} label={label} required={required}>
       <textarea
         {...props}
         aria-describedby={getDescribedBy(ariaDescribedBy, error, helpText, id)}

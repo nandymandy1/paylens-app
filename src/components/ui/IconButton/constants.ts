@@ -1,4 +1,4 @@
-import type { ButtonSize } from "../Button/types";
+import type { ButtonSize } from "@/components/ui/Button/types";
 
 export const ICON_BUTTON_SIZE_CLASSES: Record<ButtonSize, string> = {
   sm: "size-9",

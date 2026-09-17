@@ -54,10 +54,7 @@ const Accordion: FC<AccordionProps> = ({
   if (type === "multiple") {
     return (
       <AccordionPrimitive.Root
-        className={cn(
-          "rounded-sm border border-hairline bg-surface px-4",
-          className,
-        )}
+        className={cn("rounded-sm border border-hairline bg-surface px-4", className)}
         defaultValue={Array.isArray(defaultValue) ? defaultValue : undefined}
         onValueChange={onValueChange as ((value: string[]) => void) | undefined}
         type="multiple"
@@ -70,10 +67,7 @@ const Accordion: FC<AccordionProps> = ({
 
   return (
     <AccordionPrimitive.Root
-      className={cn(
-        "rounded-sm border border-hairline bg-surface px-4",
-        className,
-      )}
+      className={cn("rounded-sm border border-hairline bg-surface px-4", className)}
       collapsible
       defaultValue={typeof defaultValue === "string" ? defaultValue : undefined}
       onValueChange={onValueChange as ((value: string) => void) | undefined}

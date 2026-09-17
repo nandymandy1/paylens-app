@@ -21,13 +21,7 @@ type TabsProps = {
   value?: string;
 };
 
-const Tabs: FC<TabsProps> = ({
-  className,
-  defaultValue,
-  items,
-  onValueChange,
-  value,
-}) => {
+const Tabs: FC<TabsProps> = ({ className, defaultValue, items, onValueChange, value }) => {
   return (
     <TabsPrimitive.Root
       className={cn("w-full", className)}

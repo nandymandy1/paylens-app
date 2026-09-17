@@ -31,9 +31,7 @@ const ShowcaseSection: FC<ShowcaseSectionProps> = ({
           >
             {title}
           </h2>
-          <p className="mt-3 max-w-sm text-sm leading-6 text-body">
-            {description}
-          </p>
+          <p className="mt-3 max-w-sm text-sm leading-6 text-body">{description}</p>
         </header>
         <div className="min-w-0">{children}</div>
       </div>

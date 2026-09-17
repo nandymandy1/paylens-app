@@ -6,14 +6,9 @@ import type { Matcher } from "react-day-picker";
 import FormField, { getDescribedBy } from "@/components/ui/FormField";
 import Popover from "@/components/ui/Popover";
 import cn from "@/utils/cn";
-import {
-  formatDate,
-  parseDate,
-  toISODate,
-  type ISODateString,
-} from "@/utils/date";
-import { INPUT_BASE, INPUT_SIZE_CLASSES } from "../Input/constants";
-import type { InputSize } from "../Input/types";
+import { formatDate, parseDate, toISODate, type ISODateString } from "@/utils/date";
+import { INPUT_BASE, INPUT_SIZE_CLASSES } from "@/components/ui/Input/constants";
+import type { InputSize } from "@/components/ui/Input/types";
 import Calendar from "./Calendar";
 
 type DatePickerProps = {
@@ -61,24 +56,15 @@ const DatePicker: FC<DatePickerProps> = ({
   const disabledDays: Matcher[] = [
     ...(minDate ? [{ before: parseDate(minDate)! }] : []),
     ...(maxDate ? [{ after: parseDate(maxDate)! }] : []),
-    ...(isDateDisabled
-      ? [(date: Date) => isDateDisabled(toISODate(date))]
-      : []),
+    ...(isDateDisabled ? [(date: Date) => isDateDisabled(toISODate(date))] : []),
   ];
-
   const changeValue = (nextValue?: ISODateString) => {
     if (value === undefined) setUncontrolledValue(nextValue);
     onChange?.(nextValue);
   };
 
   return (
-    <FormField
-      error={error}
-      helpText={helpText}
-      id={id}
-      label={label}
-      required={required}
-    >
+    <FormField error={error} helpText={helpText} id={id} label={label} required={required}>
       <div className="relative">
         <Popover
           content={
@@ -98,12 +84,7 @@ const DatePicker: FC<DatePickerProps> = ({
           open={open}
         >
           <button
-            aria-describedby={getDescribedBy(
-              ariaDescribedBy,
-              error,
-              helpText,
-              id,
-            )}
+            aria-describedby={getDescribedBy(ariaDescribedBy, error, helpText, id)}
             aria-label={label ? `${label}: ${displayValue}` : displayValue}
             className={cn(
               INPUT_BASE,
@@ -120,13 +101,8 @@ const DatePicker: FC<DatePickerProps> = ({
             }}
             type="button"
           >
-            <span className={selectedValue ? "text-ink" : "text-body"}>
-              {displayValue}
-            </span>
-            <CalendarDays
-              aria-hidden="true"
-              className="size-4 shrink-0 text-body"
-            />
+            <span className={selectedValue ? "text-ink" : "text-body"}>{displayValue}</span>
+            <CalendarDays aria-hidden="true" className="size-4 shrink-0 text-body" />
           </button>
         </Popover>
         {selectedValue && !disabled && !readOnly && (

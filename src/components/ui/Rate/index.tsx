@@ -3,7 +3,7 @@
 import { useId, useState, type FC } from "react";
 import { Star } from "lucide-react";
 import cn from "@/utils/cn";
-import type { InputSize } from "../Input/types";
+import type { InputSize } from "@/components/ui/Input/types";
 
 type RateProps = {
   "aria-label"?: string;
@@ -21,7 +21,6 @@ const STAR_SIZE_CLASSES: Record<InputSize, string> = {
   md: "size-5",
   sm: "size-4",
 };
-
 const Rate: FC<RateProps> = ({
   "aria-label": ariaLabel = "Rating",
   defaultValue = 0,
@@ -37,10 +36,7 @@ const Rate: FC<RateProps> = ({
   const [hoveredValue, setHoveredValue] = useState<number>();
   const selectedValue = value ?? uncontrolledValue;
   const displayedValue = hoveredValue ?? selectedValue;
-  const values = Array.from(
-    { length: Math.max(1, max) },
-    (_, index) => index + 1,
-  );
+  const values = Array.from({ length: Math.max(1, max) }, (_, index) => index + 1);
 
   if (readOnly) {
     return (
@@ -54,9 +50,7 @@ const Rate: FC<RateProps> = ({
             aria-hidden="true"
             className={cn(
               STAR_SIZE_CLASSES[size],
-              rating <= selectedValue
-                ? "fill-primary text-primary"
-                : "text-hairline",
+              rating <= selectedValue ? "fill-primary text-primary" : "text-hairline",
             )}
             key={rating}
           />
@@ -97,10 +91,7 @@ const Rate: FC<RateProps> = ({
           />
           <Star
             aria-hidden="true"
-            className={cn(
-              STAR_SIZE_CLASSES[size],
-              rating <= displayedValue && "fill-current",
-            )}
+            className={cn(STAR_SIZE_CLASSES[size], rating <= displayedValue && "fill-current")}
           />
         </label>
       ))}

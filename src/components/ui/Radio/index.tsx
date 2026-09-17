@@ -42,10 +42,7 @@ export const Radio: FC<RadioProps> = ({
   const isChecked = context.value === radioValue;
 
   return (
-    <label
-      className="flex cursor-pointer items-center gap-3 text-sm text-ink"
-      htmlFor={id}
-    >
+    <label className="flex cursor-pointer items-center gap-3 text-sm text-ink" htmlFor={id}>
       <input
         {...props}
         checked={context.value === undefined ? undefined : isChecked}
@@ -101,13 +98,7 @@ export const RadioGroup: FC<RadioGroupProps> = ({
   const selectedValue = value ?? uncontrolledValue;
 
   return (
-    <FormField
-      error={error}
-      helpText={helpText}
-      id={id}
-      label={label}
-      required={required}
-    >
+    <FormField error={error} helpText={helpText} id={id} label={label} required={required}>
       <RadioGroupContext.Provider
         value={{
           disabled,

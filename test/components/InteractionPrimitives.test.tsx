@@ -13,6 +13,7 @@ import { getPaginationItems } from "@/utils/pagination";
 describe("interaction primitives", () => {
   it("opens an accordion item and keeps disabled items unavailable", async () => {
     const user = userEvent.setup();
+
     render(
       <Accordion
         items={[
@@ -29,14 +30,14 @@ describe("interaction primitives", () => {
 
     await user.click(screen.getByRole("button", { name: "Details" }));
     expect(screen.getByText("Visible details")).toBeDefined();
-    expect(
-      (screen.getByRole("button", { name: "Locked" }) as HTMLButtonElement)
-        .disabled,
-    ).toBe(true);
+    expect((screen.getByRole("button", { name: "Locked" }) as HTMLButtonElement).disabled).toBe(
+      true,
+    );
   });
 
   it("switches tabs and respects disabled tabs", async () => {
     const user = userEvent.setup();
+
     render(
       <Tabs
         defaultValue="one"
@@ -50,15 +51,13 @@ describe("interaction primitives", () => {
 
     await user.click(screen.getByRole("tab", { name: "Second" }));
     expect(screen.getByText("Second panel")).toBeDefined();
-    expect(
-      (screen.getByRole("tab", { name: "Locked" }) as HTMLButtonElement)
-        .disabled,
-    ).toBe(true);
+    expect((screen.getByRole("tab", { name: "Locked" }) as HTMLButtonElement).disabled).toBe(true);
   });
 
   it("changes segment selection", async () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
+
     render(
       <Segment
         aria-label="View"
@@ -73,14 +72,12 @@ describe("interaction primitives", () => {
 
     await user.click(screen.getByRole("radio", { name: "Review" }));
     expect(onValueChange).toHaveBeenCalledWith("review");
-    expect(
-      (screen.getByRole("radio", { name: "Review" }) as HTMLInputElement)
-        .checked,
-    ).toBe(true);
+    expect((screen.getByRole("radio", { name: "Review" }) as HTMLInputElement).checked).toBe(true);
   });
 
   it("opens and closes a modal with an accessible dialog", async () => {
     const user = userEvent.setup();
+
     render(
       <Modal title="Review details" trigger={<Button>Open modal</Button>}>
         Modal content
@@ -88,15 +85,14 @@ describe("interaction primitives", () => {
     );
 
     await user.click(screen.getByRole("button", { name: "Open modal" }));
-    expect(
-      screen.getByRole("dialog", { name: "Review details" }),
-    ).toBeDefined();
+    expect(screen.getByRole("dialog", { name: "Review details" })).toBeDefined();
     await user.click(screen.getByRole("button", { name: "Close dialog" }));
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 
   it("opens and closes a drawer", async () => {
     const user = userEvent.setup();
+
     render(
       <Drawer title="Context" trigger={<Button>Open drawer</Button>}>
         Drawer content
@@ -123,32 +119,19 @@ describe("interaction primitives", () => {
         }) as HTMLButtonElement
       ).disabled,
     ).toBe(true);
-    expect(
-      screen
-        .getByRole("button", { name: "Page 1" })
-        .getAttribute("aria-current"),
-    ).toBe("page");
+    expect(screen.getByRole("button", { name: "Page 1" }).getAttribute("aria-current")).toBe(
+      "page",
+    );
     await user.click(screen.getByRole("button", { name: "Page 2" }));
     expect(onPageChange).toHaveBeenCalledWith(2);
 
-    rerender(
-      <Paginator onPageChange={onPageChange} page={100} totalPages={100} />,
+    rerender(<Paginator onPageChange={onPageChange} page={100} totalPages={100} />);
+    expect((screen.getByRole("button", { name: "Next page" }) as HTMLButtonElement).disabled).toBe(
+      true,
     );
-    expect(
-      (screen.getByRole("button", { name: "Next page" }) as HTMLButtonElement)
-        .disabled,
-    ).toBe(true);
   });
 
   it("builds a stable large-page window", () => {
-    expect(getPaginationItems(50, 100)).toEqual([
-      1,
-      "ellipsis",
-      49,
-      50,
-      51,
-      "ellipsis",
-      100,
-    ]);
+    expect(getPaginationItems(50, 100)).toEqual([1, "ellipsis", 49, 50, 51, "ellipsis", 100]);
   });
 });

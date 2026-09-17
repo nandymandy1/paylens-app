@@ -5,6 +5,7 @@ import Button from "@/components/ui/Button";
 describe("Button", () => {
   it("prevents interaction while loading", () => {
     const onClick = vi.fn();
+
     render(
       <Button loading onClick={onClick}>
         Save changes
@@ -12,6 +13,7 @@ describe("Button", () => {
     );
 
     const button = screen.getByRole("button", { name: "Save changes" });
+
     expect(button).toHaveProperty("disabled", true);
     expect(button.getAttribute("aria-busy")).toBe("true");
     fireEvent.click(button);

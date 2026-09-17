@@ -1,3 +1,16 @@
-.next
 node_modules
+.next
 coverage
+dist
+out
+
+.graphify
+graphify-out
+
+*.tsbuildinfo
+
+package-lock.json
+
+.env
+.env.*
+!.env.example

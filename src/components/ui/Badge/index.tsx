@@ -2,7 +2,6 @@ import type { FC, PropsWithChildren } from "react";
 import cn from "@/utils/cn";
 
 type BadgeVariant = "success" | "danger" | "warning" | "info" | "primary";
-
 type BadgeProps = PropsWithChildren<{
   className?: string;
   variant?: BadgeVariant;
@@ -15,12 +14,7 @@ const variantClasses: Record<BadgeVariant, string> = {
   info: "border-info/25 bg-info-soft text-info",
   primary: "border-primary bg-primary text-on-primary",
 };
-
-const Badge: FC<BadgeProps> = ({
-  children,
-  className,
-  variant = "primary",
-}) => {
+const Badge: FC<BadgeProps> = ({ children, className, variant = "primary" }) => {
   return (
     <span
       className={cn(

@@ -53,8 +53,7 @@ export const getDescribedBy = (
   helpText: string | undefined,
   id: string,
 ) =>
-  [describedBy, helpText && `${id}-help`, error && `${id}-error`]
-    .filter(Boolean)
-    .join(" ") || undefined;
+  [describedBy, helpText && `${id}-help`, error && `${id}-error`].filter(Boolean).join(" ") ||
+  undefined;
 
 export default FormField;

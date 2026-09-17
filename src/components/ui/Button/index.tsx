@@ -1,11 +1,7 @@
 import type { FC } from "react";
 import { LoaderCircle } from "lucide-react";
 import cn from "@/utils/cn";
-import {
-  BUTTON_BASE,
-  BUTTON_SIZE_CLASSES,
-  BUTTON_VARIANT_CLASSES,
-} from "./constants";
+import { BUTTON_BASE, BUTTON_SIZE_CLASSES, BUTTON_VARIANT_CLASSES } from "./constants";
 import type { ButtonProps } from "./types";
 
 const Button: FC<ButtonProps> = ({
@@ -35,11 +31,7 @@ const Button: FC<ButtonProps> = ({
       disabled={disabled || loading}
       type={type}
     >
-      {loading ? (
-        <LoaderCircle aria-hidden="true" className="size-4 animate-spin" />
-      ) : (
-        prefixIcon
-      )}
+      {loading ? <LoaderCircle aria-hidden="true" className="size-4 animate-spin" /> : prefixIcon}
       <span>{children}</span>
       {!loading && suffixIcon}
     </button>

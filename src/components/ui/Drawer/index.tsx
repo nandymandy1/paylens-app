@@ -6,7 +6,6 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import cn from "@/utils/cn";
 
 type DrawerDirection = "left" | "right" | "top" | "bottom";
-
 type DrawerProps = {
   children: ReactNode;
   closeOnOutsideInteraction?: boolean;
@@ -26,7 +25,6 @@ const directionClasses: Record<DrawerDirection, string> = {
   top: "top-0 inset-x-0 max-h-[min(100%-2rem,28rem)] border-b",
   bottom: "bottom-0 inset-x-0 max-h-[min(100%-2rem,28rem)] border-t",
 };
-
 const Drawer: FC<DrawerProps> = ({
   children,
   closeOnOutsideInteraction = true,
@@ -40,14 +38,8 @@ const Drawer: FC<DrawerProps> = ({
   trigger,
 }) => {
   return (
-    <DialogPrimitive.Root
-      defaultOpen={defaultOpen}
-      onOpenChange={onOpenChange}
-      open={open}
-    >
-      {trigger && (
-        <DialogPrimitive.Trigger asChild>{trigger}</DialogPrimitive.Trigger>
-      )}
+    <DialogPrimitive.Root defaultOpen={defaultOpen} onOpenChange={onOpenChange} open={open}>
+      {trigger && <DialogPrimitive.Trigger asChild>{trigger}</DialogPrimitive.Trigger>}
       <DialogPrimitive.Portal>
         <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-canvas-dark/55 data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out data-[state=open]:fade-in motion-reduce:animate-none" />
         <DialogPrimitive.Content
@@ -70,9 +62,7 @@ const Drawer: FC<DrawerProps> = ({
                 </DialogPrimitive.Description>
               )}
             </div>
-            <div className="flex-1 py-6 text-sm leading-6 text-body">
-              {children}
-            </div>
+            <div className="flex-1 py-6 text-sm leading-6 text-body">{children}</div>
             {footer && (
               <div className="flex flex-wrap justify-end gap-3 border-t border-hairline pt-5">
                 {footer}

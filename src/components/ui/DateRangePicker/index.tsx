@@ -14,9 +14,9 @@ import {
   type ISODateRange,
   type ISODateString,
 } from "@/utils/date";
-import { INPUT_BASE, INPUT_SIZE_CLASSES } from "../Input/constants";
-import type { InputSize } from "../Input/types";
-import Calendar from "../DatePicker/Calendar";
+import { INPUT_BASE, INPUT_SIZE_CLASSES } from "@/components/ui/Input/constants";
+import type { InputSize } from "@/components/ui/Input/types";
+import Calendar from "@/components/ui/DatePicker/Calendar";
 
 type DateRangePickerProps = {
   "aria-describedby"?: string;
@@ -41,11 +41,8 @@ const formatRange = (range: ISODateRange) => {
     return `${formatDate(range.startDate)} — ${formatDate(range.endDate)}`;
   }
 
-  return range.startDate
-    ? `${formatDate(range.startDate)} — Select end date`
-    : "";
+  return range.startDate ? `${formatDate(range.startDate)} — Select end date` : "";
 };
-
 const DateRangePicker: FC<DateRangePickerProps> = ({
   "aria-describedby": ariaDescribedBy,
   disabled = false,
@@ -73,32 +70,22 @@ const DateRangePicker: FC<DateRangePickerProps> = ({
   const disabledDays: Matcher[] = [
     ...(minDate ? [{ before: parseDate(minDate)! }] : []),
     ...(maxDate ? [{ after: parseDate(maxDate)! }] : []),
-    ...(isDateDisabled
-      ? [(date: Date) => isDateDisabled(toISODate(date))]
-      : []),
+    ...(isDateDisabled ? [(date: Date) => isDateDisabled(toISODate(date))] : []),
   ];
-
   const changeValue = (nextValue: ISODateRange) => {
     const normalizedValue = normalizeDateRange(nextValue);
+
     if (value === undefined) setUncontrolledValue(normalizedValue);
     onChange?.(normalizedValue);
   };
 
   return (
-    <FormField
-      error={error}
-      helpText={helpText}
-      id={id}
-      label={label}
-      required={required}
-    >
+    <FormField error={error} helpText={helpText} id={id} label={label} required={required}>
       <div className="relative">
         <Popover
           content={
             <Calendar
-              defaultMonth={
-                parseDate(selectedValue.startDate) ?? parseDate(minDate)
-              }
+              defaultMonth={parseDate(selectedValue.startDate) ?? parseDate(minDate)}
               disabled={disabledDays}
               excludeDisabled
               mode="range"
@@ -107,6 +94,7 @@ const DateRangePicker: FC<DateRangePickerProps> = ({
                   endDate: range?.to ? toISODate(range.to) : undefined,
                   startDate: range?.from ? toISODate(range.from) : undefined,
                 };
+
                 changeValue(nextValue);
                 if (nextValue.startDate && nextValue.endDate) setOpen(false);
               }}
@@ -120,12 +108,7 @@ const DateRangePicker: FC<DateRangePickerProps> = ({
           open={open}
         >
           <button
-            aria-describedby={getDescribedBy(
-              ariaDescribedBy,
-              error,
-              helpText,
-              id,
-            )}
+            aria-describedby={getDescribedBy(ariaDescribedBy, error, helpText, id)}
             aria-label={label ? `${label}: ${displayValue}` : displayValue}
             className={cn(
               INPUT_BASE,
@@ -142,15 +125,10 @@ const DateRangePicker: FC<DateRangePickerProps> = ({
             }}
             type="button"
           >
-            <span
-              className={selectedValue.startDate ? "text-ink" : "text-body"}
-            >
+            <span className={selectedValue.startDate ? "text-ink" : "text-body"}>
               {displayValue}
             </span>
-            <CalendarRange
-              aria-hidden="true"
-              className="size-4 shrink-0 text-body"
-            />
+            <CalendarRange aria-hidden="true" className="size-4 shrink-0 text-body" />
           </button>
         </Popover>
         {selectedValue.startDate && !disabled && !readOnly && (

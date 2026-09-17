@@ -13,8 +13,6 @@ describe("theme store", () => {
 
     expect(useThemeStore.getState().theme).toBe("dark");
     expect(document.documentElement.dataset.theme).toBe("dark");
-    expect(window.localStorage.getItem(THEME_STORAGE_KEY)).toContain(
-      '"theme":"dark"',
-    );
+    expect(window.localStorage.getItem(THEME_STORAGE_KEY)).toContain('"theme":"dark"');
   });
 });

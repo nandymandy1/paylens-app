@@ -10,14 +10,11 @@ import Switch from "@/components/ui/Switch";
 describe("form controls", () => {
   it("links input label, help, and error state", () => {
     render(
-      <Input
-        error="Use a unique name."
-        helpText="This appears in reports."
-        label="Report name"
-      />,
+      <Input error="Use a unique name." helpText="This appears in reports." label="Report name" />,
     );
 
     const input = screen.getByLabelText("Report name");
+
     expect(input.getAttribute("aria-invalid")).toBe("true");
     expect(input.getAttribute("aria-describedby")).toContain("-help");
     expect(screen.getByText("Use a unique name.")).toBeTruthy();
@@ -27,6 +24,7 @@ describe("form controls", () => {
     render(<InputPassword label="Password" value="secret" readOnly />);
 
     const input = screen.getByLabelText("Password") as HTMLInputElement;
+
     expect(input.type).toBe("password");
     fireEvent.click(screen.getByRole("button", { name: "Show password" }));
     expect(input.type).toBe("text");
@@ -35,6 +33,7 @@ describe("form controls", () => {
 
   it("distributes a pasted OTP value across slots", () => {
     const onChange = vi.fn();
+
     render(<InputOTP label="Code" length={4} onChange={onChange} />);
 
     fireEvent.paste(screen.getByLabelText("Code digit 1 of 4"), {
@@ -47,9 +46,8 @@ describe("form controls", () => {
   it("supports checkbox interaction and indeterminate state", () => {
     render(<Checkbox indeterminate label="Select records" />);
 
-    const checkbox = screen.getByLabelText(
-      "Select records",
-    ) as HTMLInputElement;
+    const checkbox = screen.getByLabelText("Select records") as HTMLInputElement;
+
     expect(checkbox.indeterminate).toBe(true);
     fireEvent.click(checkbox);
     expect(checkbox.checked).toBe(true);
@@ -57,6 +55,7 @@ describe("form controls", () => {
 
   it("changes selected radio value", () => {
     const onValueChange = vi.fn();
+
     render(
       <RadioGroup label="Access" name="access" onValueChange={onValueChange}>
         <Radio label="Manager" value="manager" />
@@ -70,14 +69,17 @@ describe("form controls", () => {
 
   it("exposes native switch state and honors disabled", () => {
     const onChange = vi.fn();
+
     render(<Switch label="Notifications" onChange={onChange} />);
     const toggle = screen.getByRole("switch", { name: "Notifications" });
+
     fireEvent.click(toggle);
     expect(onChange).toHaveBeenCalled();
 
     render(<Switch disabled label="Locked notifications" />);
-    expect(
-      screen.getByRole("switch", { name: "Locked notifications" }),
-    ).toHaveProperty("disabled", true);
+    expect(screen.getByRole("switch", { name: "Locked notifications" })).toHaveProperty(
+      "disabled",
+      true,
+    );
   });
 });

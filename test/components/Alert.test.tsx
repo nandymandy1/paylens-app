@@ -7,6 +7,7 @@ describe("Alert", () => {
     render(<Alert variant="danger">Resolve the conflict.</Alert>);
 
     const alert = screen.getByRole("alert");
+
     expect(alert.textContent).toContain("danger");
     expect(alert.textContent).toContain("Resolve the conflict.");
   });

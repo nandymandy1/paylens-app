@@ -17,7 +17,6 @@ const applyTheme = (theme: Theme) => {
     document.documentElement.style.colorScheme = theme;
   }
 };
-
 const useThemeStore = create<ThemeState>()(
   persist(
     (set, get) => ({
@@ -28,6 +27,7 @@ const useThemeStore = create<ThemeState>()(
       },
       toggleTheme: () => {
         const theme = get().theme === "light" ? "dark" : "light";
+
         applyTheme(theme);
         set({ theme });
       },

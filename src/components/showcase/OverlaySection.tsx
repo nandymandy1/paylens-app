@@ -33,8 +33,7 @@ const OverlaySection: FC = () => {
                 Review actions
               </p>
               <p className="mt-2 leading-5 text-body">
-                Popovers hold concise, contextual controls without replacing a
-                full workflow.
+                Popovers hold concise, contextual controls without replacing a full workflow.
               </p>
               <Button className="mt-4" size="sm">
                 Open review
@@ -43,9 +42,7 @@ const OverlaySection: FC = () => {
           }
         >
           <Button
-            prefixIcon={
-              <MoreHorizontal aria-hidden="true" className="size-4" />
-            }
+            prefixIcon={<MoreHorizontal aria-hidden="true" className="size-4" />}
             variant="outline"
           >
             Open popover

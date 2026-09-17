@@ -29,10 +29,7 @@ const DateSelectionSection: FC = () => {
             <DatePicker label="Empty date" placeholder="Choose a date" />
             <DatePicker label="Selected date" onChange={setDate} value={date} />
             <DatePicker disabled label="Disabled date" value="2026-09-17" />
-            <DatePicker
-              error="Choose a valid review date."
-              label="Date with error"
-            />
+            <DatePicker error="Choose a valid review date." label="Date with error" />
             <DatePicker inputSize="sm" label="Small date" value="2026-09-17" />
             <DatePicker inputSize="lg" label="Large date" value="2026-09-17" />
             <DatePicker
@@ -48,32 +45,17 @@ const DateSelectionSection: FC = () => {
           <h3 className="text-lg font-medium">Date range picker</h3>
           <div className="grid gap-4 sm:grid-cols-2">
             <DateRangePicker label="Empty range" />
-            <DateRangePicker
-              label="Selected range"
-              onChange={setRange}
-              value={range}
-            />
-            <DateRangePicker
-              label="Partial range"
-              value={{ startDate: "2026-09-17" }}
-            />
+            <DateRangePicker label="Selected range" onChange={setRange} value={range} />
+            <DateRangePicker label="Partial range" value={{ startDate: "2026-09-17" }} />
             <DateRangePicker disabled label="Disabled range" value={range} />
-            <DateRangePicker
-              label="Restricted range"
-              maxDate="2026-09-30"
-              minDate="2026-09-01"
-            />
+            <DateRangePicker label="Restricted range" maxDate="2026-09-30" minDate="2026-09-01" />
           </div>
         </div>
 
         <div className="grid gap-4">
           <h3 className="text-lg font-medium">Rate</h3>
           <div className="flex flex-wrap items-center gap-x-8 gap-y-5">
-            <Rate
-              aria-label="Interactive rating"
-              onChange={setRate}
-              value={rate}
-            />
+            <Rate aria-label="Interactive rating" onChange={setRate} value={rate} />
             <Rate aria-label="Small rating" size="sm" value={2} />
             <Rate aria-label="Large rating" size="lg" value={4} />
             <Rate aria-label="Disabled rating" disabled value={3} />

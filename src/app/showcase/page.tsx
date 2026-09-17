@@ -35,9 +35,8 @@ const ComponentsPage: FC = () => {
             PayLens Design System
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-7 text-on-dark/70">
-            The production foundation for clear, secure compensation workflows.
-            Every example below is a shared component used exactly as feature
-            code will use it.
+            The production foundation for clear, secure compensation workflows. Every example below
+            is a shared component used exactly as feature code will use it.
           </p>
           <div className="mt-10 h-1 w-44 rounded-sm bg-[linear-gradient(90deg,#fc4c02,#ef2cc1,#bdbbff)]" />
         </div>

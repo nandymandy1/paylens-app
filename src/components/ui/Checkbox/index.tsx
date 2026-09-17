@@ -34,18 +34,10 @@ const Checkbox: FC<CheckboxProps> = ({
 
   return (
     <FormField error={error} helpText={helpText} id={id} required={required}>
-      <label
-        className="flex cursor-pointer items-start gap-3 text-sm text-ink"
-        htmlFor={id}
-      >
+      <label className="flex cursor-pointer items-start gap-3 text-sm text-ink" htmlFor={id}>
         <input
           {...props}
-          aria-describedby={getDescribedBy(
-            ariaDescribedBy,
-            error,
-            helpText,
-            id,
-          )}
+          aria-describedby={getDescribedBy(ariaDescribedBy, error, helpText, id)}
           aria-invalid={Boolean(error) || undefined}
           className={cn(
             "mt-0.5 size-4 shrink-0 accent-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus/60 disabled:cursor-not-allowed disabled:opacity-60",

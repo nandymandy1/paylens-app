@@ -42,22 +42,16 @@ const InputOTP: FC<InputOTPProps> = ({
   const slots = Array.from({ length }, (_, index) => currentValue[index] ?? "");
   const invalid = Boolean(error);
   const updateValue = (nextValue: string) => {
-    const sanitized =
-      inputMode === "numeric" ? nextValue.replace(/\D/g, "") : nextValue;
+    const sanitized = inputMode === "numeric" ? nextValue.replace(/\D/g, "") : nextValue;
     const next = sanitized.slice(0, length);
+
     if (value === undefined) setUncontrolledValue(next);
     onChange?.(next);
   };
   const focus = (index: number) => inputs.current[index]?.focus();
 
   return (
-    <FormField
-      error={error}
-      helpText={helpText}
-      id={id}
-      label={label}
-      required={required}
-    >
+    <FormField error={error} helpText={helpText} id={id} label={label} required={required}>
       <div
         aria-describedby={getDescribedBy(undefined, error, helpText, id)}
         className={cn("flex gap-2", className)}
@@ -80,16 +74,17 @@ const InputOTP: FC<InputOTPProps> = ({
             onChange={(event) => {
               const character = event.target.value.slice(-1);
               const next = `${currentValue.slice(0, index)}${character}${currentValue.slice(index + 1)}`;
+
               updateValue(next);
               if (character && index < length - 1) focus(index + 1);
             }}
             onKeyDown={(event) => {
-              if (event.key === "Backspace" && !slot && index > 0)
-                focus(index - 1);
+              if (event.key === "Backspace" && !slot && index > 0) focus(index - 1);
               if (event.key === "ArrowLeft" && index > 0) {
                 event.preventDefault();
                 focus(index - 1);
               }
+
               if (event.key === "ArrowRight" && index < length - 1) {
                 event.preventDefault();
                 focus(index + 1);
@@ -98,12 +93,7 @@ const InputOTP: FC<InputOTPProps> = ({
             onPaste={(event) => {
               event.preventDefault();
               updateValue(event.clipboardData.getData("text"));
-              focus(
-                Math.min(
-                  event.clipboardData.getData("text").length,
-                  length - 1,
-                ),
-              );
+              focus(Math.min(event.clipboardData.getData("text").length, length - 1));
             }}
             ref={(element) => {
               inputs.current[index] = element;

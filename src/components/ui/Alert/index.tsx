@@ -1,9 +1,7 @@
 import type { FC, PropsWithChildren, ReactNode } from "react";
 import cn from "@/utils/cn";
 
-type AlertVariant =
-  "info" | "success" | "danger" | "neutral" | "dark" | "primary";
-
+type AlertVariant = "info" | "success" | "danger" | "neutral" | "dark" | "primary";
 type AlertProps = PropsWithChildren<{
   className?: string;
   icon?: ReactNode;
@@ -19,14 +17,7 @@ const variantClasses: Record<AlertVariant, string> = {
   dark: "border-surface-dark-soft bg-canvas-dark text-on-dark",
   primary: "border-primary bg-primary text-on-primary",
 };
-
-const Alert: FC<AlertProps> = ({
-  children,
-  className,
-  icon,
-  title,
-  variant = "neutral",
-}) => {
+const Alert: FC<AlertProps> = ({ children, className, icon, title, variant = "neutral" }) => {
   return (
     <div
       className={cn(

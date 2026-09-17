@@ -8,7 +8,6 @@ const geistSans = Geist({
   subsets: ["latin"],
   variable: "--font-geist-sans",
 });
-
 const geistMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-geist-mono",
@@ -41,11 +40,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       data-theme="light"
       suppressHydrationWarning
-      className={clsx(
-        geistSans.variable,
-        geistMono.variable,
-        "h-full antialiased",
-      )}
+      className={clsx(geistSans.variable, geistMono.variable, "h-full antialiased")}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />

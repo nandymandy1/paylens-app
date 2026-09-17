@@ -12,9 +12,8 @@ const Home: FC = () => {
           Compensation operations, made clear.
         </h1>
         <p className="mt-5 max-w-2xl text-lg leading-7 text-body">
-          The application foundation is ready. Explore the living component
-          library to review tokens, themes, interaction states, and reusable
-          primitives.
+          The application foundation is ready. Explore the living component library to review
+          tokens, themes, interaction states, and reusable primitives.
         </p>
         <Link
           className="mt-8 inline-flex min-h-10 items-center justify-center rounded-sm bg-primary px-4 font-mono text-sm font-medium tracking-[0.005em] text-on-primary uppercase transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus/60"

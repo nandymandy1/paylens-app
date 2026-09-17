@@ -10,12 +10,12 @@ type AppProvidersProps = PropsWithChildren;
 const notify = ({ tone, title, description }: ToastPayload) => {
   toast[tone](title, { description });
 };
-
 const AppProviders: FC<AppProvidersProps> = ({ children }) => {
   const theme = useThemeStore((state) => state.theme);
 
   useEffect(() => {
     toastEvents.on("show", notify);
+
     return () => {
       toastEvents.off("show", notify);
     };
@@ -41,12 +41,9 @@ const AppProviders: FC<AppProvidersProps> = ({ children }) => {
             closeButton:
               "absolute -top-2 -left-2 flex size-6 items-center justify-center rounded-full border border-hairline bg-surface text-body shadow-soft transition-colors hover:bg-canvas-soft hover:text-ink focus-visible:ring-2 focus-visible:ring-focus/60 focus-visible:outline-none",
             default: "border-hairline bg-surface text-ink",
-            success:
-              "border-success bg-success-soft text-ink [&_[data-icon]]:text-success",
-            error:
-              "border-danger bg-danger-soft text-ink [&_[data-icon]]:text-danger",
-            warning:
-              "border-warning bg-warning-soft text-ink [&_[data-icon]]:text-warning",
+            success: "border-success bg-success-soft text-ink [&_[data-icon]]:text-success",
+            error: "border-danger bg-danger-soft text-ink [&_[data-icon]]:text-danger",
+            warning: "border-warning bg-warning-soft text-ink [&_[data-icon]]:text-warning",
             info: "border-info bg-info-soft text-ink [&_[data-icon]]:text-info",
           },
         }}

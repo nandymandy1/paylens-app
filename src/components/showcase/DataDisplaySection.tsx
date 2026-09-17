@@ -54,14 +54,12 @@ const DataDisplaySection: FC = () => {
             <p className="font-mono text-[11px] font-medium tracking-[0.05em] text-body uppercase">
               Compensation review
             </p>
-            <h3 className="mt-2 text-2xl font-medium tracking-[-0.02em]">
-              Product engineering
-            </h3>
+            <h3 className="mt-2 text-2xl font-medium tracking-[-0.02em]">Product engineering</h3>
           </Card.Header>
           <Card.Content>
             <p className="text-sm leading-6 text-body">
-              Card slots keep header, content, and footer responsibilities
-              explicit without a prop-heavy API.
+              Card slots keep header, content, and footer responsibilities explicit without a
+              prop-heavy API.
             </p>
           </Card.Content>
           <Card.Footer>

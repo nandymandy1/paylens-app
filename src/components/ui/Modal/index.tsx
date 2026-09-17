@@ -6,7 +6,6 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import cn from "@/utils/cn";
 
 type ModalSize = "sm" | "md" | "lg" | "xl";
-
 type ModalProps = {
   children: ReactNode;
   closeOnOutsideInteraction?: boolean;
@@ -26,7 +25,6 @@ const sizeClasses: Record<ModalSize, string> = {
   lg: "max-w-2xl",
   xl: "max-w-4xl",
 };
-
 const Modal: FC<ModalProps> = ({
   children,
   closeOnOutsideInteraction = true,
@@ -40,14 +38,8 @@ const Modal: FC<ModalProps> = ({
   trigger,
 }) => {
   return (
-    <DialogPrimitive.Root
-      defaultOpen={defaultOpen}
-      onOpenChange={onOpenChange}
-      open={open}
-    >
-      {trigger && (
-        <DialogPrimitive.Trigger asChild>{trigger}</DialogPrimitive.Trigger>
-      )}
+    <DialogPrimitive.Root defaultOpen={defaultOpen} onOpenChange={onOpenChange} open={open}>
+      {trigger && <DialogPrimitive.Trigger asChild>{trigger}</DialogPrimitive.Trigger>}
       <DialogPrimitive.Portal>
         <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-canvas-dark/55 data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out data-[state=open]:fade-in motion-reduce:animate-none" />
         <DialogPrimitive.Content

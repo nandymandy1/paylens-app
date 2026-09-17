@@ -29,17 +29,10 @@ const Input: FC<InputProps> = ({
 }) => {
   const generatedId = useId();
   const id = providedId ?? `input-${generatedId}`;
-  const invalid =
-    Boolean(error) || ariaInvalid === true || ariaInvalid === "true";
+  const invalid = Boolean(error) || ariaInvalid === true || ariaInvalid === "true";
 
   return (
-    <FormField
-      error={error}
-      helpText={helpText}
-      id={id}
-      label={label}
-      required={required}
-    >
+    <FormField error={error} helpText={helpText} id={id} label={label} required={required}>
       <div className="relative">
         {prefixIcon && (
           <span
@@ -54,12 +47,7 @@ const Input: FC<InputProps> = ({
         )}
         <input
           {...props}
-          aria-describedby={getDescribedBy(
-            ariaDescribedBy,
-            error,
-            helpText,
-            id,
-          )}
+          aria-describedby={getDescribedBy(ariaDescribedBy, error, helpText, id)}
           aria-invalid={invalid || undefined}
           className={cn(
             INPUT_BASE,
@@ -85,12 +73,7 @@ const Input: FC<InputProps> = ({
           </span>
         )}
         {suffixAction && (
-          <span
-            className={cn(
-              "absolute flex items-center",
-              INPUT_SUFFIX_INSET_CLASSES[inputSize],
-            )}
-          >
+          <span className={cn("absolute flex items-center", INPUT_SUFFIX_INSET_CLASSES[inputSize])}>
             {suffixAction}
           </span>
         )}

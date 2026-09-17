@@ -13,7 +13,6 @@ const swatches = [
   { label: "Mint", className: "bg-accent-mint" },
   { label: "Periwinkle", className: "bg-accent-periwinkle" },
 ];
-
 const FoundationsSection: FC = () => {
   const theme = useThemeStore((state) => state.theme);
   const toggleTheme = useThemeStore((state) => state.toggleTheme);
@@ -67,8 +66,8 @@ const FoundationsSection: FC = () => {
             Compensation deserves clarity.
           </p>
           <p className="mt-4 max-w-xl text-base leading-6 text-body">
-            Narrative type stays calm and direct. Technical labels use mono,
-            uppercase, and positive tracking.
+            Narrative type stays calm and direct. Technical labels use mono, uppercase, and positive
+            tracking.
           </p>
         </div>
       </div>

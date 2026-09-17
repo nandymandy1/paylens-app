@@ -34,14 +34,12 @@ const Segment: FC<SegmentProps> = ({
   return (
     <div
       aria-label={ariaLabel}
-      className={cn(
-        "inline-flex gap-1 rounded-sm bg-surface-subtle p-1",
-        className,
-      )}
+      className={cn("inline-flex gap-1 rounded-sm bg-surface-subtle p-1", className)}
       role="radiogroup"
     >
       {options.map((option) => {
         const checked = option.value === selectedValue;
+
         return (
           <label
             className={cn(

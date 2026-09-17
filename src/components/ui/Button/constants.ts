@@ -14,7 +14,6 @@ export const BUTTON_VARIANT_CLASSES: Record<ButtonVariant, string> = {
   primary: "bg-primary text-on-primary hover:opacity-80",
   mint: "bg-accent-mint text-black hover:opacity-80",
   white: "border border-hairline bg-white text-black hover:opacity-80",
-  ghost:
-    "bg-surface-dark-soft text-on-dark hover:opacity-80 data-[theme=dark]:bg-surface-subtle",
+  ghost: "bg-surface-dark-soft text-on-dark hover:opacity-80 data-[theme=dark]:bg-surface-subtle",
   outline: "border border-hairline bg-surface text-ink hover:bg-surface-subtle",
 };

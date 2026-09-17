@@ -19,8 +19,7 @@ export const parseDate = (value?: ISODateString) => {
   return dayjs(`${value}T00:00:00`).toDate();
 };
 
-export const toISODate = (value: Date): ISODateString =>
-  dayjs(value).format(DATE_FORMAT);
+export const toISODate = (value: Date): ISODateString => dayjs(value).format(DATE_FORMAT);
 
 export const formatDate = (value?: ISODateString) =>
   value ? dayjs(value, DATE_FORMAT, true).format("DD MMM YYYY") : "";
@@ -29,11 +28,7 @@ export const compareDates = (left: ISODateString, right: ISODateString) =>
   dayjs(left, DATE_FORMAT, true).diff(dayjs(right, DATE_FORMAT, true), "day");
 
 export const normalizeDateRange = (range: ISODateRange): ISODateRange => {
-  if (
-    range.startDate &&
-    range.endDate &&
-    compareDates(range.startDate, range.endDate) > 0
-  ) {
+  if (range.startDate && range.endDate && compareDates(range.startDate, range.endDate) > 0) {
     return { endDate: range.startDate, startDate: range.endDate };
   }
 

@@ -1,12 +1,7 @@
 "use client";
 
 import type { FC } from "react";
-import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 import cn from "@/utils/cn";
 import { getPaginationItems } from "@/utils/pagination";
 
@@ -17,12 +12,7 @@ type PaginatorProps = {
   totalPages: number;
 };
 
-const Paginator: FC<PaginatorProps> = ({
-  className,
-  onPageChange,
-  page,
-  totalPages,
-}) => {
+const Paginator: FC<PaginatorProps> = ({ className, onPageChange, page, totalPages }) => {
   if (totalPages <= 1) return null;
 
   const items = getPaginationItems(page, totalPages);
@@ -30,10 +20,7 @@ const Paginator: FC<PaginatorProps> = ({
     "inline-flex size-9 items-center justify-center rounded-sm text-sm text-ink outline-none transition-colors hover:bg-surface-subtle focus-visible:ring-2 focus-visible:ring-focus/60 disabled:pointer-events-none disabled:opacity-45";
 
   return (
-    <nav
-      aria-label="Pagination"
-      className={cn("flex flex-wrap items-center gap-1", className)}
-    >
+    <nav aria-label="Pagination" className={cn("flex flex-wrap items-center gap-1", className)}>
       <button
         aria-label="First page"
         className={buttonClassName}

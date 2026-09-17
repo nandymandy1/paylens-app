@@ -6,7 +6,6 @@ import cn from "@/utils/cn";
 
 type AvatarSize = "sm" | "md" | "lg" | number;
 type AvatarShape = "circle" | "square";
-
 type AvatarProps = {
   alt: string;
   className?: string;
@@ -21,13 +20,11 @@ const sizeClasses: Record<Exclude<AvatarSize, number>, string> = {
   md: "size-10 text-sm",
   lg: "size-12 text-base",
 };
-
 const sizePixels: Record<Exclude<AvatarSize, number>, number> = {
   sm: 32,
   md: 40,
   lg: 48,
 };
-
 const Avatar: FC<AvatarProps> = ({
   alt,
   className,
@@ -47,9 +44,7 @@ const Avatar: FC<AvatarProps> = ({
         shape === "circle" ? "rounded-full" : "rounded-sm",
         className,
       )}
-      style={
-        typeof size === "number" ? { height: pixels, width: pixels } : undefined
-      }
+      style={typeof size === "number" ? { height: pixels, width: pixels } : undefined}
     >
       {src && src !== failedSrc ? (
         <Image

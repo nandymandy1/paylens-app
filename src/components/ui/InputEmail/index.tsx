@@ -4,8 +4,6 @@ import type { InputProps } from "@/components/ui/Input/types";
 
 type InputEmailProps = Omit<InputProps, "type">;
 
-const InputEmail: FC<InputEmailProps> = (props) => (
-  <Input {...props} type="email" />
-);
+const InputEmail: FC<InputEmailProps> = (props) => <Input {...props} type="email" />;
 
 export default InputEmail;

@@ -30,9 +30,7 @@ describe("global toast system", () => {
 
     expect(toastElement?.className).toContain("bg-success-soft");
     expect(toaster?.dataset.sonnerTheme).toBe("light");
-    expect(
-      screen.getByRole("button", { name: "Close notification" }),
-    ).toBeDefined();
+    expect(screen.getByRole("button", { name: "Close notification" })).toBeDefined();
 
     act(() => {
       useThemeStore.getState().setTheme("dark");
@@ -51,6 +49,7 @@ describe("global toast system", () => {
       });
 
       const toastTitle = await screen.findByText(`${tone} feedback`);
+
       expect(toastTitle.closest("[data-sonner-toast]")?.className).toContain(
         `bg-${tone === "error" ? "danger" : tone}-soft`,
       );

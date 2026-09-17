@@ -8,7 +8,6 @@ import Button from "@/components/ui/Button";
 import ShowcaseSection from "./ShowcaseSection";
 
 const toastTones: ToastTone[] = ["success", "error", "warning", "info"];
-
 const FeedbackSection: FC = () => {
   return (
     <ShowcaseSection
@@ -19,25 +18,13 @@ const FeedbackSection: FC = () => {
     >
       <div className="space-y-6">
         <div className="grid gap-3 sm:grid-cols-2">
-          <Alert
-            icon={<Info className="size-4" />}
-            title="Information"
-            variant="info"
-          >
+          <Alert icon={<Info className="size-4" />} title="Information" variant="info">
             Salary history is shown in effective-date order.
           </Alert>
-          <Alert
-            icon={<CheckCircle2 className="size-4" />}
-            title="Success"
-            variant="success"
-          >
+          <Alert icon={<CheckCircle2 className="size-4" />} title="Success" variant="success">
             Compensation changes were saved and audited.
           </Alert>
-          <Alert
-            icon={<AlertCircle className="size-4" />}
-            title="Action required"
-            variant="danger"
-          >
+          <Alert icon={<AlertCircle className="size-4" />} title="Action required" variant="danger">
             Resolve the version conflict before saving again.
           </Alert>
           <Alert title="Neutral" variant="neutral">
@@ -62,8 +49,7 @@ const FeedbackSection: FC = () => {
                   showToast({
                     tone,
                     title: `${tone[0].toUpperCase()}${tone.slice(1)} feedback`,
-                    description:
-                      "Dispatched through Mitt and rendered by Sonner.",
+                    description: "Dispatched through Mitt and rendered by Sonner.",
                   })
                 }
                 size="sm"

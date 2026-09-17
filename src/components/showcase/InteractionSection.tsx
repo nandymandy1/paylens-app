@@ -32,7 +32,6 @@ const accordionItems = [
     value: "content",
   },
 ];
-
 const InteractionSection: FC = () => {
   const [page, setPage] = useState(50);
   const [segment, setSegment] = useState("table");
@@ -75,9 +74,7 @@ const InteractionSection: FC = () => {
                 content:
                   "Supporting changes remain grouped in a dedicated panel with familiar tab semantics.",
                 label: "Changes",
-                prefixIcon: (
-                  <CalendarDays aria-hidden="true" className="size-4" />
-                ),
+                prefixIcon: <CalendarDays aria-hidden="true" className="size-4" />,
                 value: "changes",
               },
               {
@@ -95,16 +92,12 @@ const InteractionSection: FC = () => {
               options={[
                 {
                   label: "Table",
-                  prefixIcon: (
-                    <TableProperties aria-hidden="true" className="size-3.5" />
-                  ),
+                  prefixIcon: <TableProperties aria-hidden="true" className="size-3.5" />,
                   value: "table",
                 },
                 {
                   label: "Review",
-                  prefixIcon: (
-                    <ListFilter aria-hidden="true" className="size-3.5" />
-                  ),
+                  prefixIcon: <ListFilter aria-hidden="true" className="size-3.5" />,
                   value: "review",
                 },
                 { disabled: true, label: "Timeline", value: "timeline" },
@@ -139,8 +132,8 @@ const InteractionSection: FC = () => {
             title="Review changes"
             trigger={<Button>Open modal</Button>}
           >
-            This dialog contains a header, a safe content region, and actions.
-            Escape and the close control return focus to its trigger.
+            This dialog contains a header, a safe content region, and actions. Escape and the close
+            control return focus to its trigger.
           </Modal>
           <Modal
             size="lg"
@@ -150,9 +143,8 @@ const InteractionSection: FC = () => {
             <div className="grid gap-4">
               {Array.from({ length: 4 }, (_, index) => (
                 <p key={index}>
-                  A larger surface accommodates detailed review guidance while
-                  keeping the current workflow visually present behind the
-                  overlay.
+                  A larger surface accommodates detailed review guidance while keeping the current
+                  workflow visually present behind the overlay.
                 </p>
               ))}
             </div>
@@ -164,8 +156,8 @@ const InteractionSection: FC = () => {
             trigger={<Button variant="outline">Open drawer</Button>}
           >
             <p>
-              Drawers preserve the page context for workflows that need
-              supporting details rather than a fully focused decision.
+              Drawers preserve the page context for workflows that need supporting details rather
+              than a fully focused decision.
             </p>
           </Drawer>
         </div>

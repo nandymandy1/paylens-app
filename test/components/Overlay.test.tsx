@@ -8,6 +8,7 @@ import Tooltip from "@/components/ui/Tooltip";
 describe("overlay primitives", () => {
   it("opens popover content from the keyboard", async () => {
     const user = userEvent.setup();
+
     render(
       <Popover content="Review details">
         <Button>Open review</Button>
@@ -22,6 +23,7 @@ describe("overlay primitives", () => {
 
   it("reveals tooltip content on focus", async () => {
     const user = userEvent.setup();
+
     render(
       <Tooltip content="Helpful context" delayDuration={0}>
         <Button>Need help</Button>
@@ -30,8 +32,6 @@ describe("overlay primitives", () => {
 
     await user.tab();
 
-    expect((await screen.findByRole("tooltip")).textContent).toContain(
-      "Helpful context",
-    );
+    expect((await screen.findByRole("tooltip")).textContent).toContain("Helpful context");
   });
 });

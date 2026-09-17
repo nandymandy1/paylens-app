@@ -39,11 +39,7 @@ const FormControlsSection: FC = () => {
             suffixIcon={<Mail aria-hidden="true" className="size-4" />}
           />
           <Input disabled label="Disabled" placeholder="Unavailable" />
-          <Input
-            error="Use a unique field name."
-            label="Invalid"
-            placeholder="Field name"
-          />
+          <Input error="Use a unique field name." label="Invalid" placeholder="Field name" />
           <InputEmail
             error="Enter a valid email address."
             label="Work email"
@@ -64,12 +60,7 @@ const FormControlsSection: FC = () => {
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <InputOTP label="Verification code" onChange={setOtp} value={otp} />
-          <InputOTP
-            disabled
-            error="The code expired."
-            label="Disabled code"
-            value="8124"
-          />
+          <InputOTP disabled error="The code expired." label="Disabled code" value="8124" />
           <TextArea
             helpText="This preserves native textarea resize behavior."
             label="Notes"
@@ -90,12 +81,7 @@ const FormControlsSection: FC = () => {
             <Checkbox disabled label="Archived setting" />
             <Checkbox indeterminate label="Select all visible records" />
           </div>
-          <RadioGroup
-            label="Default access"
-            name="access"
-            onValueChange={setPlan}
-            value={plan}
-          >
+          <RadioGroup label="Default access" name="access" onValueChange={setPlan} value={plan}>
             <Radio label="Manager" value="manager" />
             <Radio label="Viewer" value="viewer" />
             <Radio disabled label="System administrator" value="admin" />

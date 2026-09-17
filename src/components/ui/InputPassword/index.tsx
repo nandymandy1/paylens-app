@@ -6,16 +6,9 @@ import IconButton from "@/components/ui/IconButton";
 import Input from "@/components/ui/Input";
 import type { InputProps } from "@/components/ui/Input/types";
 
-type InputPasswordProps = Omit<
-  InputProps,
-  "suffixAction" | "suffixIcon" | "type"
->;
+type InputPasswordProps = Omit<InputProps, "suffixAction" | "suffixIcon" | "type">;
 
-const InputPassword: FC<InputPasswordProps> = ({
-  disabled,
-  inputSize = "md",
-  ...props
-}) => {
+const InputPassword: FC<InputPasswordProps> = ({ disabled, inputSize = "md", ...props }) => {
   const [visible, setVisible] = useState(false);
 
   return (
