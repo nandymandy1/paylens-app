@@ -3,9 +3,14 @@ import type {
   CreateOrganizationInput,
   OrganizationInvitationSummary,
   OrganizationMember,
+  Organization,
 } from "@/types/organization.type";
 
-type Envelope<T> = { success: true; data: T; requestId?: string };
+type Envelope<T> = {
+  data: T;
+  success: true;
+  requestId?: string;
+};
 
 export const organizationKeys = {
   members: () => ["organizations", "members"] as const,
@@ -15,13 +20,12 @@ export const organizationKeys = {
 export const createOrganization = async (
   input: CreateOrganizationInput,
 ): Promise<{
-  organization: { id: string; name: string; slug: string };
+  organization: Organization;
 }> => {
-  const { data } = await api.post<
-    Envelope<{
-      organization: { id: string; name: string; slug: string };
-    }>
-  >("/organizations", input);
+  const { data } = await api.post<Envelope<{ organization: Organization }>>(
+    "/organizations",
+    input,
+  );
 
   return data.data;
 };

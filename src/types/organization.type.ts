@@ -26,3 +26,9 @@ export type OrganizationInvitationSummary = {
   revokedAt: string | null;
   createdAt: string;
 };
+
+export type Organization = {
+  id: string;
+  name: string;
+  slug: string;
+};
