@@ -116,7 +116,9 @@ describe("members page role visibility", () => {
     expect(ownerRole.tagName).toBe("P");
     expect(screen.queryByRole("combobox", { name: "Role for owner@acme.example" })).toBeNull();
     // Non-owner rows stay editable for the owner.
-    expect(screen.queryByRole("combobox", { name: "Role for emp@acme.example" })).not.toBeNull();
+    const employeeRole = screen.getByRole("combobox", { name: "Role for emp@acme.example" });
+
+    expect(employeeRole.textContent).toContain("EMPLOYEE");
   });
 
   it("shows role text instead of selects when HR_ADMIN views members", async () => {

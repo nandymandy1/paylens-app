@@ -4,6 +4,7 @@ import Select from "@/components/ui/Select";
 
 const options = [
   { value: "manager", title: "HR Manager", subtitle: "Manage people" },
+  { value: "viewer", title: "Viewer", subtitle: "Read-only access" },
   { value: "employee", title: "Employee", disabled: true },
 ] as const;
 
@@ -39,5 +40,35 @@ describe("Select", () => {
     expect((trigger as HTMLButtonElement).disabled).toBe(true);
     expect(trigger.textContent).toContain("HR Manager");
     expect(trigger.className).toContain("min-h-11");
+  });
+
+  it("renders its default value in uncontrolled mode", () => {
+    render(<Select aria-label="Default role" defaultValue="manager" options={options} />);
+
+    expect(screen.getByRole("combobox", { name: "Default role" }).textContent).toContain(
+      "HR Manager",
+    );
+  });
+
+  it("updates the trigger after an uncontrolled selection", () => {
+    const onChange = vi.fn();
+
+    render(
+      <Select
+        aria-label="Uncontrolled role"
+        defaultValue="manager"
+        onChange={onChange}
+        options={options}
+      />,
+    );
+
+    const trigger = screen.getByRole("combobox", { name: "Uncontrolled role" });
+
+    expect(trigger.textContent).toContain("HR Manager");
+    fireEvent.click(trigger);
+    fireEvent.click(screen.getByRole("option", { name: /Viewer/i }));
+
+    expect(trigger.textContent).toContain("Viewer");
+    expect(onChange).toHaveBeenCalledWith("viewer", options[1]);
   });
 });

@@ -1,6 +1,7 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import DashboardShell from "@/components/dashboard/DashboardShell";
+import useSidebarStore from "@/stores/sidebar";
 import type { OrganizationRole } from "@/types/organization.type";
 
 let mockedRole: OrganizationRole | undefined = "EMPLOYEE";
@@ -33,6 +34,9 @@ describe("dashboard shell member navigation", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockedRole = "EMPLOYEE";
+    act(() => {
+      useSidebarStore.getState().setSidebarCollapsed(false);
+    });
   });
 
   for (const role of ["MANAGER", "EMPLOYEE", "VIEWER_AUDITOR"] as const) {
@@ -63,4 +67,44 @@ describe("dashboard shell member navigation", () => {
       expect(screen.getByText("Members")).toBeDefined();
     });
   }
+
+  it("keeps the dashboard header fixed across mobile and expanded desktop layout", () => {
+    render(
+      <DashboardShell>
+        <p>dashboard</p>
+      </DashboardShell>,
+    );
+
+    const header = screen.getByRole("banner");
+
+    expect(header.className).toContain("fixed");
+    expect(header.className).toContain("top-0");
+    expect(header.className).toContain("left-0");
+    expect(header.className).toContain("right-0");
+    expect(header.className).toContain("md:left-60");
+    expect(header.className).not.toContain("md:left-16");
+    expect(header.className).not.toMatch(/\bw-\[calc\(|\bmax-w-/);
+  });
+
+  it("uses the collapsed desktop sidebar offset for the fixed header", () => {
+    act(() => {
+      useSidebarStore.getState().setSidebarCollapsed(true);
+    });
+
+    render(
+      <DashboardShell>
+        <p>dashboard</p>
+      </DashboardShell>,
+    );
+
+    const header = screen.getByRole("banner");
+
+    expect(header.className).toContain("fixed");
+    expect(header.className).toContain("top-0");
+    expect(header.className).toContain("left-0");
+    expect(header.className).toContain("right-0");
+    expect(header.className).toContain("md:left-16");
+    expect(header.className).not.toContain("md:left-60");
+    expect(header.className).not.toMatch(/\bw-\[calc\(|\bmax-w-/);
+  });
 });

@@ -2,7 +2,7 @@
 
 import { ChevronDown, Check } from "lucide-react";
 import * as SelectPrimitive from "@radix-ui/react-select";
-import type { FC, ReactNode } from "react";
+import { useState, type FC, type ReactNode } from "react";
 import Avatar from "@/components/ui/Avatar";
 import cn from "@/utils/cn";
 import { SELECT_OPTION_SIZE_CLASSES, SELECT_TRIGGER_SIZE_CLASSES } from "./constants";
@@ -43,7 +43,11 @@ const Select = <TValue extends string = string>({
   suffixIcon,
   value,
 }: SelectProps<TValue>) => {
-  const selectedOption = options.find((option) => option.value === value);
+  const [internalValue, setInternalValue] = useState<TValue | undefined>(defaultValue);
+  const isControlled = value !== undefined;
+  const effectiveValue = isControlled ? value : internalValue;
+  const selectedOption = options.find((option) => option.value === effectiveValue);
+  const rootValueProps = isControlled ? { value } : { defaultValue };
   const renderTriggerValue = (option: SelectOption<TValue> | undefined): ReactNode => {
     if (!option) return <span className="text-body">{placeholder}</span>;
 
@@ -57,15 +61,19 @@ const Select = <TValue extends string = string>({
 
   return (
     <SelectPrimitive.Root
-      defaultValue={defaultValue}
+      {...rootValueProps}
       disabled={disabled}
       name={name}
       onValueChange={(nextValue) => {
         const option = options.find((candidate) => candidate.value === nextValue);
 
-        if (option) onChange?.(nextValue as TValue, option);
+        if (!option) {
+          return;
+        }
+
+        if (!isControlled) setInternalValue(nextValue as TValue);
+        onChange?.(nextValue as TValue, option);
       }}
-      value={value}
     >
       <SelectPrimitive.Trigger
         aria-describedby={ariaDescribedBy}
