@@ -57,12 +57,12 @@ const SidebarBody: FC<SidebarBodyProps> = ({ collapsed, onNavigate }) => {
 };
 
 const DashboardShell: FC<PropsWithChildren> = ({ children }) => {
+  const logout = useLogout();
   const pathname = usePathname();
   const { data: session } = useMe();
-  const logout = useLogout();
+  const [mobileOpen, setMobileOpen] = useState(false);
   const collapsed = useSidebarStore((state) => state.sidebarCollapsed);
   const toggleSidebar = useSidebarStore((state) => state.toggleSidebar);
-  const [mobileOpen, setMobileOpen] = useState(false);
 
   const initials = session
     ? `${session.user.firstName.charAt(0)}${session.user.lastName.charAt(0)}`.toUpperCase()

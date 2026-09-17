@@ -71,23 +71,15 @@ const singleFlightRefresh = async (): Promise<void> => {
   await refreshPromise;
 };
 
-const redirectToLogin = (): void => {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  const redirectTo = encodeURIComponent(`${window.location.pathname}${window.location.search}`);
-
-  window.location.href = `/login?redirect_to=${redirectTo}`;
-};
-
 api.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
     const original = error.config as RetriableConfig | undefined;
     const status = error.response?.status;
 
-    // One retry maximum, only for expired sessions on non-auth endpoints. 403 never refreshes.
+    // Transport + refresh recovery only. Navigation decisions belong to auth
+    // guards: an anonymous /auth/me probe must reject as anonymous state,
+    // never redirect the browser. One retry maximum; 403 never refreshes.
     if (
       status === 401 &&
       original &&
@@ -102,7 +94,7 @@ api.interceptors.response.use(
 
         return await api(original);
       } catch {
-        redirectToLogin();
+        // Fall through and reject with the normalized auth error.
       }
     }
 

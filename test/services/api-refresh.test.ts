@@ -76,6 +76,22 @@ describe("api refresh single-flight", () => {
     expect(axios.post).toHaveBeenCalledTimes(1);
   });
 
+  it("treats anonymous /auth/me as plain auth state without navigating", async () => {
+    await loadApi();
+    const axios = (await import("axios")).default as unknown as {
+      post: ReturnType<typeof vi.fn>;
+    };
+
+    axios.post.mockResolvedValue({ data: { data: { refreshed: false } } });
+
+    await expect(
+      handlers.error?.({ response: { status: 401 }, config: { url: "/auth/me" } }),
+    ).rejects.toMatchObject({ status: 401 });
+
+    // No browser navigation from the transport layer: guards decide.
+    expect(window.location.href).toBe("http://localhost/");
+  });
+
   it("never refreshes on 403 and never retries twice", async () => {
     await loadApi();
     const axios = (await import("axios")).default as unknown as {

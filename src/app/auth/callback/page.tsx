@@ -4,7 +4,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, type FC } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import AuthCard from "@/components/auth/AuthCard";
-import { authKeys, getSafeRedirectPath } from "@/services/auth.service";
+import { authKeys } from "@/services/auth.service";
+import { getSafePostAuthRedirect } from "@/utils/auth-redirect";
 import { fetchMe } from "@/services/auth.service";
 
 const AuthCallbackContent: FC = () => {
@@ -32,7 +33,7 @@ const AuthCallbackContent: FC = () => {
       } else if (me.organizationSelectionRequired) {
         router.replace("/select-organization");
       } else {
-        router.replace(getSafeRedirectPath(searchParams.get("redirect_to")));
+        router.replace(getSafePostAuthRedirect(searchParams.get("redirect_to")));
       }
     };
 

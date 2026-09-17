@@ -19,18 +19,6 @@ export const authKeys = {
   invitationPreview: (token: string) => ["auth", "invitation", token] as const,
 };
 
-export const getSafeRedirectPath = (candidate: string | null): string => {
-  if (!candidate || !candidate.startsWith("/") || candidate.startsWith("//")) {
-    return "/dashboard";
-  }
-
-  if (/^(javascript|data|vbscript):/i.test(candidate)) {
-    return "/dashboard";
-  }
-
-  return candidate;
-};
-
 export const fetchMe = async (): Promise<MeResponse> => {
   const { data } = await api.get<Envelope<MeResponse>>("/auth/me");
 
@@ -132,8 +120,16 @@ export const acceptInvitationAuthenticated = async (token: string): Promise<unkn
 
 export const switchOrganization = async (
   organizationId: string,
-): Promise<{ accessToken: string }> => {
-  const { data } = await api.post<Envelope<{ accessToken: string }>>("/auth/switch-organization", {
+): Promise<{
+  activeOrganization: { id: string; name: string; slug: string };
+  activeMembership: { id: string; role: string; status: string };
+}> => {
+  const { data } = await api.post<
+    Envelope<{
+      activeOrganization: { id: string; name: string; slug: string };
+      activeMembership: { id: string; role: string; status: string };
+    }>
+  >("/auth/switch-organization", {
     organizationId,
   });
 

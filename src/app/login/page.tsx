@@ -16,13 +16,12 @@ import InputEmail from "@/components/ui/InputEmail";
 import InputPassword from "@/components/ui/InputPassword";
 import { useLogin } from "@/hooks/useAuth";
 import { ApiError } from "@/services/api";
-import { getSafeRedirectPath } from "@/services/auth.service";
+import { getSafePostAuthRedirect } from "@/utils/auth-redirect";
 import { loginSchema, type LoginInput } from "@/types/auth.type";
 
-const LoginForm: FC = () => {
+const LoginForm: FC<{ redirectTo: string }> = ({ redirectTo }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectTo = getSafeRedirectPath(searchParams.get("redirect_to"));
   const passwordReset = searchParams.get("password_reset") === "success";
   const login = useLogin();
   const {
@@ -96,13 +95,22 @@ const LoginForm: FC = () => {
   );
 };
 
+const LoginFlow: FC = () => {
+  const searchParams = useSearchParams();
+  const redirectTo = getSafePostAuthRedirect(searchParams.get("redirect_to"));
+
+  return (
+    <RequireAnonymous redirectTo={redirectTo}>
+      <LoginForm redirectTo={redirectTo} />
+    </RequireAnonymous>
+  );
+};
+
 const LoginPage: FC = () => {
   return (
-    <RequireAnonymous>
-      <Suspense>
-        <LoginForm />
-      </Suspense>
-    </RequireAnonymous>
+    <Suspense>
+      <LoginFlow />
+    </Suspense>
   );
 };
 

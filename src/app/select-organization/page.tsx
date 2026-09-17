@@ -5,12 +5,12 @@ import { Suspense, type FC } from "react";
 import AuthCard from "@/components/auth/AuthCard";
 import Button from "@/components/ui/Button";
 import { useMe, useSwitchOrganization } from "@/hooks/useAuth";
-import { getSafeRedirectPath } from "@/services/auth.service";
+import { getSafePostAuthRedirect } from "@/utils/auth-redirect";
 
 const SelectOrganizationContent: FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectTo = getSafeRedirectPath(searchParams.get("redirect_to"));
+  const redirectTo = getSafePostAuthRedirect(searchParams.get("redirect_to"));
   const { data, isLoading } = useMe();
   const switchOrganization = useSwitchOrganization();
 
