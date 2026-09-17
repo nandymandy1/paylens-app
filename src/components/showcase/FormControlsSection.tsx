@@ -1,0 +1,118 @@
+"use client";
+
+import { useState, type FC } from "react";
+import { Mail, Search } from "lucide-react";
+import Checkbox from "@/components/ui/Checkbox";
+import Input from "@/components/ui/Input";
+import InputEmail from "@/components/ui/InputEmail";
+import InputOTP from "@/components/ui/InputOTP";
+import InputPassword from "@/components/ui/InputPassword";
+import { Radio, RadioGroup } from "@/components/ui/Radio";
+import Switch from "@/components/ui/Switch";
+import TextArea from "@/components/ui/TextArea";
+import ShowcaseSection from "./ShowcaseSection";
+
+const FormControlsSection: FC = () => {
+  const [otp, setOtp] = useState("24");
+  const [plan, setPlan] = useState("manager");
+  const [enabled, setEnabled] = useState(false);
+
+  return (
+    <ShowcaseSection
+      description="Native form controls share labels, help, errors, focus treatment, and light/dark token surfaces without taking ownership of form state."
+      eyebrow="06 / Form controls"
+      id="form-controls"
+      title="Forms that stay out of your way"
+    >
+      <div className="grid gap-8">
+        <div className="grid gap-4 sm:grid-cols-3">
+          <Input inputSize="sm" label="Small input" placeholder="Small" />
+          <Input label="Default input" placeholder="Medium" />
+          <Input inputSize="lg" label="Large input" placeholder="Large" />
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Input
+            helpText="Searches are scoped by the feature that uses this control."
+            label="With icons"
+            placeholder="Find an employee"
+            prefixIcon={<Search className="size-4" />}
+            suffixIcon={<Mail aria-hidden="true" className="size-4" />}
+          />
+          <Input disabled label="Disabled" placeholder="Unavailable" />
+          <Input
+            error="Use a unique field name."
+            label="Invalid"
+            placeholder="Field name"
+          />
+          <InputEmail
+            error="Enter a valid email address."
+            label="Work email"
+            placeholder="name@company.com"
+          />
+          <InputPassword
+            helpText="Use your account password."
+            label="Password"
+            placeholder="Enter password"
+          />
+          <InputPassword
+            disabled
+            error="Password resets are unavailable."
+            label="Disabled password"
+            value="hidden"
+            readOnly
+          />
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <InputOTP label="Verification code" onChange={setOtp} value={otp} />
+          <InputOTP
+            disabled
+            error="The code expired."
+            label="Disabled code"
+            value="8124"
+          />
+          <TextArea
+            helpText="This preserves native textarea resize behavior."
+            label="Notes"
+            placeholder="Add a concise note"
+          />
+          <TextArea
+            disabled
+            error="Notes are locked."
+            label="Locked notes"
+            value="Archived note"
+            readOnly
+          />
+        </div>
+        <div className="grid gap-5 sm:grid-cols-2">
+          <div className="grid gap-3">
+            <Checkbox label="Receive review reminders" />
+            <Checkbox defaultChecked label="Include completed reviews" />
+            <Checkbox disabled label="Archived setting" />
+            <Checkbox indeterminate label="Select all visible records" />
+          </div>
+          <RadioGroup
+            label="Default access"
+            name="access"
+            onValueChange={setPlan}
+            value={plan}
+          >
+            <Radio label="Manager" value="manager" />
+            <Radio label="Viewer" value="viewer" />
+            <Radio disabled label="System administrator" value="admin" />
+          </RadioGroup>
+        </div>
+        <div className="grid gap-3">
+          <Switch
+            checked={enabled}
+            label="Enable review notifications"
+            onChange={(event) => setEnabled(event.target.checked)}
+          />
+          <Switch defaultChecked label="Show compensation history" size="sm" />
+          <Switch disabled label="Locked organization setting" />
+        </div>
+      </div>
+    </ShowcaseSection>
+  );
+};
+
+export default FormControlsSection;
