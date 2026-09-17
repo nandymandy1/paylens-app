@@ -1,11 +1,21 @@
 "use client";
 
 import { useEffect, type FC, type PropsWithChildren } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster, toast } from "sonner";
 import toastEvents, { type ToastPayload } from "@/events/toast";
 import useThemeStore from "@/stores/theme";
 
 type AppProvidersProps = PropsWithChildren;
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+      staleTime: 30_000,
+    },
+  },
+});
 
 const notify = ({ tone, title, description }: ToastPayload) => {
   toast[tone](title, { description });
@@ -22,7 +32,7 @@ const AppProviders: FC<AppProvidersProps> = ({ children }) => {
   }, []);
 
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       {children}
       <Toaster
         closeButton
@@ -48,7 +58,7 @@ const AppProviders: FC<AppProvidersProps> = ({ children }) => {
           },
         }}
       />
-    </>
+    </QueryClientProvider>
   );
 };
 
