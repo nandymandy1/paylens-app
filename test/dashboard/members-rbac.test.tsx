@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import type { FC, PropsWithChildren } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import MembersPage from "@/app/dashboard/members/page";
@@ -91,6 +91,8 @@ describe("members page role visibility", () => {
 
     renderPage();
 
+    fireEvent.click(await screen.findByRole("button", { name: "Invite member" }));
+
     expect(await screen.findByRole("combobox", { name: "Role" })).toBeDefined();
   });
 
@@ -98,6 +100,8 @@ describe("members page role visibility", () => {
     mockedRole = "HR_ADMIN";
 
     renderPage();
+
+    fireEvent.click(await screen.findByRole("button", { name: "Invite member" }));
 
     expect(await screen.findByRole("combobox", { name: "Role" })).toBeDefined();
   });
@@ -111,9 +115,9 @@ describe("members page role visibility", () => {
       expect(screen.getByText("owner@acme.example")).toBeDefined();
     });
 
-    const ownerRole = screen.getByText("TENANT_OWNER");
+    const ownerRole = screen.getByText("TENANT OWNER");
 
-    expect(ownerRole.tagName).toBe("P");
+    expect(ownerRole.tagName).toBe("SPAN");
     expect(screen.queryByRole("combobox", { name: "Role for owner@acme.example" })).toBeNull();
     // Non-owner rows stay editable for the owner.
     const employeeRole = screen.getByRole("combobox", { name: "Role for emp@acme.example" });
@@ -132,7 +136,7 @@ describe("members page role visibility", () => {
 
     expect(screen.queryByRole("combobox", { name: "Role for emp@acme.example" })).toBeNull();
 
-    const roleText = document.querySelector('p[aria-label="Role for emp@acme.example"]');
+    const roleText = document.querySelector('span[aria-label="Role for emp@acme.example"]');
 
     expect(roleText?.textContent).toBe("EMPLOYEE");
   });

@@ -91,10 +91,20 @@ const RegisterPage: FC = () => {
           </FormField>
           <div className="grid gap-4 sm:grid-cols-2">
             <FormField error={errors.firstName?.message} id="firstName" label="First name" required>
-              <Input autoComplete="given-name" id="firstName" {...registerField("firstName")} />
+              <Input
+                placeholder="First Name"
+                autoComplete="given-name"
+                id="firstName"
+                {...registerField("firstName")}
+              />
             </FormField>
             <FormField error={errors.lastName?.message} id="lastName" label="Last name" required>
-              <Input autoComplete="family-name" id="lastName" {...registerField("lastName")} />
+              <Input
+                placeholder="Last Name"
+                autoComplete="family-name"
+                id="lastName"
+                {...registerField("lastName")}
+              />
             </FormField>
           </div>
           <FormField error={errors.email?.message} id="email" label="Work email" required>
@@ -115,6 +125,7 @@ const RegisterPage: FC = () => {
             <InputPassword
               autoComplete="new-password"
               id="password"
+              placeholder="Password"
               {...registerField("password")}
             />
           </FormField>
@@ -127,6 +138,7 @@ const RegisterPage: FC = () => {
             <InputPassword
               autoComplete="new-password"
               id="confirmPassword"
+              placeholder="Confirm password"
               {...registerField("confirmPassword")}
             />
           </FormField>

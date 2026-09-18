@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "@/assets/style/globals.css";
 import { Geist, Geist_Mono } from "next/font/google";
 import AppProviders from "@/components/providers/AppProviders";
@@ -15,10 +15,18 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "PayLens",
+    default: "PayLens — Compensation Intelligence",
     template: "%s · PayLens",
   },
-  description: "Secure, auditable compensation operations for modern HR teams.",
+  description: "Turn compensation data into clear decisions, fair growth, and stronger teams.",
+  icons: { icon: "/brand/favicon.svg" },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { color: "#FFFFFF", media: "(prefers-color-scheme: light)" },
+    { color: "#010120", media: "(prefers-color-scheme: dark)" },
+  ],
 };
 
 const themeScript = `

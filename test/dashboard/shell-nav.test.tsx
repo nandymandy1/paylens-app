@@ -106,5 +106,20 @@ describe("dashboard shell member navigation", () => {
     expect(header.className).toContain("md:left-16");
     expect(header.className).not.toContain("md:left-60");
     expect(header.className).not.toMatch(/\bw-\[calc\(|\bmax-w-/);
+    expect(
+      screen
+        .getAllByAltText("PayLens")
+        .some((element) => element.getAttribute("src") === "/brand/paylens-mark.svg"),
+    ).toBe(true);
+  });
+
+  it("uses the compact wordmark in the expanded sidebar and mobile header", () => {
+    render(
+      <DashboardShell>
+        <p>dashboard</p>
+      </DashboardShell>,
+    );
+
+    expect(screen.getAllByRole("img", { name: "PayLens" }).length).toBeGreaterThan(0);
   });
 });

@@ -1,4 +1,5 @@
 import axios, { AxiosError, type AxiosInstance, type InternalAxiosRequestConfig } from "axios";
+import { getAuthSessionGeneration, mayAttemptRefresh } from "@/stores/auth-session";
 
 const configuredBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -62,6 +63,8 @@ let refreshPromise: Promise<void> | null = null;
 
 const singleFlightRefresh = async (): Promise<void> => {
   if (!refreshPromise) {
+    const generation = getAuthSessionGeneration();
+
     refreshPromise = (async () => {
       try {
         const { data } = await axios.post(`${API_BASE_URL}/auth/refresh`, null, {
@@ -71,6 +74,13 @@ const singleFlightRefresh = async (): Promise<void> => {
 
         if (!data?.data?.refreshed) {
           throw new Error("refresh rejected");
+        }
+
+        // Logout wins over in-flight refresh: a logout that settled while
+        // refresh was running bumps the generation. Never let the stale
+        // refresh restore authentication or trigger an /auth/me retry.
+        if (generation !== getAuthSessionGeneration() || !mayAttemptRefresh()) {
+          throw new Error("refresh superseded by logout");
         }
       } finally {
         refreshPromise = null;
@@ -90,11 +100,15 @@ api.interceptors.response.use(
     // Transport + refresh recovery only. Navigation decisions belong to auth
     // guards: an anonymous /auth/me probe must reject as anonymous state,
     // never redirect the browser. One retry maximum; 403 never refreshes.
+    // Refresh stays available for unknown bootstrap and live authenticated
+    // sessions, but never while logging-out or known anonymous after an
+    // explicit logout.
     if (
       status === 401 &&
       original &&
       !original._retried &&
       !isAuthEndpoint(original.url) &&
+      mayAttemptRefresh() &&
       typeof window !== "undefined"
     ) {
       original._retried = true;

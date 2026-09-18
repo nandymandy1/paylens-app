@@ -75,7 +75,12 @@ const ResetPasswordForm: FC = () => {
           label="New password"
           required
         >
-          <InputPassword autoComplete="new-password" id="password" {...register("password")} />
+          <InputPassword
+            placeholder="Password"
+            autoComplete="new-password"
+            id="password"
+            {...register("password")}
+          />
         </FormField>
         <FormField
           error={errors.confirmPassword?.message}
@@ -84,6 +89,7 @@ const ResetPasswordForm: FC = () => {
           required
         >
           <InputPassword
+            placeholder="Confirm Password"
             autoComplete="new-password"
             id="confirmPassword"
             {...register("confirmPassword")}

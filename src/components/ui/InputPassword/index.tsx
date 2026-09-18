@@ -18,9 +18,13 @@ const InputPassword: FC<InputPasswordProps> = ({ disabled, inputSize = "md", ...
       inputSize={inputSize}
       suffixAction={
         <IconButton
-          aria-label={visible ? "Hide password" : "Show password"}
-          className="border-0 bg-transparent p-0 text-body hover:bg-surface-subtle"
+          variant="outline"
           disabled={disabled}
+          aria-label={visible ? "Hide password" : "Show password"}
+          className="border-0 bg-transparent p-0 text-body transition-[background-color,color,opacity] duration-150 hover:bg-surface-subtle hover:text-ink"
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => setVisible((current) => !current)}
+          size={inputSize === "sm" ? "sm" : inputSize === "lg" ? "lg" : "md"}
           icon={
             visible ? (
               <EyeOff aria-hidden="true" className="size-4" />
@@ -28,10 +32,6 @@ const InputPassword: FC<InputPasswordProps> = ({ disabled, inputSize = "md", ...
               <Eye aria-hidden="true" className="size-4" />
             )
           }
-          onMouseDown={(event) => event.preventDefault()}
-          onClick={() => setVisible((current) => !current)}
-          size={inputSize === "sm" ? "sm" : inputSize === "lg" ? "lg" : "md"}
-          variant="outline"
         />
       }
       type={visible ? "text" : "password"}

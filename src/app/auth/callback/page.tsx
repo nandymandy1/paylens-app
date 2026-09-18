@@ -5,6 +5,7 @@ import { Suspense, useEffect, type FC } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import AuthCard from "@/components/auth/AuthCard";
 import { authKeys } from "@/services/auth.service";
+import useAuthSessionStore from "@/stores/auth-session";
 import { getSafePostAuthRedirect } from "@/utils/auth-redirect";
 import { fetchMe } from "@/services/auth.service";
 
@@ -27,12 +28,15 @@ const AuthCallbackContent: FC = () => {
       }
 
       if (!me) {
+        useAuthSessionStore.getState().markAnonymous();
         router.replace("/login");
       } else if (me.onboardingRequired) {
         router.replace("/onboarding/organization");
       } else if (me.organizationSelectionRequired) {
+        useAuthSessionStore.getState().markAuthenticated();
         router.replace("/select-organization");
       } else {
+        useAuthSessionStore.getState().markAuthenticated();
         router.replace(getSafePostAuthRedirect(searchParams.get("redirect_to")));
       }
     };

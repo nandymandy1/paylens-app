@@ -1,22 +1,22 @@
 import Link from "next/link";
 import type { FC, PropsWithChildren } from "react";
+import PayLensLogo from "@/components/brand/PayLensLogo";
 
 const PUBLIC_LINKS = [
-  { href: "/home", label: "Home" },
-  { href: "/about-us", label: "About" },
-  { href: "/contact", label: "Contact" },
-  { href: "/terms-of-service", label: "Terms" },
+  { href: "/home#product", label: "Product" },
+  { href: "/home#how-it-works", label: "How it works" },
+  { href: "/home#security", label: "Security" },
 ];
 
 const PublicLayout: FC<PropsWithChildren> = ({ children }) => {
   return (
     <div className="flex min-h-screen flex-col bg-canvas text-ink">
       <header className="border-b border-hairline bg-surface">
-        <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-4 sm:px-8">
-          <Link className="font-mono text-sm font-medium tracking-[0.05em] uppercase" href="/home">
-            PayLens
+        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4 sm:px-8">
+          <Link href="/home">
+            <PayLensLogo size="md" />
           </Link>
-          <nav aria-label="Public" className="flex items-center gap-5 text-sm">
+          <nav aria-label="Public" className="hidden items-center gap-6 text-sm md:flex">
             {PUBLIC_LINKS.map((link) => (
               <Link className="text-body hover:text-ink" href={link.href} key={link.href}>
                 {link.label}
@@ -28,17 +28,21 @@ const PublicLayout: FC<PropsWithChildren> = ({ children }) => {
             >
               Sign in
             </Link>
+            <Link
+              className="inline-flex min-h-9 items-center rounded-sm border border-hairline px-4 font-mono text-xs font-medium tracking-[0.005em] uppercase hover:bg-canvas-soft"
+              href="/register"
+            >
+              Get started
+            </Link>
           </nav>
         </div>
       </header>
       <div className="flex-1">{children}</div>
       <footer className="border-t border-hairline bg-surface">
-        <div className="mx-auto w-full max-w-5xl px-4 py-10 sm:px-8">
+        <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-8">
           <div className="grid gap-8 sm:grid-cols-4">
             <div>
-              <p className="font-mono text-[11px] font-medium tracking-[0.05em] uppercase">
-                PayLens
-              </p>
+              <PayLensLogo size="sm" />
               <p className="mt-2 text-sm text-body">Compensation operations, made clear.</p>
             </div>
             <div>
@@ -97,7 +101,7 @@ const PublicLayout: FC<PropsWithChildren> = ({ children }) => {
             aria-hidden="true"
             className="mt-10 overflow-hidden text-[18vw] leading-none font-medium tracking-tight text-hairline select-none sm:text-8xl"
           >
-            paylens
+            PayLens
           </p>
         </div>
       </footer>

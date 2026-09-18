@@ -1,6 +1,8 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { RequireAnonymous, RequireAuth } from "@/components/auth/AuthGuards";
+import { useMe } from "@/hooks/useAuth";
+import useAuthSessionStore from "@/stores/auth-session";
 
 const replace = vi.fn();
 let mockedMe: { data?: unknown; error?: unknown; isLoading: boolean } = { isLoading: true };
@@ -21,6 +23,7 @@ describe("auth guards", () => {
     vi.clearAllMocks();
     mockedPathname = "/dashboard/members";
     mockedMe = { isLoading: true };
+    useAuthSessionStore.getState().resetForTests();
   });
 
   it("renders the login page for anonymous sessions without navigating", async () => {
@@ -76,6 +79,21 @@ describe("auth guards", () => {
     await waitFor(() => {
       expect(replace).toHaveBeenCalledWith("/dashboard");
     });
+  });
+
+  it("skips the session probe for known anonymous visitors", async () => {
+    useAuthSessionStore.getState().markAnonymous();
+    mockedMe = { isLoading: false, error: new Error("unauthorized"), data: undefined };
+
+    render(
+      <RequireAnonymous redirectTo="/dashboard">
+        <p>login form</p>
+      </RequireAnonymous>,
+    );
+
+    expect(await screen.findByText("login form")).toBeDefined();
+    expect(vi.mocked(useMe)).toHaveBeenCalledWith({ enabled: false });
+    expect(replace).not.toHaveBeenCalled();
   });
 
   it("redirects stale dashboard sessions exactly once with the deep link preserved", async () => {

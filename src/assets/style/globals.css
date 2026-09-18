@@ -16,6 +16,10 @@ html[data-theme="light"] {
   --hairline: #d9d9d9;
   --focus: #4f46e5;
   --accent-mint: #c8f6f9;
+  --brand-orange: #fc4c02;
+  --brand-magenta: #ef2cc1;
+  --brand-periwinkle: #bdbbff;
+  --brand-blue: #3455ff;
   --accent-periwinkle: #bdbbff;
   --success: #166534;
   --success-soft: #dcfce7;
@@ -40,6 +44,10 @@ html[data-theme="dark"] {
   --hairline: #3a3a50;
   --focus: #bdbbff;
   --accent-mint: #8edbe0;
+  --brand-orange: #fc4c02;
+  --brand-magenta: #ef2cc1;
+  --brand-periwinkle: #bdbbff;
+  --brand-blue: #3455ff;
   --accent-periwinkle: #bdbbff;
   --success: #bbf7d0;
   --success-soft: #153b2a;
@@ -67,6 +75,10 @@ html[data-theme="dark"] {
   --color-focus: var(--focus);
   --color-accent-mint: var(--accent-mint);
   --color-accent-periwinkle: var(--accent-periwinkle);
+  --color-brand-orange: var(--brand-orange);
+  --color-brand-magenta: var(--brand-magenta);
+  --color-brand-periwinkle: var(--brand-periwinkle);
+  --color-brand-blue: var(--brand-blue);
   --color-success: var(--success);
   --color-success-soft: var(--success-soft);
   --color-danger: var(--danger);
@@ -114,6 +126,223 @@ body {
   color: var(--ink);
   font-family: var(--font-geist-sans), sans-serif;
   font-feature-settings: "ss01";
+}
+
+html[data-theme="dark"] .paylens-logo-auto .paylens-logo-light {
+  display: none;
+}
+
+html[data-theme="dark"] .paylens-logo-auto .paylens-logo-dark {
+  display: block;
+}
+
+@keyframes auth-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes auth-logo-enter {
+  from {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes paylens-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-0.5deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(0.5deg);
+  }
+}
+
+@keyframes paylens-glow {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.97);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes auth-ribbon-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(12px, -10px, 0) scale(1.05);
+  }
+}
+
+.auth-form-entrance {
+  animation: auth-enter 400ms ease-out both;
+}
+
+.auth-logo-entrance {
+  animation: auth-logo-enter 300ms ease-out both;
+}
+
+.auth-brand-panel {
+  isolation: isolate;
+}
+
+.auth-brand-content {
+  animation: auth-enter 600ms ease-out both;
+}
+
+.auth-brand-enter {
+  animation: auth-enter 600ms ease-out both;
+}
+
+.auth-brand-enter-1 {
+  animation-delay: 60ms;
+}
+
+.auth-brand-enter-2 {
+  animation-delay: 120ms;
+}
+
+.auth-brand-enter-3 {
+  animation-delay: 180ms;
+}
+
+.auth-brand-enter-4 {
+  animation-delay: 240ms;
+}
+
+.auth-brand-enter-5 {
+  animation-delay: 300ms;
+}
+
+.auth-brand-mark {
+  position: relative;
+  z-index: 1;
+  animation-name: auth-enter, paylens-float;
+  animation-duration: 600ms, 6s;
+  animation-timing-function: ease-out, ease-in-out;
+  animation-delay: 120ms, 720ms;
+  animation-iteration-count: 1, infinite;
+  animation-fill-mode: both, both;
+}
+
+.auth-brand-glow {
+  position: absolute;
+  width: 17rem;
+  height: 17rem;
+  margin: -1.5rem 0 0 -1.5rem;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle,
+    rgb(239 44 193 / 20%) 0%,
+    rgb(52 85 255 / 10%) 38%,
+    transparent 70%
+  );
+  filter: blur(22px);
+  animation: paylens-glow 7s ease-in-out infinite;
+}
+
+.auth-brand-ribbon {
+  position: absolute;
+  z-index: -1;
+  border-radius: 9999px;
+  filter: blur(48px);
+  opacity: 0.2;
+  pointer-events: none;
+  animation: auth-ribbon-drift 12s ease-in-out infinite;
+}
+
+.auth-brand-ribbon-one {
+  top: -7rem;
+  left: -6rem;
+  width: 22rem;
+  height: 17rem;
+  background: linear-gradient(135deg, var(--brand-orange), var(--brand-magenta), transparent 72%);
+}
+
+.auth-brand-ribbon-two {
+  right: -8rem;
+  bottom: -5rem;
+  width: 24rem;
+  height: 18rem;
+  background: linear-gradient(135deg, transparent 15%, var(--brand-periwinkle), var(--brand-blue));
+  animation-delay: -5s;
+}
+
+.auth-link {
+  position: relative;
+  display: inline-block;
+  transition: color 150ms ease-out;
+}
+
+.auth-link::after {
+  position: absolute;
+  right: 0;
+  bottom: -0.2rem;
+  left: 0;
+  height: 1px;
+  background: currentcolor;
+  content: "";
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 150ms ease-out;
+}
+
+.auth-link:hover::after,
+.auth-link:focus-visible::after {
+  transform: scaleX(1);
+}
+
+.dashboard-product-shell {
+  background: var(--canvas);
+}
+
+.dashboard-canvas-aura {
+  position: absolute;
+  top: -14rem;
+  right: -12rem;
+  z-index: 0;
+  width: 34rem;
+  height: 34rem;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle,
+    rgb(239 44 193 / 5%) 0%,
+    rgb(189 187 255 / 3%) 38%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.dashboard-page-enter {
+  animation: auth-enter 300ms ease-out both;
+}
+.dashboard-content-enter {
+  animation: auth-enter 350ms 60ms ease-out both;
+}
+
+html[data-theme="dark"] .dashboard-canvas-aura {
+  background: radial-gradient(
+    circle,
+    rgb(239 44 193 / 7%) 0%,
+    rgb(52 85 255 / 4%) 42%,
+    transparent 72%
+  );
 }
 
 button,

@@ -3,6 +3,7 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, type FC, type PropsWithChildren } from "react";
 import { useMe } from "@/hooks/useAuth";
+import useAuthSessionStore from "@/stores/auth-session";
 import { getSafePostAuthRedirect } from "@/utils/auth-redirect";
 
 type GuardProps = PropsWithChildren<{
@@ -74,7 +75,10 @@ const RequireAuthInner: FC<GuardProps> = ({ children, redirectTo }) => {
  */
 export const RequireAnonymous: FC<GuardProps> = ({ children, redirectTo }) => {
   const router = useRouter();
-  const { data, isLoading } = useMe();
+  // Known anonymous sessions (e.g. right after explicit logout) already know
+  // the outcome: render directly without probing /auth/me or refreshing.
+  const sessionStatus = useAuthSessionStore((state) => state.status);
+  const { data, isLoading } = useMe({ enabled: sessionStatus !== "anonymous" });
 
   useEffect(() => {
     if (isLoading || !data) {

@@ -11,6 +11,7 @@ import { useMe } from "@/hooks/useAuth";
 import cn from "@/utils/cn";
 import SidebarBody from "./SidebarBody";
 import DashboardHeader from "./DashboardHeader";
+import PayLensLogo from "@/components/brand/PayLensLogo";
 
 const DashboardShell: FC<PropsWithChildren> = ({ children }) => {
   const pathname = usePathname();
@@ -23,32 +24,26 @@ const DashboardShell: FC<PropsWithChildren> = ({ children }) => {
     activeRole === "TENANT_OWNER" || activeRole === "HR_ADMIN" || activeRole === "HR_MANAGER";
 
   return (
-    <div className="min-h-screen bg-canvas text-ink">
+    <div className="dashboard-product-shell min-h-screen bg-canvas text-ink">
       {/* Desktop sidebar */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-40 hidden border-r border-hairline bg-surface transition-[width] duration-200 md:block",
+          "fixed inset-y-0 left-0 z-40 hidden border-r border-hairline bg-surface/95 transition-[width,background-color] duration-200 md:block",
           collapsed ? "w-16" : "w-60",
         )}
       >
         <div className="flex h-full flex-col p-3">
           <div
             className={cn(
-              "min-h-10 px-3 py-2",
+              "min-h-16 px-3 py-3",
               collapsed && "flex items-center justify-center px-0",
             )}
           >
-            {collapsed ? (
-              <span className="font-mono text-sm font-medium text-primary">P</span>
-            ) : (
-              <>
-                <p className="font-mono text-[11px] font-medium tracking-[0.08em] text-ink uppercase">
-                  PayLens
-                </p>
-                <p className="mt-0.5 font-mono text-[10px] tracking-[0.05em] text-body uppercase">
-                  Compensation OS
-                </p>
-              </>
+            <PayLensLogo size={collapsed ? "sm" : "md"} variant={collapsed ? "mark" : "compact"} />
+            {!collapsed && (
+              <p className="mt-3 font-mono text-[9px] font-medium tracking-[0.1em] text-body uppercase">
+                Compensation intelligence
+              </p>
             )}
           </div>
           <div className="mt-2 flex-1">
@@ -66,7 +61,12 @@ const DashboardShell: FC<PropsWithChildren> = ({ children }) => {
       </aside>
 
       {/* Mobile sidebar */}
-      <Drawer direction="left" onOpenChange={setMobileOpen} open={mobileOpen} title="PayLens">
+      <Drawer
+        direction="left"
+        onOpenChange={setMobileOpen}
+        open={mobileOpen}
+        title={<PayLensLogo size="md" variant="compact" />}
+      >
         <SidebarBody
           collapsed={false}
           onNavigate={() => setMobileOpen(false)}
@@ -84,7 +84,11 @@ const DashboardShell: FC<PropsWithChildren> = ({ children }) => {
           sidebarCollapsed={collapsed}
           onOpenMobileSidebar={() => setMobileOpen(true)}
         />
-        <main className="min-h-screen p-4 pt-20 sm:p-8 sm:pt-24" data-active-path={pathname}>
+        <main
+          className="relative min-h-screen w-full overflow-hidden px-4 pt-20 pb-6 md:px-6 md:pt-24 md:pb-8 lg:px-8"
+          data-active-path={pathname}
+        >
+          <div aria-hidden="true" className="dashboard-canvas-aura" />
           {children}
         </main>
       </div>

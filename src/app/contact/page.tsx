@@ -37,13 +37,13 @@ const ContactPage: FC = () => {
             }}
           >
             <FormField id="name" label="Name" required>
-              <Input autoComplete="name" id="name" required />
+              <Input placeholder="Name" autoComplete="name" id="name" required />
             </FormField>
             <FormField id="email" label="Email" required>
-              <InputEmail autoComplete="email" id="email" required />
+              <InputEmail placeholder="Email Address" autoComplete="email" id="email" required />
             </FormField>
             <FormField id="message" label="Message" required>
-              <TextArea id="message" required rows={5} />
+              <TextArea id="message" required rows={5} placeholder="Message" />
             </FormField>
             <Button type="submit">Send message</Button>
           </form>

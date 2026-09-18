@@ -3,6 +3,7 @@ import cn from "@/utils/cn";
 
 type CardProps = PropsWithChildren<{
   className?: string;
+  variant?: "default" | "soft" | "interactive" | "highlight";
 }>;
 type CardSectionProps = PropsWithChildren<{
   className?: string;
@@ -13,10 +14,20 @@ type CardComponent = FC<CardProps> & {
   Header: FC<CardSectionProps>;
 };
 
-const CardRoot: FC<CardProps> = ({ children, className }) => (
+const cardVariantClasses = {
+  default: "bg-surface",
+  soft: "bg-canvas-soft",
+  interactive:
+    "bg-surface transition-[background-color,border-color,transform] duration-150 ease-out hover:-translate-y-px hover:border-ink/20 hover:bg-canvas-soft",
+  highlight:
+    "relative bg-surface before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-[linear-gradient(120deg,#FC4C02_0%,#EF2CC1_40%,#BDBBFF_70%,#3455FF_100%)]",
+};
+
+const CardRoot: FC<CardProps> = ({ children, className, variant = "default" }) => (
   <article
     className={cn(
-      "overflow-hidden rounded-sm border border-hairline bg-surface text-ink",
+      "overflow-hidden rounded-sm border border-hairline text-ink",
+      cardVariantClasses[variant],
       className,
     )}
   >

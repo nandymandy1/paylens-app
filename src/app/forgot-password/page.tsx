@@ -58,8 +58,8 @@ const ForgotPasswordPage: FC = () => {
         >
           <FormField error={errors.email?.message} id="email" label="Account email" required>
             <InputEmail
-              autoComplete="email"
               id="email"
+              autoComplete="email"
               placeholder="you@company.com"
               {...register("email")}
             />

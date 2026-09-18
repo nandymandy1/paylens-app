@@ -49,8 +49,8 @@ const OnboardingOrganizationPage: FC = () => {
       >
         <FormField error={errors.name?.message} id="name" label="Organization name" required>
           <Input
-            autoComplete="organization"
             id="name"
+            autoComplete="organization"
             placeholder="Acme Industries"
             {...register("name")}
           />

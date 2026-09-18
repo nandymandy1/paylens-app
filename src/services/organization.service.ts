@@ -10,6 +10,8 @@ import type {
 
 export const organizationKeys = {
   members: () => ["organizations", "members"] as const,
+  member: (organizationId: string | undefined, membershipId: string) =>
+    ["organizations", "members", organizationId, membershipId] as const,
   invitations: () => ["organizations", "invitations"] as const,
 };
 
@@ -29,6 +31,14 @@ export const createOrganization = async (
 export const fetchMembers = async (): Promise<OrganizationMember[]> => {
   const { data } = await api.get<BaseResponseWithData<OrganizationMember[]>>(
     "/organizations/current/members",
+  );
+
+  return data.data;
+};
+
+export const fetchMember = async (membershipId: string): Promise<OrganizationMember> => {
+  const { data } = await api.get<BaseResponseWithData<OrganizationMember>>(
+    `/organizations/current/members/${membershipId}`,
   );
 
   return data.data;

@@ -62,14 +62,19 @@ const LoginForm: FC<{ redirectTo: string }> = ({ redirectTo }) => {
       <form className="mt-6 space-y-4" noValidate onSubmit={handleSubmit(onSubmit)}>
         <FormField error={errors.email?.message} id="email" label="Work email" required>
           <InputEmail
-            autoComplete="email"
             id="email"
+            autoComplete="email"
             placeholder="you@company.com"
             {...register("email")}
           />
         </FormField>
         <FormField error={errors.password?.message} id="password" label="Password" required>
-          <InputPassword autoComplete="current-password" id="password" {...register("password")} />
+          <InputPassword
+            placeholder="Password"
+            autoComplete="current-password"
+            id="password"
+            {...register("password")}
+          />
         </FormField>
         {errors.root?.message && (
           <Alert icon={<AlertCircle className="size-4" />} title="Sign in failed" variant="danger">
@@ -84,10 +89,10 @@ const LoginForm: FC<{ redirectTo: string }> = ({ redirectTo }) => {
         <GoogleButton redirectTo={redirectTo} />
       </div>
       <div className="mt-6 flex items-center justify-between text-sm">
-        <Link className="text-body underline-offset-4 hover:underline" href="/forgot-password">
+        <Link className="auth-link text-body" href="/forgot-password">
           Forgot password?
         </Link>
-        <Link className="text-body underline-offset-4 hover:underline" href="/register">
+        <Link className="auth-link text-body" href="/register">
           Create organization
         </Link>
       </div>

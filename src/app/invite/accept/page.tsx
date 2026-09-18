@@ -173,10 +173,20 @@ const InviteAcceptContent: FC = () => {
                 label="First name"
                 required
               >
-                <Input autoComplete="given-name" id="firstName" {...register("firstName")} />
+                <Input
+                  placeholder="First Name"
+                  autoComplete="given-name"
+                  id="firstName"
+                  {...register("firstName")}
+                />
               </FormField>
               <FormField error={errors.lastName?.message} id="lastName" label="Last name" required>
-                <Input autoComplete="family-name" id="lastName" {...register("lastName")} />
+                <Input
+                  placeholder="Last Name"
+                  autoComplete="family-name"
+                  id="lastName"
+                  {...register("lastName")}
+                />
               </FormField>
             </div>
             <FormField
@@ -186,7 +196,12 @@ const InviteAcceptContent: FC = () => {
               label="Password"
               required
             >
-              <InputPassword autoComplete="new-password" id="password" {...register("password")} />
+              <InputPassword
+                placeholder="Password"
+                autoComplete="new-password"
+                id="password"
+                {...register("password")}
+              />
             </FormField>
             <FormField
               error={errors.confirmPassword?.message}
@@ -195,6 +210,7 @@ const InviteAcceptContent: FC = () => {
               required
             >
               <InputPassword
+                placeholder="Confirm Password"
                 autoComplete="new-password"
                 id="confirmPassword"
                 {...register("confirmPassword")}

@@ -9,6 +9,7 @@ import FormControlsSection from "@/components/showcase/FormControlsSection";
 import FoundationsSection from "@/components/showcase/FoundationsSection";
 import InteractionSection from "@/components/showcase/InteractionSection";
 import OverlaySection from "@/components/showcase/OverlaySection";
+import PayLensLogo from "@/components/brand/PayLensLogo";
 
 export const metadata: Metadata = {
   title: "Design System",
@@ -42,6 +43,54 @@ const ComponentsPage: FC = () => {
         </div>
       </header>
       <div className="mx-auto max-w-7xl px-4 sm:px-8">
+        <section className="border-b border-hairline py-16">
+          <p className="font-mono text-[11px] font-medium tracking-[0.05em] text-body uppercase">
+            Brand identity
+          </p>
+          <h2 className="mt-3 text-3xl tracking-tight">PayLens visual system</h2>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="border border-hairline p-6">
+              <PayLensLogo size="lg" />
+              <p className="mt-6 font-mono text-[10px] tracking-[.06em] text-body uppercase">
+                Full / light
+              </p>
+            </div>
+            <div className="bg-canvas-dark p-6">
+              <PayLensLogo size="lg" theme="dark" />
+              <p className="mt-6 font-mono text-[10px] tracking-[.06em] text-on-dark/60 uppercase">
+                Full / dark
+              </p>
+            </div>
+            <div className="border border-hairline p-6">
+              <PayLensLogo size="lg" variant="compact" />
+              <p className="mt-6 font-mono text-[10px] tracking-[.06em] text-body uppercase">
+                Compact
+              </p>
+            </div>
+            <div className="border border-hairline p-6">
+              <PayLensLogo size="lg" variant="mark" />
+              <p className="mt-6 font-mono text-[10px] tracking-[.06em] text-body uppercase">
+                Mark / favicon
+              </p>
+            </div>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-3">
+            {["#FC4C02", "#EF2CC1", "#BDBBFF", "#3455FF", "#010120", "#000000", "#FFFFFF"].map(
+              (color) => (
+                <span
+                  className="flex items-center gap-2 border border-hairline px-3 py-2 font-mono text-[10px] tracking-[.05em]"
+                  key={color}
+                >
+                  <i
+                    className="size-4 rounded-sm border border-hairline"
+                    style={{ backgroundColor: color }}
+                  />
+                  {color}
+                </span>
+              ),
+            )}
+          </div>
+        </section>
         <FoundationsSection />
         <ActionsSection />
         <DataDisplaySection />
