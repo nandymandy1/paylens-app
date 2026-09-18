@@ -1,3 +1,5 @@
+import { getSafeInternalPath } from "@/utils/navigation";
+
 export const DEFAULT_POST_AUTH_REDIRECT = "/dashboard";
 
 /** Authentication entry pages must never be post-auth destinations. */
@@ -53,13 +55,5 @@ export const getSafePostAuthRedirect = (candidate: string | null): string => {
     return DEFAULT_POST_AUTH_REDIRECT;
   }
 
-  const allowed = ALLOWED_PREFIXES.some(
-    (prefix) => parsed.pathname === prefix || parsed.pathname.startsWith(`${prefix}/`),
-  );
-
-  if (!allowed) {
-    return DEFAULT_POST_AUTH_REDIRECT;
-  }
-
-  return path;
+  return getSafeInternalPath(candidate, ALLOWED_PREFIXES) ?? DEFAULT_POST_AUTH_REDIRECT;
 };

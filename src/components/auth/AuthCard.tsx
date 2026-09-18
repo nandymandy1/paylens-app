@@ -1,6 +1,7 @@
 import type { FC, PropsWithChildren } from "react";
 import Card from "@/components/ui/Card";
 import PayLensLogo from "@/components/brand/PayLensLogo";
+import Image from "next/image";
 
 type AuthCardProps = PropsWithChildren<{
   eyebrow: string;
@@ -31,11 +32,13 @@ const AuthCard: FC<AuthCardProps> = ({ children, description, eyebrow, title }) 
           <PayLensLogo className="auth-brand-enter auth-brand-enter-1" size="md" theme="dark" />
           <div className="relative my-auto pt-16 pb-12">
             <div aria-hidden="true" className="auth-brand-glow" />
-            <img
+            <Image
               alt=""
               aria-hidden="true"
               className="auth-brand-mark auth-brand-enter auth-brand-enter-2 h-64 w-auto max-w-full"
               src="/brand/paylens-mark.svg"
+              height={112}
+              width={96}
             />
             <p className="auth-brand-enter auth-brand-enter-3 mt-8 font-mono text-[11px] font-medium tracking-[0.1em] text-on-dark/60 uppercase">
               Compensation intelligence

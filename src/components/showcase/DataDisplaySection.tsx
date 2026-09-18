@@ -109,7 +109,6 @@ const DataDisplaySection: FC = () => {
                     status: <Badge variant="success">Active</Badge>,
                   },
                   id: "avery",
-                  onClick: () => undefined,
                 },
               ]}
             />

@@ -10,14 +10,18 @@ import Avatar from "@/components/ui/Avatar";
 import Badge from "@/components/ui/Badge";
 import Card from "@/components/ui/Card";
 import { useMe } from "@/hooks/useAuth";
+import useAuthSessionStore from "@/stores/auth-session";
 import { fetchMember, organizationKeys } from "@/services/organization.service";
-import dayjs from "dayjs";
+import { formatDate } from "@/utils/date";
+import { formatEnumLabel, getInitials } from "@/utils/string";
 
 const MemberProfilePage: FC = () => {
   const { membershipId } = useParams<{ membershipId: string }>();
   const { data: session } = useMe();
+  const sessionStatus = useAuthSessionStore((state) => state.status);
   const member = useQuery({
-    enabled: Boolean(membershipId),
+    enabled:
+      (sessionStatus === "authenticated" || sessionStatus === "unknown") && Boolean(membershipId),
     queryFn: () => fetchMember(membershipId),
     queryKey: organizationKeys.member(session?.activeOrganization?.id, membershipId),
   });
@@ -67,7 +71,7 @@ const MemberProfilePage: FC = () => {
               <div className="flex flex-wrap items-center gap-4">
                 <Avatar
                   alt={member.data.email}
-                  fallback={`${member.data.firstName}${member.data.lastName}`}
+                  fallback={getInitials(member.data.firstName, member.data.lastName)}
                   size="lg"
                 />
                 <div>
@@ -80,7 +84,7 @@ const MemberProfilePage: FC = () => {
                   <Badge variant={member.data.status === "ACTIVE" ? "success" : "info"}>
                     {member.data.status}
                   </Badge>
-                  <Badge variant="info">{member.data.role.replaceAll("_", " ")}</Badge>
+                  <Badge variant="info">{formatEnumLabel(member.data.role)}</Badge>
                 </div>
               </div>
             </Card.Content>
@@ -121,15 +125,15 @@ const MemberProfilePage: FC = () => {
                   </div>
                   <div className="flex justify-between gap-4">
                     <dt className="text-body">Role</dt>
-                    <dd>{member.data.role.replaceAll("_", " ")}</dd>
+                    <dd>{formatEnumLabel(member.data.role)}</dd>
                   </div>
                   <div className="flex justify-between gap-4">
                     <dt className="text-body">Membership status</dt>
-                    <dd>{member.data.status}</dd>
+                    <dd>{formatEnumLabel(member.data.status)}</dd>
                   </div>
                   <div className="flex justify-between gap-4">
                     <dt className="text-body">Joined</dt>
-                    <dd>{dayjs(member.data.createdAt).format("DD MMM YYYY")}</dd>
+                    <dd>{formatDate(member.data.createdAt)}</dd>
                   </div>
                 </dl>
               </Card.Content>

@@ -7,6 +7,7 @@ import Badge from "@/components/ui/Badge";
 import Select from "@/components/ui/Select";
 import DataTable, { type DataTableColumn, type DataTableRow } from "@/components/ui/Table";
 import type { OrganizationMember, OrganizationRole } from "@/types/organization.type";
+import { formatEnumLabel, getInitials } from "@/utils/string";
 
 type MembersTableProps = {
   canMutateRoles: boolean;
@@ -51,7 +52,7 @@ const MembersTable: FC<MembersTableProps> = ({
           >
             <Avatar
               alt={member.email}
-              fallback={`${member.firstName}${member.lastName}`}
+              fallback={getInitials(member.firstName, member.lastName)}
               size="md"
             />
             <span>
@@ -65,7 +66,7 @@ const MembersTable: FC<MembersTableProps> = ({
         role:
           member.role === "TENANT_OWNER" || !canMutateRoles ? (
             <span aria-label={`Role for ${member.email}`}>
-              <Badge variant="info">{member.role.replaceAll("_", " ")}</Badge>
+              <Badge variant="info">{formatEnumLabel(member.role)}</Badge>
             </span>
           ) : (
             <div onClick={(event) => event.stopPropagation()}>
@@ -74,7 +75,7 @@ const MembersTable: FC<MembersTableProps> = ({
                 defaultValue={member.role}
                 onChange={(role) => onRoleChange(member.id, role)}
                 options={roleOptions.map((role) => ({
-                  title: role.replaceAll("_", " "),
+                  title: formatEnumLabel(role),
                   value: role,
                 }))}
                 size="sm"
@@ -82,7 +83,9 @@ const MembersTable: FC<MembersTableProps> = ({
             </div>
           ),
         status: (
-          <Badge variant={member.status === "ACTIVE" ? "success" : "info"}>{member.status}</Badge>
+          <Badge variant={member.status === "ACTIVE" ? "success" : "info"}>
+            {formatEnumLabel(member.status)}
+          </Badge>
         ),
       },
       id: member.id,

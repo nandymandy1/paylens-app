@@ -8,6 +8,7 @@ import InvitationsTable from "@/components/members/InvitationsTable";
 import MembersTable from "@/components/members/MembersTable";
 import Card from "@/components/ui/Card";
 import { useMe } from "@/hooks/useAuth";
+import useAuthSessionStore from "@/stores/auth-session";
 import {
   changeMemberRole,
   fetchInvitations,
@@ -18,6 +19,7 @@ import {
 import {
   INVITABLE_ROLES,
   MEMBER_ADMIN_ROLES,
+  type MemberAdminRole,
   type OrganizationRole,
 } from "@/types/organization.type";
 
@@ -27,34 +29,39 @@ const isMemberAdmin = (role: OrganizationRole | undefined): boolean =>
 const MembersPage: FC = () => {
   const queryClient = useQueryClient();
   const { data: session } = useMe();
+  const sessionStatus = useAuthSessionStore((state) => state.status);
+  const organizationId = session?.activeOrganization?.id;
   const activeRole = session?.activeMembership?.role;
   const canAdminister = isMemberAdmin(activeRole);
   const inviteOptions =
-    activeRole === "TENANT_OWNER" || activeRole === "HR_ADMIN" || activeRole === "HR_MANAGER"
-      ? INVITABLE_ROLES[activeRole]
+    activeRole !== undefined &&
+    (MEMBER_ADMIN_ROLES as readonly OrganizationRole[]).includes(activeRole)
+      ? INVITABLE_ROLES[activeRole as MemberAdminRole]
       : [];
   const canMutateRoles = activeRole === "TENANT_OWNER";
   const members = useQuery({
-    enabled: canAdminister,
+    enabled: (sessionStatus === "authenticated" || sessionStatus === "unknown") && canAdminister,
     queryFn: fetchMembers,
-    queryKey: organizationKeys.members(),
+    queryKey: organizationKeys.members(organizationId),
   });
   const invitations = useQuery({
-    enabled: canAdminister,
+    enabled: (sessionStatus === "authenticated" || sessionStatus === "unknown") && canAdminister,
     queryFn: fetchInvitations,
-    queryKey: organizationKeys.invitations(),
+    queryKey: organizationKeys.invitations(organizationId),
   });
   const revoke = useMutation({
     mutationFn: revokeInvitation,
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: organizationKeys.invitations() });
+      await queryClient.invalidateQueries({
+        queryKey: organizationKeys.invitations(organizationId),
+      });
     },
   });
   const changeRole = useMutation({
     mutationFn: ({ id, role }: { id: string; role: OrganizationRole }) =>
       changeMemberRole(id, role),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: organizationKeys.members() });
+      await queryClient.invalidateQueries({ queryKey: organizationKeys.members(organizationId) });
     },
   });
 

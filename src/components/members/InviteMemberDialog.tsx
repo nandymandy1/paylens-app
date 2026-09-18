@@ -16,6 +16,8 @@ import Select from "@/components/ui/Select";
 import { ApiError } from "@/services/api";
 import { inviteMember, organizationKeys } from "@/services/organization.service";
 import { ORGANIZATION_ROLES, type OrganizationRole } from "@/types/organization.type";
+import { formatEnumLabel } from "@/utils/string";
+import { useMe } from "@/hooks/useAuth";
 
 const inviteSchema = z.object({
   email: z.string().trim().toLowerCase().pipe(z.email("Enter a valid email address")),
@@ -29,9 +31,12 @@ type InviteMemberDialogProps = {
 };
 
 const InviteMemberDialog: FC<InviteMemberDialogProps> = ({ inviteOptions }) => {
+  const { data: session } = useMe();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [inviteError, setInviteError] = useState<string | null>(null);
+
+  const organizationId = session?.activeOrganization?.id;
   const {
     formState: { errors },
     handleSubmit,
@@ -45,6 +50,7 @@ const InviteMemberDialog: FC<InviteMemberDialogProps> = ({ inviteOptions }) => {
     reset();
     setOpen(false);
   };
+
   const invite = useMutation({
     mutationFn: (input: InviteInput) => inviteMember(input.email, input.role),
     onError: (error) => {
@@ -57,7 +63,9 @@ const InviteMemberDialog: FC<InviteMemberDialogProps> = ({ inviteOptions }) => {
       toast.error("Could not send invitation", { description: message });
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: organizationKeys.invitations() });
+      await queryClient.invalidateQueries({
+        queryKey: organizationKeys.invitations(organizationId),
+      });
       toast.success("Invitation sent");
       close();
     },
@@ -108,7 +116,7 @@ const InviteMemberDialog: FC<InviteMemberDialogProps> = ({ inviteOptions }) => {
                 invalid={Boolean(errors.role)}
                 onChange={field.onChange}
                 options={inviteOptions.map((role) => ({
-                  title: role.replaceAll("_", " "),
+                  title: formatEnumLabel(role),
                   value: role,
                 }))}
                 placeholder="Select role"

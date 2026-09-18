@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { FC } from "react";
 import { BarChart3, Building2, ShieldCheck } from "lucide-react";
 import PublicLayout from "@/components/layout/PublicLayout";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Compensation Intelligence",
@@ -65,7 +66,7 @@ const HomePage: FC = () => (
             className="relative mx-auto flex aspect-square w-full max-w-md items-center justify-center"
           >
             <div className="absolute inset-8 rounded-full bg-[radial-gradient(circle,#ef2cc155_0%,#3455ff20_42%,transparent_70%)] blur-2xl" />
-            <img
+            <Image
               alt=""
               className="relative w-[72%] drop-shadow-[0_24px_36px_rgba(239,44,193,.2)]"
               src="/brand/paylens-mark.svg"

@@ -10,6 +10,7 @@ import Popover from "@/components/ui/Popover";
 import { useLogout, useMe } from "@/hooks/useAuth";
 import useThemeStore from "@/stores/theme";
 import cn from "@/utils/cn";
+import { formatEnumLabel, getInitials } from "@/utils/string";
 import PayLensLogo from "@/components/brand/PayLensLogo";
 
 type DashboardHeaderProps = {
@@ -22,9 +23,7 @@ const DashboardHeader: FC<DashboardHeaderProps> = ({ onOpenMobileSidebar, sideba
   const { data: session } = useMe();
   const theme = useThemeStore((state) => state.theme);
   const toggleTheme = useThemeStore((state) => state.toggleTheme);
-  const initials = session
-    ? `${session.user.firstName.charAt(0)}${session.user.lastName.charAt(0)}`.toUpperCase()
-    : "?";
+  const initials = session ? getInitials(session.user.firstName, session.user.lastName) : "?";
 
   return (
     <header
@@ -71,7 +70,7 @@ const DashboardHeader: FC<DashboardHeaderProps> = ({ onOpenMobileSidebar, sideba
               <p className="mt-1 truncate text-sm text-body">{session?.user.email}</p>
               {session?.activeMembership && (
                 <p className="mt-2 font-mono text-[10px] tracking-[0.05em] text-body uppercase">
-                  {session.activeMembership.role}
+                  {formatEnumLabel(session.activeMembership.role)}
                 </p>
               )}
             </div>
@@ -101,7 +100,9 @@ const DashboardHeader: FC<DashboardHeaderProps> = ({ onOpenMobileSidebar, sideba
               {session ? `${session.user.firstName} ${session.user.lastName}` : ""}
             </span>
             <span className="block font-mono text-[10px] tracking-[0.05em] text-body uppercase">
-              {session?.activeMembership?.role?.replaceAll("_", " ") ?? "Account"}
+              {session?.activeMembership?.role
+                ? formatEnumLabel(session.activeMembership.role)
+                : "Account"}
             </span>
           </span>
           <ChevronDown aria-hidden="true" className="hidden size-3.5 text-body sm:block" />

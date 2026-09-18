@@ -44,7 +44,9 @@ export const login = async (
 export const register = async (
   input: RegisterInput,
 ): Promise<{ user: SafeUser; organization: Organization }> => {
-  const { password, confirmPassword: _, ...rest } = input;
+  const { password, confirmPassword, ...rest } = input;
+
+  void confirmPassword;
   const { data } = await api.post<
     BaseResponseWithData<{ user: SafeUser; organization: Organization }>
   >("/auth/register", { ...rest, password });

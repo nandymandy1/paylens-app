@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
-export type AuthSessionStatus = "unknown" | "authenticated" | "anonymous" | "logging-out";
+export type AuthSessionStatus =
+  "unknown" | "authenticated" | "anonymous" | "auth-error" | "logging-out";
 
 type AuthSessionState = {
   status: AuthSessionStatus;
@@ -8,6 +9,8 @@ type AuthSessionState = {
   generation: number;
   markAuthenticated: () => void;
   markAnonymous: () => void;
+  markAuthError: () => void;
+  markUnknown: () => void;
   beginLogout: () => void;
   endLogout: () => void;
   resetForTests: () => void;
@@ -30,6 +33,12 @@ const useAuthSessionStore = create<AuthSessionState>((set) => ({
   },
   markAnonymous: () => {
     set({ status: "anonymous" });
+  },
+  markAuthError: () => {
+    set({ status: "auth-error" });
+  },
+  markUnknown: () => {
+    set((state) => ({ status: "unknown", generation: state.generation + 1 }));
   },
   beginLogout: () => {
     set((state) => ({ status: "logging-out", generation: state.generation + 1 }));

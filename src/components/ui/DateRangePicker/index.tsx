@@ -7,7 +7,7 @@ import FormField, { getDescribedBy } from "@/components/ui/FormField";
 import Popover from "@/components/ui/Popover";
 import cn from "@/utils/cn";
 import {
-  formatDate,
+  formatDateRange,
   normalizeDateRange,
   parseDate,
   toISODate,
@@ -36,13 +36,6 @@ type DateRangePickerProps = {
   value?: ISODateRange;
 };
 
-const formatRange = (range: ISODateRange) => {
-  if (range.startDate && range.endDate) {
-    return `${formatDate(range.startDate)} — ${formatDate(range.endDate)}`;
-  }
-
-  return range.startDate ? `${formatDate(range.startDate)} — Select end date` : "";
-};
 const DateRangePicker: FC<DateRangePickerProps> = ({
   "aria-describedby": ariaDescribedBy,
   disabled = false,
@@ -66,7 +59,7 @@ const DateRangePicker: FC<DateRangePickerProps> = ({
   const [uncontrolledValue, setUncontrolledValue] = useState<ISODateRange>({});
   const selectedValue = value ?? uncontrolledValue;
   const invalid = Boolean(error);
-  const displayValue = formatRange(selectedValue) || placeholder;
+  const displayValue = formatDateRange(selectedValue) || placeholder;
   const disabledDays: Matcher[] = [
     ...(minDate ? [{ before: parseDate(minDate)! }] : []),
     ...(maxDate ? [{ after: parseDate(maxDate)! }] : []),

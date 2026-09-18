@@ -5,6 +5,7 @@ import useSidebarStore from "@/stores/sidebar";
 import type { OrganizationRole } from "@/types/organization.type";
 
 let mockedRole: OrganizationRole | undefined = "EMPLOYEE";
+let mockedPathname = "/dashboard";
 
 vi.mock("@/hooks/useAuth", () => ({
   useMe: vi.fn(() => ({
@@ -20,13 +21,23 @@ vi.mock("@/hooks/useAuth", () => ({
 }));
 
 vi.mock("next/navigation", () => ({
-  usePathname: () => "/dashboard",
+  usePathname: () => mockedPathname,
   useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
 }));
 
 vi.mock("next/link", () => ({
-  default: ({ children, href }: { children: React.ReactNode; href: string }) => (
-    <a href={href}>{children}</a>
+  default: ({
+    children,
+    href,
+    ...rest
+  }: {
+    children: React.ReactNode;
+    href: string;
+    [key: string]: unknown;
+  }) => (
+    <a href={href} {...rest}>
+      {children}
+    </a>
   ),
 }));
 
@@ -34,6 +45,7 @@ describe("dashboard shell member navigation", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockedRole = "EMPLOYEE";
+    mockedPathname = "/dashboard";
     act(() => {
       useSidebarStore.getState().setSidebarCollapsed(false);
     });
@@ -121,5 +133,60 @@ describe("dashboard shell member navigation", () => {
     );
 
     expect(screen.getAllByRole("img", { name: "PayLens" }).length).toBeGreaterThan(0);
+  });
+});
+
+describe("dashboard sidebar route matching", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockedRole = "TENANT_OWNER";
+    mockedPathname = "/dashboard";
+
+    act(() => {
+      useSidebarStore.getState().setSidebarCollapsed(false);
+    });
+  });
+
+  const activeLabels = () =>
+    screen
+      .getAllByRole("link")
+      .filter((link) => link.getAttribute("aria-current") === "page")
+      .map((link) => link.textContent);
+
+  it.each([
+    ["/dashboard", ["Dashboard"]],
+    ["/dashboard/members", ["Members"]],
+    ["/dashboard/members/m-1", ["Members"]],
+    ["/dashboard/employees", ["Employees"]],
+    ["/dashboard/employees/e-1", ["Employees"]],
+    ["/dashboard/departments", ["Departments"]],
+    ["/dashboard/departments/new", ["Departments"]],
+    ["/dashboard/departments/d-1/edit", ["Departments"]],
+  ])("marks exactly one owner for %s", (pathname, expected) => {
+    mockedPathname = pathname;
+
+    render(
+      <DashboardShell>
+        <p>dashboard</p>
+      </DashboardShell>,
+    );
+
+    expect(activeLabels()).toEqual(expected);
+  });
+
+  it("never marks Dashboard active on child feature routes", () => {
+    mockedPathname = "/dashboard/departments";
+
+    render(
+      <DashboardShell>
+        <p>dashboard</p>
+      </DashboardShell>,
+    );
+
+    const dashboard = screen.getByRole("link", { name: "Dashboard" });
+    const departments = screen.getByRole("link", { name: "Departments" });
+
+    expect(dashboard.getAttribute("aria-current")).toBeNull();
+    expect(departments.getAttribute("aria-current")).toBe("page");
   });
 });

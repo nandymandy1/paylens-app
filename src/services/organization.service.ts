@@ -9,10 +9,12 @@ import type {
 } from "@/types/organization.type";
 
 export const organizationKeys = {
-  members: () => ["organizations", "members"] as const,
+  members: (organizationId: string | undefined) =>
+    ["organizations", organizationId, "members"] as const,
   member: (organizationId: string | undefined, membershipId: string) =>
-    ["organizations", "members", organizationId, membershipId] as const,
-  invitations: () => ["organizations", "invitations"] as const,
+    ["organizations", organizationId, "members", membershipId] as const,
+  invitations: (organizationId: string | undefined) =>
+    ["organizations", organizationId, "invitations"] as const,
 };
 
 export const createOrganization = async (

@@ -3,10 +3,10 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { FC, PropsWithChildren } from "react";
-import { RequireAnonymous } from "@/components/auth/AuthGuards";
-import { useLogout, useMe } from "@/hooks/useAuth";
+import { RequireAnonymous, RequireAuth } from "@/components/auth/AuthGuards";
+import { useLogout, useMe, useVerifyEmail } from "@/hooks/useAuth";
 import { authKeys } from "@/services/auth.service";
-import api from "@/services/api";
+import api, { ApiError } from "@/services/api";
 import useAuthSessionStore from "@/stores/auth-session";
 
 vi.mock("@/services/api", () => ({
@@ -137,10 +137,10 @@ describe("explicit logout lifecycle", () => {
     expect(useAuthSessionStore.getState().status).toBe("authenticated");
   });
 
-  it("settles failed unknown probes to known anonymous", async () => {
+  it("settles terminal 401 unknown probes to known anonymous", async () => {
     const client = createClient();
 
-    mockedApi.get.mockRejectedValue(Object.assign(new Error("unauthorized"), { status: 401 }));
+    mockedApi.get.mockRejectedValue(new ApiError("AUTHENTICATION_REQUIRED", "unauthorized", 401));
 
     render(
       <Wrapper client={client}>
@@ -213,5 +213,88 @@ describe("explicit logout lifecycle", () => {
 
     expect(client.getQueryData(authKeys.me())).toBeUndefined();
     expect(useAuthSessionStore.getState().status).toBe("anonymous");
+  });
+
+  it("reconciles to unknown instead of false anonymous when logout fails", async () => {
+    const client = createClient();
+
+    useAuthSessionStore.getState().markAuthenticated();
+    client.setQueryData(authKeys.me(), mePayload);
+    mockedApi.post.mockRejectedValueOnce(new Error("network down"));
+    mockedApi.get.mockResolvedValue({ data: { data: mePayload } });
+
+    render(
+      <Wrapper client={client}>
+        <MeObserver />
+        <LogoutButton />
+      </Wrapper>,
+    );
+
+    await userEvent.click(screen.getByRole("button", { name: "logout" }));
+
+    // Ambiguous failure: /auth/me is re-probed to resolve server truth —
+    // never an immediate false anonymous claim, never a login push.
+    await waitFor(() => {
+      expect(mockedApi.get).toHaveBeenCalledWith(expect.stringContaining("/auth/me"));
+    });
+
+    expect(push).not.toHaveBeenCalledWith("/login");
+    // The server session still exists, so reconciliation lands authenticated.
+    await waitFor(() => {
+      expect(useAuthSessionStore.getState().status).toBe("authenticated");
+    });
+  });
+
+  it("redirects known anonymous protected routes to login without probing", async () => {
+    const client = createClient();
+
+    useAuthSessionStore.getState().markAnonymous();
+
+    render(
+      <Wrapper client={client}>
+        <RequireAuth>
+          <p>protected</p>
+        </RequireAuth>
+      </Wrapper>,
+    );
+
+    await waitFor(() => {
+      expect(replace).toHaveBeenCalledWith(expect.stringContaining("/login?redirect_to="));
+    });
+
+    expect(mockedApi.get).not.toHaveBeenCalledWith(expect.stringContaining("/auth/me"));
+    expect(screen.queryByText("protected")).toBeNull();
+  });
+
+  it("marks verify-email success authenticated with canonical auth/me", async () => {
+    const client = createClient();
+
+    useAuthSessionStore.getState().markAnonymous();
+    mockedApi.post.mockResolvedValue({ data: { data: { user: mePayload.user } } });
+    mockedApi.get.mockResolvedValue({ data: { data: mePayload } });
+
+    const VerifyButton: FC = () => {
+      const verify = useVerifyEmail();
+
+      return (
+        <button type="button" onClick={() => verify.mutate("token-1")}>
+          verify
+        </button>
+      );
+    };
+
+    render(
+      <Wrapper client={client}>
+        <VerifyButton />
+      </Wrapper>,
+    );
+
+    await userEvent.click(screen.getByRole("button", { name: "verify" }));
+
+    await waitFor(() => {
+      expect(useAuthSessionStore.getState().status).toBe("authenticated");
+    });
+
+    expect(client.getQueryData(authKeys.me())).toBeDefined();
   });
 });

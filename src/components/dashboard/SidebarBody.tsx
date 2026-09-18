@@ -3,21 +3,48 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { FC } from "react";
-import { LayoutDashboard, Users } from "lucide-react";
+import { Building2, LayoutDashboard, Users, UsersRound } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import Tooltip from "@/components/ui/Tooltip";
 import cn from "@/utils/cn";
+import { isRouteActive, type RouteMatchMode } from "@/utils/navigation";
 
-const NAV_ITEMS = [
+type SidebarNavItem = {
+  href: string;
+  label: string;
+  icon: LucideIcon;
+  match: RouteMatchMode;
+  adminOnly?: boolean;
+  workforceOnly?: boolean;
+};
+
+const NAV_ITEMS: SidebarNavItem[] = [
   {
     icon: LayoutDashboard,
     label: "Dashboard",
     href: "/dashboard",
+    match: "exact",
   },
   {
     icon: Users,
     label: "Members",
     adminOnly: true,
     href: "/dashboard/members",
+    match: "section",
+  },
+  {
+    icon: UsersRound,
+    label: "Employees",
+    workforceOnly: true,
+    href: "/dashboard/employees",
+    match: "section",
+  },
+  {
+    icon: Building2,
+    label: "Departments",
+    workforceOnly: true,
+    href: "/dashboard/departments",
+    match: "section",
   },
 ];
 
@@ -25,17 +52,33 @@ type SidebarBodyProps = {
   collapsed: boolean;
   onNavigate?: () => void;
   showMembersAdmin: boolean;
+  showEmployees?: boolean;
 };
 
-const SidebarBody: FC<SidebarBodyProps> = ({ collapsed, onNavigate, showMembersAdmin }) => {
+const SidebarBody: FC<SidebarBodyProps> = ({
+  collapsed,
+  onNavigate,
+  showMembersAdmin,
+  showEmployees = true,
+}) => {
   const pathname = usePathname();
-  const items = NAV_ITEMS.filter((item) => !item.adminOnly || showMembersAdmin);
+  const items = NAV_ITEMS.filter((item) => {
+    if (item.adminOnly) {
+      return showMembersAdmin;
+    }
+
+    if (item.workforceOnly) {
+      return showEmployees;
+    }
+
+    return true;
+  });
 
   return (
     <nav aria-label="Dashboard">
       <ul className="space-y-1">
         {items.map((item) => {
-          const active = pathname === item.href;
+          const active = isRouteActive(pathname, item.href, item.match);
           const Icon = item.icon;
           const navLink = (
             <Link

@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, type FC } from "react";
@@ -15,8 +15,10 @@ import {
   acceptInvitationAuthenticated,
   acceptInvitationNewUser,
   authKeys,
+  fetchMe,
   previewInvitation,
 } from "@/services/auth.service";
+import useAuthSessionStore from "@/stores/auth-session";
 import { inviteAcceptNewUserSchema } from "@/types/auth.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -27,6 +29,7 @@ import InputPassword from "@/components/ui/InputPassword";
 const InviteAcceptContent: FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
   const token = searchParams.get("token") ?? "";
   const { data: session } = useMe();
   const preview = useQuery({
@@ -94,9 +97,29 @@ const InviteAcceptContent: FC = () => {
   const sessionEmail = session?.user.email?.toLowerCase() ?? null;
   const matchesSession = sessionEmail === invitation.email.toLowerCase();
 
+  const reconcileSession = async (preserveAuthenticated: boolean) => {
+    // New-user acceptance creates a browser session: anonymous must become
+    // authenticated with canonical auth/me before dashboard renders.
+    // Authenticated acceptance keeps the live session and refreshes memberships.
+    if (!preserveAuthenticated) {
+      useAuthSessionStore.getState().markAuthenticated();
+    }
+
+    try {
+      const me = await queryClient.fetchQuery({ queryKey: authKeys.me(), queryFn: fetchMe });
+
+      queryClient.setQueryData(authKeys.me(), me);
+    } catch {
+      await queryClient.invalidateQueries({ queryKey: authKeys.me() });
+    }
+
+    await queryClient.invalidateQueries({ queryKey: ["organizations"] });
+  };
+
   const acceptExisting = async () => {
     try {
       await acceptInvitationAuthenticated(token);
+      await reconcileSession(true);
       router.push("/dashboard");
     } catch (error) {
       setError("root", {
@@ -155,6 +178,7 @@ const InviteAcceptContent: FC = () => {
             onSubmit={handleSubmit(async (values) => {
               try {
                 await acceptInvitationNewUser(values);
+                await reconcileSession(false);
                 router.push("/dashboard");
               } catch (error) {
                 setError("root", {

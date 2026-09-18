@@ -8,6 +8,8 @@ import IconButton from "@/components/ui/IconButton";
 import Tooltip from "@/components/ui/Tooltip";
 import useSidebarStore from "@/stores/sidebar";
 import { useMe } from "@/hooks/useAuth";
+import { EMPLOYEE_DIRECTORY_ROLES } from "@/types/employee.type";
+import { MEMBER_ADMIN_ROLES } from "@/types/organization.type";
 import cn from "@/utils/cn";
 import SidebarBody from "./SidebarBody";
 import DashboardHeader from "./DashboardHeader";
@@ -20,8 +22,12 @@ const DashboardShell: FC<PropsWithChildren> = ({ children }) => {
   const collapsed = useSidebarStore((state) => state.sidebarCollapsed);
   const toggleSidebar = useSidebarStore((state) => state.toggleSidebar);
   const activeRole = session?.activeMembership?.role;
-  const showMembersAdmin =
-    activeRole === "TENANT_OWNER" || activeRole === "HR_ADMIN" || activeRole === "HR_MANAGER";
+  const showMembersAdmin = activeRole
+    ? (MEMBER_ADMIN_ROLES as readonly string[]).includes(activeRole)
+    : false;
+  const showEmployees = activeRole
+    ? (EMPLOYEE_DIRECTORY_ROLES as readonly string[]).includes(activeRole)
+    : false;
 
   return (
     <div className="dashboard-product-shell min-h-screen bg-canvas text-ink">
@@ -47,7 +53,11 @@ const DashboardShell: FC<PropsWithChildren> = ({ children }) => {
             )}
           </div>
           <div className="mt-2 flex-1">
-            <SidebarBody collapsed={collapsed} showMembersAdmin={showMembersAdmin} />
+            <SidebarBody
+              collapsed={collapsed}
+              showEmployees={showEmployees}
+              showMembersAdmin={showMembersAdmin}
+            />
           </div>
           <Tooltip content={collapsed ? "Expand sidebar" : "Collapse sidebar"} side="right">
             <IconButton
@@ -70,6 +80,7 @@ const DashboardShell: FC<PropsWithChildren> = ({ children }) => {
         <SidebarBody
           collapsed={false}
           onNavigate={() => setMobileOpen(false)}
+          showEmployees={showEmployees}
           showMembersAdmin={showMembersAdmin}
         />
       </Drawer>

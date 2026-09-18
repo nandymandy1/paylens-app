@@ -13,8 +13,8 @@ import {
   switchOrganization,
   verifyEmail,
 } from "@/services/auth.service";
+import { ApiError } from "@/services/api";
 import useAuthSessionStore, { getAuthSessionGeneration } from "@/stores/auth-session";
-import { organizationKeys } from "@/services/organization.service";
 import type {
   ForgotPasswordInput,
   LoginInput,
@@ -22,10 +22,39 @@ import type {
   ResetPasswordInput,
 } from "@/types/auth.type";
 
+/** Resolves the server-owned session truth and applies the canonical auth state. */
+export const reconcileAuthMe = async () => {
+  const generation = getAuthSessionGeneration();
+
+  try {
+    const me = await fetchMe();
+
+    // A stale response arriving after logout must not restore user/organization
+    // state or authenticated guards.
+    if (generation !== getAuthSessionGeneration()) {
+      throw new Error("auth reconciliation superseded by logout");
+    }
+
+    useAuthSessionStore.getState().markAuthenticated();
+
+    return me;
+  } catch (error) {
+    // A response superseded by explicit logout is not an authentication failure
+    // and must not overwrite the logout lifecycle state.
+    if (generation === getAuthSessionGeneration()) {
+      if (error instanceof ApiError && error.status === 401) {
+        useAuthSessionStore.getState().markAnonymous();
+      } else {
+        useAuthSessionStore.getState().markAuthError();
+      }
+    }
+
+    throw error;
+  }
+};
+
 export const useMe = (options: { enabled?: boolean } = {}) => {
   const status = useAuthSessionStore((state) => state.status);
-  const markAuthenticated = useAuthSessionStore((state) => state.markAuthenticated);
-  const markAnonymous = useAuthSessionStore((state) => state.markAnonymous);
 
   // Known anonymous sessions (post-logout) and logout itself must never probe
   // /auth/me: the outcome is already known and a 401 probe would only invite a
@@ -34,32 +63,7 @@ export const useMe = (options: { enabled?: boolean } = {}) => {
 
   return useQuery({
     queryKey: authKeys.me(),
-    queryFn: async () => {
-      const generation = getAuthSessionGeneration();
-
-      try {
-        const me = await fetchMe();
-
-        // A stale bootstrap response arriving after logout must not restore
-        // user/organization state or authenticated guards.
-        if (generation !== getAuthSessionGeneration()) {
-          throw new Error("auth bootstrap superseded by logout");
-        }
-
-        markAuthenticated();
-
-        return me;
-      } catch (error) {
-        // Logout wins: never flip a logging-out session back to anonymous
-        // here; useLogout owns that transition. Unknown bootstrap failures
-        // settle to known anonymous so /login stops probing.
-        if (useAuthSessionStore.getState().status === "unknown") {
-          markAnonymous();
-        }
-
-        throw error;
-      }
-    },
+    queryFn: reconcileAuthMe,
     enabled,
   });
 };
@@ -85,11 +89,24 @@ export const useRegister = () =>
 
 export const useVerifyEmail = () => {
   const queryClient = useQueryClient();
+  const markUnknown = useAuthSessionStore((state) => state.markUnknown);
 
   return useMutation({
     mutationFn: (token: string) => verifyEmail(token),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: authKeys.me() });
+      // Backend verification creates a browser session: reconcile the
+      // frontend lifecycle explicitly. A disabled anonymous probe would
+      // never refetch, so fetch + seed auth/me before dashboard renders.
+      markUnknown();
+
+      try {
+        const me = await queryClient.fetchQuery({
+          queryKey: authKeys.me(),
+          queryFn: reconcileAuthMe,
+        });
+
+        queryClient.setQueryData(authKeys.me(), me);
+      } catch {}
     },
   });
 };
@@ -108,6 +125,7 @@ export const useLogout = () => {
   const router = useRouter();
   const beginLogout = useAuthSessionStore((state) => state.beginLogout);
   const endLogout = useAuthSessionStore((state) => state.endLogout);
+  const markUnknown = useAuthSessionStore((state) => state.markUnknown);
 
   return useMutation({
     mutationFn: () => logout(),
@@ -117,26 +135,56 @@ export const useLogout = () => {
       beginLogout();
       await queryClient.cancelQueries({ queryKey: authKeys.me() });
     },
-    onSettled: async () => {
-      // Explicit logout discovers nothing new: remove (never invalidate)
-      // the session query, drop tenant-scoped caches, mark known anonymous,
-      // and navigate to login. No /auth/me refetch, no refresh attempt.
+    onSuccess: async () => {
+      // Server revoked the session: safe to claim anonymous and drop all
+      // tenant-owned query state. Auth (non-tenant) caches stay intact.
+      queryClient.removeQueries({ queryKey: ["organizations"] });
+      queryClient.removeQueries({ queryKey: ["employees"] });
+      queryClient.removeQueries({ queryKey: ["departments"] });
       queryClient.removeQueries({ queryKey: authKeys.me() });
-      queryClient.removeQueries({ queryKey: organizationKeys.members() });
-      queryClient.removeQueries({ queryKey: organizationKeys.invitations() });
       endLogout();
       router.push("/login");
+    },
+    onError: async () => {
+      // Ambiguous: the server session may still exist. Return to unknown so
+      // /auth/me re-resolves server truth instead of falsely claiming logout.
+      markUnknown();
+      await queryClient.invalidateQueries({ queryKey: authKeys.me() });
     },
   });
 };
 
 export const useSwitchOrganization = () => {
   const queryClient = useQueryClient();
+  const markUnknown = useAuthSessionStore((state) => state.markUnknown);
 
   return useMutation({
     mutationFn: (organizationId: string) => switchOrganization(organizationId),
+    onMutate: async () => {
+      // Capture outgoing tenant state before the switch lands.
+      await queryClient.cancelQueries({ queryKey: ["organizations"] });
+      await queryClient.cancelQueries({ queryKey: ["employees"] });
+      await queryClient.cancelQueries({ queryKey: ["departments"] });
+    },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: authKeys.me() });
+      // Drop the previous tenant's visible query state so Org-A rows never
+      // render under the Org-B shell, then re-resolve canonical auth/me.
+      const previousOrgId = queryClient.getQueryData<{ activeOrganization?: { id?: string } }>(
+        authKeys.me(),
+      )?.activeOrganization?.id;
+
+      if (previousOrgId) {
+        queryClient.removeQueries({ queryKey: ["organizations", previousOrgId] });
+        queryClient.removeQueries({ queryKey: ["employees", previousOrgId] });
+        queryClient.removeQueries({ queryKey: ["departments", previousOrgId] });
+      }
+
+      // The server session has switched, so cached Org-A auth data is no
+      // longer trustworthy. Remove it before fetching the authoritative Org-B
+      // session; protected screens stay blocked until this resolves.
+      markUnknown();
+      queryClient.removeQueries({ queryKey: authKeys.me() });
+      await queryClient.fetchQuery({ queryKey: authKeys.me(), queryFn: reconcileAuthMe });
     },
   });
 };

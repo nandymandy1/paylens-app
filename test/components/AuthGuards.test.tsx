@@ -97,6 +97,7 @@ describe("auth guards", () => {
   });
 
   it("redirects stale dashboard sessions exactly once with the deep link preserved", async () => {
+    useAuthSessionStore.getState().markAnonymous();
     mockedMe = { isLoading: false, error: new Error("expired"), data: undefined };
 
     render(
@@ -109,5 +110,24 @@ describe("auth guards", () => {
       expect(replace).toHaveBeenCalledTimes(1);
     });
     expect(replace).toHaveBeenCalledWith("/login?redirect_to=%2Fdashboard%2Fmembers");
+  });
+
+  it("blocks stale protected content and offers retry on a reconciliation error", () => {
+    useAuthSessionStore.getState().markAuthError();
+    mockedMe = {
+      isLoading: false,
+      data: { activeOrganization: { id: "org-a" }, user: { id: "u" } },
+    };
+
+    render(
+      <RequireAuth>
+        <p>stale tenant content</p>
+      </RequireAuth>,
+    );
+
+    expect(screen.getByText("Unable to verify your session")).toBeDefined();
+    expect(screen.getByRole("button", { name: "Retry" })).toBeDefined();
+    expect(screen.queryByText("stale tenant content")).toBeNull();
+    expect(replace).not.toHaveBeenCalled();
   });
 });
