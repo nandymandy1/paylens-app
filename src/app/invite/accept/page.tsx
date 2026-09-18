@@ -9,16 +9,14 @@ import Alert from "@/components/ui/Alert";
 import AuthCard from "@/components/auth/AuthCard";
 import GoogleButton from "@/components/auth/GoogleButton";
 import Button from "@/components/ui/Button";
-import { useMe } from "@/hooks/useAuth";
+import { reconcileAuthMe, useMe } from "@/hooks/useAuth";
 import { ApiError } from "@/services/api";
 import {
   acceptInvitationAuthenticated,
   acceptInvitationNewUser,
   authKeys,
-  fetchMe,
   previewInvitation,
 } from "@/services/auth.service";
-import useAuthSessionStore from "@/stores/auth-session";
 import { inviteAcceptNewUserSchema } from "@/types/auth.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -97,16 +95,15 @@ const InviteAcceptContent: FC = () => {
   const sessionEmail = session?.user.email?.toLowerCase() ?? null;
   const matchesSession = sessionEmail === invitation.email.toLowerCase();
 
-  const reconcileSession = async (preserveAuthenticated: boolean) => {
+  const reconcileSession = async () => {
     // New-user acceptance creates a browser session: anonymous must become
     // authenticated with canonical auth/me before dashboard renders.
     // Authenticated acceptance keeps the live session and refreshes memberships.
-    if (!preserveAuthenticated) {
-      useAuthSessionStore.getState().markAuthenticated();
-    }
-
     try {
-      const me = await queryClient.fetchQuery({ queryKey: authKeys.me(), queryFn: fetchMe });
+      const me = await queryClient.fetchQuery({
+        queryKey: authKeys.me(),
+        queryFn: reconcileAuthMe,
+      });
 
       queryClient.setQueryData(authKeys.me(), me);
     } catch {
@@ -119,7 +116,7 @@ const InviteAcceptContent: FC = () => {
   const acceptExisting = async () => {
     try {
       await acceptInvitationAuthenticated(token);
-      await reconcileSession(true);
+      await reconcileSession();
       router.push("/dashboard");
     } catch (error) {
       setError("root", {
@@ -178,7 +175,7 @@ const InviteAcceptContent: FC = () => {
             onSubmit={handleSubmit(async (values) => {
               try {
                 await acceptInvitationNewUser(values);
-                await reconcileSession(false);
+                await reconcileSession();
                 router.push("/dashboard");
               } catch (error) {
                 setError("root", {

@@ -69,7 +69,9 @@ const HomePage: FC = () => (
             <Image
               alt=""
               className="relative w-[72%] drop-shadow-[0_24px_36px_rgba(239,44,193,.2)]"
+              height={112}
               src="/brand/paylens-mark.svg"
+              width={96}
             />
           </div>
         </div>

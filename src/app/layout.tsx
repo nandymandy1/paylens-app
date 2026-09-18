@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import "@/assets/style/globals.css";
 import { Geist, Geist_Mono } from "next/font/google";
 import AppProviders from "@/components/providers/AppProviders";
@@ -50,10 +51,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
       className={clsx(geistSans.variable, geistMono.variable, "h-full antialiased")}
     >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-      </head>
       <body className="flex min-h-full flex-col">
+        <Script id="paylens-theme" strategy="beforeInteractive">
+          {themeScript}
+        </Script>
         <AppProviders>{children}</AppProviders>
       </body>
     </html>
