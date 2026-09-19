@@ -12,8 +12,13 @@ const AUTH_ENTRY_PATHS = new Set([
   "/auth/callback",
 ]);
 
-/** Valid post-auth destinations: the protected app plus explicit onboarding flows. */
-const ALLOWED_PREFIXES = ["/dashboard", "/select-organization", "/onboarding/organization"];
+/** Valid post-auth destinations: the protected app plus explicit onboarding and invitation flows. */
+const ALLOWED_PREFIXES = [
+  "/dashboard",
+  "/select-organization",
+  "/onboarding/organization",
+  "/invite/accept",
+];
 
 /**
  * Canonical post-auth redirect sanitizer. Accepts dashboard/onboarding paths,
