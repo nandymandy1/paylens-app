@@ -1,0 +1,12 @@
+node_modules
+.next
+coverage
+.env
+.env.*
+.git
+.gitignore
+test
+graphify-out
+.graphify
+*.log
+.DS_Store
