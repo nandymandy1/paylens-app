@@ -8,6 +8,7 @@ import Alert from "@/components/ui/Alert";
 import AuthCard from "@/components/auth/AuthCard";
 import { useVerifyEmail } from "@/hooks/useAuth";
 import { ApiError } from "@/services/api";
+import { AUTH_ROUTES } from "@/utils/routes";
 
 const VerifyEmailContent: FC = () => {
   const router = useRouter();
@@ -36,8 +37,9 @@ const VerifyEmailContent: FC = () => {
         description="This verification link is missing its token."
         eyebrow="Invalid link"
         title="Link incomplete"
+        variant="verify"
       >
-        <Link className="text-sm underline underline-offset-4" href="/login">
+        <Link className="text-sm underline underline-offset-4" href={AUTH_ROUTES.login}>
           Back to sign in
         </Link>
       </AuthCard>
@@ -46,7 +48,12 @@ const VerifyEmailContent: FC = () => {
 
   if (verify.isPending || verify.isIdle) {
     return (
-      <AuthCard description="Confirming your email address." eyebrow="Verifying" title="One moment">
+      <AuthCard
+        description="Confirming your email address."
+        eyebrow="Verifying"
+        title="One moment"
+        variant="verify"
+      >
         <p className="font-mono text-xs tracking-[0.05em] text-body uppercase">Verifying</p>
       </AuthCard>
     );
@@ -58,6 +65,7 @@ const VerifyEmailContent: FC = () => {
         description="Your email is confirmed. A session is now active."
         eyebrow="Verified"
         title="Email confirmed"
+        variant="verify"
       >
         <Alert icon={<CheckCircle2 className="size-4" />} title="Success" variant="success">
           Redirecting to your dashboard.
@@ -74,12 +82,13 @@ const VerifyEmailContent: FC = () => {
       description={expired ? "This link has expired." : "This link is invalid or already used."}
       eyebrow={expired ? "Expired" : "Invalid"}
       title="Verification failed"
+      variant="verify"
     >
       <Alert icon={<AlertCircle className="size-4" />} title="Link unusable" variant="danger">
         {expired
           ? "Request a new link from the sign-in page."
           : "Check the full link from your email."}{" "}
-        <Link className="underline underline-offset-4" href="/login">
+        <Link className="underline underline-offset-4" href={AUTH_ROUTES.login}>
           Back to sign in
         </Link>
       </Alert>

@@ -17,9 +17,10 @@ const SelectOrganizationContent: FC = () => {
   if (isLoading || !data) {
     return (
       <AuthCard
-        description="Loading your organizations."
-        eyebrow="Organizations"
+        variant="select"
         title="One moment"
+        eyebrow="Organizations"
+        description="Loading your organizations."
       >
         <p className="font-mono text-xs tracking-[0.05em] text-body uppercase">Loading</p>
       </AuthCard>
@@ -31,6 +32,7 @@ const SelectOrganizationContent: FC = () => {
       description="You belong to more than one organization. Choose where to continue."
       eyebrow="Organizations"
       title="Select organization"
+      variant="select"
     >
       <ul className="space-y-3">
         {data.memberships.map((membership) => (

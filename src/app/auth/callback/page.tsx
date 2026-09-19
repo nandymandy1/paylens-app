@@ -8,11 +8,12 @@ import { authKeys } from "@/services/auth.service";
 import { reconcileAuthMe } from "@/hooks/useAuth";
 import useAuthSessionStore from "@/stores/auth-session";
 import { getSafePostAuthRedirect } from "@/utils/auth-redirect";
+import { AUTH_ROUTES } from "@/utils/routes";
 
 const AuthCallbackContent: FC = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const queryClient = useQueryClient();
+  const searchParams = useSearchParams();
   const [attempt, setAttempt] = useState(0);
   const sessionStatus = useAuthSessionStore((state) => state.status);
 
@@ -27,7 +28,7 @@ const AuthCallbackContent: FC = () => {
         me = await queryClient.fetchQuery({ queryKey: authKeys.me(), queryFn: reconcileAuthMe });
       } catch {
         if (!cancelled && useAuthSessionStore.getState().status === "anonymous") {
-          router.replace("/login");
+          router.replace(AUTH_ROUTES.login);
         }
 
         return;
@@ -38,10 +39,10 @@ const AuthCallbackContent: FC = () => {
       }
 
       if (me.onboardingRequired) {
-        router.replace("/onboarding/organization");
+        router.replace(AUTH_ROUTES.onboardingOrganization);
       } else if (me.organizationSelectionRequired) {
         useAuthSessionStore.getState().markAuthenticated();
-        router.replace("/select-organization");
+        router.replace(AUTH_ROUTES.selectOrganization);
       } else {
         useAuthSessionStore.getState().markAuthenticated();
         router.replace(getSafePostAuthRedirect(searchParams.get("redirect_to")));
@@ -61,6 +62,7 @@ const AuthCallbackContent: FC = () => {
         description="Your Google session is ready, but we could not verify it."
         eyebrow="Google"
         title="Try again"
+        variant="callback"
       >
         <button
           className="text-sm font-medium text-ink underline underline-offset-4"
@@ -74,7 +76,12 @@ const AuthCallbackContent: FC = () => {
   }
 
   return (
-    <AuthCard description="Finishing Google sign-in." eyebrow="Google" title="One moment">
+    <AuthCard
+      description="Finishing Google sign-in."
+      eyebrow="Google"
+      title="One moment"
+      variant="callback"
+    >
       <p className="font-mono text-xs tracking-[0.05em] text-body uppercase">Resolving session</p>
     </AuthCard>
   );

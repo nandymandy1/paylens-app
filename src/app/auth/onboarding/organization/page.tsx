@@ -37,6 +37,7 @@ const OnboardingOrganizationPage: FC = () => {
       description="Your account has no organization yet. Create one to open your dashboard."
       eyebrow="Onboarding"
       title="Create your organization"
+      variant="onboarding"
     >
       <form
         className="mt-6 space-y-4"

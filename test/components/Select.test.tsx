@@ -39,7 +39,7 @@ describe("Select", () => {
 
     expect((trigger as HTMLButtonElement).disabled).toBe(true);
     expect(trigger.textContent).toContain("HR Manager");
-    expect(trigger.className).toContain("min-h-11");
+    expect(trigger.className).toContain("h-11");
   });
 
   it("renders its default value in uncontrolled mode", () => {

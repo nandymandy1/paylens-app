@@ -14,14 +14,14 @@ const DashboardPageHeader: FC<DashboardPageHeaderProps> = ({
   title,
 }) => (
   <header className="dashboard-page-enter flex w-full flex-wrap items-end justify-between gap-4">
-    <div className="max-w-2xl">
+    <div className="max-w-2xl page-header-accent">
       {eyebrow && (
-        <p className="font-mono text-[11px] font-medium tracking-[0.09em] text-body uppercase">
+        <p className="font-mono text-[10px] font-medium tracking-[0.09em] text-body/60 uppercase">
           {eyebrow}
         </p>
       )}
-      <h1 className="mt-2 text-3xl font-medium tracking-tight sm:text-4xl">{title}</h1>
-      {description && <p className="mt-3 text-base leading-6 text-body">{description}</p>}
+      <h1 className="mt-2 text-2xl font-medium tracking-tight text-ink sm:text-3xl">{title}</h1>
+      {description && <p className="mt-2.5 text-sm leading-6 text-body">{description}</p>}
     </div>
     {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
   </header>

@@ -2,12 +2,16 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState, type FC } from "react";
+import { Plus } from "lucide-react";
 import DashboardPageHeader from "@/components/dashboard/DashboardPageHeader";
 import EmployeeFilters from "@/components/employees/EmployeeFilters";
+import EmployeeDeleteDialog from "@/components/employees/EmployeeDeleteDialog";
+import EmployeeFormModal from "@/components/employees/EmployeeFormModal";
 import EmployeesTable from "@/components/employees/EmployeesTable";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import { useMe } from "@/hooks/useAuth";
+import { useCrudModal } from "@/hooks/useCrudModalParams";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDepartments, useEmployees } from "@/hooks/useEmployees";
 import type { EmployeeDirection, EmployeeSort } from "@/types/employee.type";
@@ -15,10 +19,24 @@ import {
   EMPLOYEE_DIRECTIONS,
   EMPLOYEE_DIRECTORY_ROLES,
   EMPLOYEE_SORTS,
+  EMPLOYEE_WRITE_ROLES,
 } from "@/types/employee.type";
 
 const ALL = "ALL";
 const PAGE_LIMIT = 25;
+
+/** Modal params ride alongside directory state; they never reset filters. */
+const MODAL_KEYS = ["employeeModal", "employeeId"] as const;
+
+const withoutModal = (params: URLSearchParams): string => {
+  const copy = new URLSearchParams(params.toString());
+
+  for (const key of MODAL_KEYS) {
+    copy.delete(key);
+  }
+
+  return copy.toString();
+};
 
 /** Cursor page state: `null` is the canonical first-page sentinel. */
 type CursorState = string | null;
@@ -47,6 +65,17 @@ const EmployeesDirectory: FC = () => {
   const canView = activeRole
     ? (EMPLOYEE_DIRECTORY_ROLES as readonly string[]).includes(activeRole)
     : false;
+  const canManage = activeRole
+    ? (EMPLOYEE_WRITE_ROLES as readonly string[]).includes(activeRole)
+    : false;
+  const organizationId = session?.activeOrganization?.id;
+
+  const modal = useCrudModal({
+    modalKey: "employeeModal",
+    idKey: "employeeId",
+    allowed: ["create", "edit", "delete"],
+    organizationId,
+  });
 
   const [searchInput, setSearchInput] = useState(searchParams.get("search") ?? "");
   const [departmentId, setDepartmentId] = useState(searchParams.get("departmentId") ?? ALL);
@@ -77,6 +106,15 @@ const EmployeesDirectory: FC = () => {
         params.set("cursor", options.cursor);
       }
 
+      // CRUD modal state survives filter/search/sort/cursor navigation.
+      for (const key of MODAL_KEYS) {
+        const current = searchParams.get(key);
+
+        if (current) {
+          params.set(key, current);
+        }
+      }
+
       lastSyncRef.current = params.toString();
 
       const navigate = options?.mode === "push" ? router.push : router.replace;
@@ -85,7 +123,7 @@ const EmployeesDirectory: FC = () => {
         scroll: false,
       });
     },
-    [router],
+    [router, searchParams],
   );
 
   const snapshot = useCallback(
@@ -200,8 +238,15 @@ const EmployeesDirectory: FC = () => {
   // Adopt browser navigation (Back/Forward) and deep links: when the URL
   // changes without a local write, the URL is authoritative. The local
   // cursor history is dropped because opaque cursors cannot reconstruct it.
+  // Modal-only changes (open/close) never disturb filter or cursor state.
   useEffect(() => {
     if (lastSyncRef.current === searchParams.toString()) {
+      return;
+    }
+
+    if (withoutModal(new URLSearchParams(lastSyncRef.current)) === withoutModal(searchParams)) {
+      lastSyncRef.current = searchParams.toString();
+
       return;
     }
 
@@ -235,8 +280,18 @@ const EmployeesDirectory: FC = () => {
     <section className="dashboard-content-enter relative z-10 w-full min-w-0 space-y-6">
       <DashboardPageHeader
         description="Browse and understand your organization's workforce."
-        eyebrow="Workforce"
         title="Employees"
+        eyebrow="Workforce"
+        actions={
+          canManage && (
+            <Button
+              prefixIcon={<Plus aria-hidden="true" className="size-4" />}
+              onClick={modal.openCreate}
+            >
+              Add employee
+            </Button>
+          )
+        }
       />
 
       {!canView && (
@@ -306,7 +361,10 @@ const EmployeesDirectory: FC = () => {
                 employees={employees.data?.items}
                 hasActiveFilters={hasActiveFilters}
                 isLoading={employees.isPending}
+                canManage={canManage}
                 onClearFilters={clearFilters}
+                onEdit={(employee) => modal.openEntity("edit", employee.id)}
+                onDelete={(employee) => modal.openEntity("delete", employee.id)}
               />
               <div className="flex items-center justify-end gap-2">
                 <Button
@@ -328,6 +386,16 @@ const EmployeesDirectory: FC = () => {
           )}
         </>
       )}
+
+      <EmployeeFormModal
+        mode={modal.mode === "create" || modal.mode === "edit" ? modal.mode : null}
+        employeeId={modal.entityId}
+        onClose={modal.close}
+      />
+      <EmployeeDeleteDialog
+        employeeId={modal.mode === "delete" ? modal.entityId : null}
+        onClose={modal.close}
+      />
     </section>
   );
 };

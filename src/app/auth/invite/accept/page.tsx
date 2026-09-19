@@ -23,6 +23,7 @@ import { useForm } from "react-hook-form";
 import FormField from "@/components/ui/FormField";
 import Input from "@/components/ui/Input";
 import InputPassword from "@/components/ui/InputPassword";
+import { AUTH_ROUTES } from "@/utils/routes";
 
 const InviteAcceptContent: FC = () => {
   const router = useRouter();
@@ -53,8 +54,9 @@ const InviteAcceptContent: FC = () => {
         description="This invitation link is missing its token."
         eyebrow="Invalid link"
         title="Link incomplete"
+        variant="invite"
       >
-        <Link className="text-sm underline underline-offset-4" href="/login">
+        <Link className="text-sm underline underline-offset-4" href={AUTH_ROUTES.login}>
           Back to sign in
         </Link>
       </AuthCard>
@@ -63,7 +65,12 @@ const InviteAcceptContent: FC = () => {
 
   if (preview.isPending) {
     return (
-      <AuthCard description="Loading invitation details." eyebrow="Invitation" title="One moment">
+      <AuthCard
+        description="Loading invitation details."
+        eyebrow="Invitation"
+        title="One moment"
+        variant="invite"
+      >
         <p className="font-mono text-xs tracking-[0.05em] text-body uppercase">Loading</p>
       </AuthCard>
     );
@@ -83,8 +90,9 @@ const InviteAcceptContent: FC = () => {
         }
         eyebrow="Invitation"
         title="Cannot preview invitation"
+        variant="invite"
       >
-        <Link className="text-sm underline underline-offset-4" href="/login">
+        <Link className="text-sm underline underline-offset-4" href={AUTH_ROUTES.login}>
           Back to sign in
         </Link>
       </AuthCard>
@@ -133,6 +141,7 @@ const InviteAcceptContent: FC = () => {
       description={`You are invited to join ${invitation.organization.name} as ${invitation.role}.`}
       eyebrow="Invitation"
       title={invitation.organization.name}
+      variant="invite"
     >
       <dl className="space-y-1 text-sm">
         <div className="flex justify-between gap-4">
@@ -152,7 +161,7 @@ const InviteAcceptContent: FC = () => {
             , or register below with the invited email.
           </Alert>
           <div className="mt-4 flex gap-3">
-            <Link className="text-sm underline underline-offset-4" href="/login">
+            <Link className="text-sm underline underline-offset-4" href={AUTH_ROUTES.login}>
               Switch account
             </Link>
           </div>
@@ -257,7 +266,7 @@ const InviteAcceptContent: FC = () => {
             Already have an account?{" "}
             <Link
               className="underline underline-offset-4"
-              href={`/login?redirect_to=${encodeURIComponent(`/invite/accept?token=${token}`)}`}
+              href={`${AUTH_ROUTES.login}?redirect_to=${encodeURIComponent(`/auth/invite/accept?token=${token}`)}`}
             >
               Sign in to accept
             </Link>

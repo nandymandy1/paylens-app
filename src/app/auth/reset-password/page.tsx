@@ -14,6 +14,7 @@ import FormField from "@/components/ui/FormField";
 import InputPassword from "@/components/ui/InputPassword";
 import { useResetPassword } from "@/hooks/useAuth";
 import { ApiError } from "@/services/api";
+import { AUTH_ROUTES } from "@/utils/routes";
 import { resetPasswordSchema } from "@/types/auth.type";
 
 const ResetPasswordForm: FC = () => {
@@ -34,8 +35,9 @@ const ResetPasswordForm: FC = () => {
         description="This reset link is missing its token. Request a new one."
         eyebrow="Invalid link"
         title="Link incomplete"
+        variant="reset"
       >
-        <Link className="text-sm underline underline-offset-4" href="/forgot-password">
+        <Link className="text-sm underline underline-offset-4" href={AUTH_ROUTES.forgotPassword}>
           Request another reset
         </Link>
       </AuthCard>
@@ -47,6 +49,7 @@ const ResetPasswordForm: FC = () => {
       description="Choose a new password for your account."
       eyebrow="Reset password"
       title="New password"
+      variant="reset"
     >
       <form
         className="mt-6 space-y-4"
@@ -63,7 +66,7 @@ const ResetPasswordForm: FC = () => {
               }
             },
             onSuccess: () => {
-              router.push("/login?password_reset=success");
+              router.push(`${AUTH_ROUTES.login}?password_reset=success`);
             },
           }),
         )}
@@ -98,7 +101,7 @@ const ResetPasswordForm: FC = () => {
         {errors.root?.message && (
           <Alert icon={<AlertCircle className="size-4" />} title="Reset failed" variant="danger">
             {errors.root.message}{" "}
-            <Link className="underline underline-offset-4" href="/forgot-password">
+            <Link className="underline underline-offset-4" href={AUTH_ROUTES.forgotPassword}>
               Request another reset
             </Link>
           </Alert>

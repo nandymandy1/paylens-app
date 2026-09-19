@@ -1,27 +1,20 @@
 "use client";
 
-import Link from "next/link";
-import { useState, type FC } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AlertCircle, Plus } from "lucide-react";
-import { toast } from "sonner";
+import { Suspense, type FC } from "react";
+import { Plus } from "lucide-react";
 import DashboardPageHeader from "@/components/dashboard/DashboardPageHeader";
+import DepartmentDeleteModal from "@/components/departments/DepartmentDeleteModal";
+import DepartmentFormModal from "@/components/departments/DepartmentFormModal";
 import DepartmentsTable from "@/components/departments/DepartmentsTable";
-import Alert from "@/components/ui/Alert";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
-import Modal from "@/components/ui/Modal";
 import { useMe } from "@/hooks/useAuth";
+import { useCrudModal } from "@/hooks/useCrudModalParams";
 import { useDepartmentList } from "@/hooks/useDepartments";
-import { ApiError } from "@/services/api";
-import { deleteDepartment, departmentKeys } from "@/services/department.service";
-import { employeeKeys } from "@/services/employee.service";
 import { EMPLOYEE_DIRECTORY_ROLES } from "@/types/employee.type";
-import type { DepartmentSummary } from "@/types/department.type";
 import { MEMBER_ADMIN_ROLES } from "@/types/organization.type";
 
-const DepartmentsPage: FC = () => {
-  const queryClient = useQueryClient();
+const DepartmentsContent: FC = () => {
   const { data: session } = useMe();
   const organizationId = session?.activeOrganization?.id;
   const activeRole = session?.activeMembership?.role;
@@ -33,31 +26,16 @@ const DepartmentsPage: FC = () => {
     : false;
 
   const departments = useDepartmentList({ enabled: canView });
-  const [selected, setSelected] = useState<DepartmentSummary | null>(null);
-  const [deleteError, setDeleteError] = useState<string | null>(null);
-
-  const closeDelete = () => {
-    setSelected(null);
-    setDeleteError(null);
-  };
-
-  const remove = useMutation({
-    mutationFn: (departmentId: string) => deleteDepartment(departmentId),
-    onError: (error) => {
-      const message =
-        error instanceof ApiError && error.code === "DEPARTMENT_IN_USE"
-          ? "Department cannot be deleted while employees are assigned to it."
-          : "Could not delete department. Try again.";
-
-      setDeleteError(message);
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: departmentKeys.list(organizationId) });
-      await queryClient.invalidateQueries({ queryKey: employeeKeys.departments(organizationId) });
-      toast.success("Department deleted");
-      closeDelete();
-    },
+  const modal = useCrudModal({
+    modalKey: "departmentModal",
+    idKey: "departmentId",
+    allowed: ["create", "edit", "delete"],
+    organizationId,
   });
+
+  const formMode = modal.mode === "create" || modal.mode === "edit" ? modal.mode : null;
+  const deleteId = modal.mode === "delete" ? modal.entityId : null;
+  const deleteName = departments.data?.find((item) => item.id === deleteId)?.name;
 
   return (
     <section className="dashboard-content-enter relative z-10 w-full min-w-0 space-y-6">
@@ -67,11 +45,12 @@ const DepartmentsPage: FC = () => {
         title="Departments"
         actions={
           canManage && (
-            <Link href="/dashboard/departments/new">
-              <Button prefixIcon={<Plus aria-hidden="true" className="size-4" />}>
-                Add department
-              </Button>
-            </Link>
+            <Button
+              prefixIcon={<Plus aria-hidden="true" className="size-4" />}
+              onClick={modal.openCreate}
+            >
+              Add department
+            </Button>
           )
         }
       />
@@ -104,44 +83,27 @@ const DepartmentsPage: FC = () => {
               departments={departments.data}
               isLoading={departments.isPending}
               canManage={canManage}
-              onDelete={(department) => {
-                setDeleteError(null);
-                setSelected(department);
-              }}
+              onEdit={(department) => modal.openEntity("edit", department.id)}
+              onDelete={(department) => modal.openEntity("delete", department.id)}
             />
           )}
         </>
       )}
 
-      <Modal
-        description="Departments can only be deleted when no employees are assigned to them."
-        footer={
-          <>
-            <Button onClick={closeDelete} variant="outline">
-              Cancel
-            </Button>
-            <Button
-              loading={remove.isPending}
-              onClick={() => selected && remove.mutate(selected.id)}
-            >
-              Delete department
-            </Button>
-          </>
-        }
-        onOpenChange={(open) => {
-          if (!open) closeDelete();
-        }}
-        open={selected !== null}
-        title={selected ? `Delete ${selected.name}?` : "Delete department"}
-      >
-        {deleteError && (
-          <Alert icon={<AlertCircle className="size-4" />} title="Delete failed" variant="danger">
-            {deleteError}
-          </Alert>
-        )}
-      </Modal>
+      <DepartmentFormModal mode={formMode} departmentId={modal.entityId} onClose={modal.close} />
+      <DepartmentDeleteModal
+        departmentId={deleteId}
+        fallbackName={deleteName}
+        onClose={modal.close}
+      />
     </section>
   );
 };
+
+const DepartmentsPage: FC = () => (
+  <Suspense fallback={<p className="text-sm text-body">Loading departments.</p>}>
+    <DepartmentsContent />
+  </Suspense>
+);
 
 export default DepartmentsPage;

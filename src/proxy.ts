@@ -11,7 +11,7 @@ export function proxy(request: NextRequest) {
   if (pathname.startsWith("/dashboard") && !hint) {
     const url = request.nextUrl.clone();
 
-    url.pathname = "/login";
+    url.pathname = "/auth/login";
     url.searchParams.set("redirect_to", `${pathname}${search}`);
 
     return NextResponse.redirect(url);

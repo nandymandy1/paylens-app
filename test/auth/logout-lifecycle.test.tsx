@@ -102,7 +102,7 @@ describe("explicit logout lifecycle", () => {
     await userEvent.click(screen.getByRole("button", { name: "logout" }));
 
     await waitFor(() => {
-      expect(push).toHaveBeenCalledWith("/login");
+      expect(push).toHaveBeenCalledWith("/auth/login");
     });
 
     expect(mockedApi.post).toHaveBeenCalledTimes(1);
@@ -197,7 +197,7 @@ describe("explicit logout lifecycle", () => {
     await userEvent.click(screen.getByRole("button", { name: "logout" }));
 
     await waitFor(() => {
-      expect(push).toHaveBeenCalledWith("/login");
+      expect(push).toHaveBeenCalledWith("/auth/login");
     });
 
     // The stale bootstrap resolves only after logout settled: it must not
@@ -238,7 +238,7 @@ describe("explicit logout lifecycle", () => {
       expect(mockedApi.get).toHaveBeenCalledWith(expect.stringContaining("/auth/me"));
     });
 
-    expect(push).not.toHaveBeenCalledWith("/login");
+    expect(push).not.toHaveBeenCalledWith("/auth/login");
     // The server session still exists, so reconciliation lands authenticated.
     await waitFor(() => {
       expect(useAuthSessionStore.getState().status).toBe("authenticated");

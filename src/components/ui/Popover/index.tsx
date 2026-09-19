@@ -30,7 +30,7 @@ const Popover: FC<PopoverProps> = ({
         <PopoverPrimitive.Content
           align={align}
           className={cn(
-            "z-50 w-72 rounded-sm border border-hairline bg-surface p-4 text-sm text-ink shadow-soft outline-none",
+            "z-50 w-72 rounded-md border border-hairline bg-surface p-4 text-sm text-ink shadow-elevated outline-none",
             "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:fade-in",
             className,
           )}

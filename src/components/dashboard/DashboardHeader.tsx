@@ -11,6 +11,7 @@ import { useLogout, useMe } from "@/hooks/useAuth";
 import useThemeStore from "@/stores/theme";
 import cn from "@/utils/cn";
 import { formatEnumLabel, getInitials } from "@/utils/string";
+import { AUTH_ROUTES } from "@/utils/routes";
 import PayLensLogo from "@/components/brand/PayLensLogo";
 
 type DashboardHeaderProps = {
@@ -21,14 +22,13 @@ type DashboardHeaderProps = {
 const DashboardHeader: FC<DashboardHeaderProps> = ({ onOpenMobileSidebar, sidebarCollapsed }) => {
   const logout = useLogout();
   const { data: session } = useMe();
-  const theme = useThemeStore((state) => state.theme);
-  const toggleTheme = useThemeStore((state) => state.toggleTheme);
+  const { theme, toggleTheme } = useThemeStore((s) => s);
   const initials = session ? getInitials(session.user.firstName, session.user.lastName) : "?";
 
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-30 flex h-16 items-center gap-3 border-b border-hairline bg-surface/95 px-4 backdrop-blur-sm transition-[left,background-color] duration-200 md:px-6 lg:px-8",
+        "fixed top-0 left-0 right-0 z-30 flex h-16 items-center gap-3 border-b border-hairline bg-surface-header px-4 backdrop-blur-md transition-[left,background-color] duration-200 md:px-6 lg:px-8",
         sidebarCollapsed ? "md:left-16" : "md:left-60",
       )}
     >
@@ -37,13 +37,15 @@ const DashboardHeader: FC<DashboardHeaderProps> = ({ onOpenMobileSidebar, sideba
       </span>
       <PayLensLogo className="shrink-0 md:hidden" size="sm" variant="compact" />
       <div className="min-w-0 flex-1">
-        <p className="font-mono text-[10px] tracking-[0.06em] text-body uppercase">Organization</p>
-        <p className="truncate text-sm font-medium">
+        <p className="font-mono text-[9px] font-medium tracking-[0.08em] text-body/60 uppercase">
+          Organization
+        </p>
+        <p className="truncate text-sm font-medium text-ink">
           {session?.activeOrganization?.name ?? "PayLens"}
         </p>
       </div>
       {session && session.memberships.length > 1 && (
-        <Link className="auth-link text-sm text-body" href="/select-organization">
+        <Link className="auth-link text-sm text-body" href={AUTH_ROUTES.selectOrganization}>
           Switch organization
         </Link>
       )}

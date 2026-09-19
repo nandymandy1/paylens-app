@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import type { FC } from "react";
+import { Eye, Pencil, Trash2 } from "lucide-react";
 import Avatar from "@/components/ui/Avatar";
 import Badge from "@/components/ui/Badge";
 import DataTable, { type DataTableColumn, type DataTableRow } from "@/components/ui/Table";
@@ -12,7 +13,10 @@ type EmployeesTableProps = {
   isLoading: boolean;
   hasActiveFilters: boolean;
   employees: EmployeeListItem[] | undefined;
+  canManage: boolean;
   onClearFilters: () => void;
+  onEdit: (employee: EmployeeListItem) => void;
+  onDelete: (employee: EmployeeListItem) => void;
 };
 
 const columns: DataTableColumn[] = [
@@ -22,6 +26,7 @@ const columns: DataTableColumn[] = [
   { header: "Job title", id: "jobTitle" },
   { header: "Location", id: "location" },
   { header: "Status", id: "status" },
+  { align: "right", header: "Actions", id: "actions" },
 ];
 
 const statusVariant = (status: string) => {
@@ -40,7 +45,10 @@ const EmployeesTable: FC<EmployeesTableProps> = ({
   employees,
   isLoading,
   hasActiveFilters,
+  canManage,
   onClearFilters,
+  onEdit,
+  onDelete,
 }) => {
   const rows: DataTableRow[] =
     employees?.map((employee) => ({
@@ -78,33 +86,71 @@ const EmployeesTable: FC<EmployeesTableProps> = ({
         status: (
           <Badge variant={statusVariant(employee.status)}>{formatEnumLabel(employee.status)}</Badge>
         ),
+        actions: canManage ? (
+          <span className="flex items-center justify-end gap-0.5">
+            <Link
+              aria-label={`View ${employee.firstName} ${employee.lastName}`}
+              className="inline-flex size-8 items-center justify-center rounded-md text-body transition-[background-color,color] duration-150 hover:bg-canvas-soft hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+              href={`/dashboard/employees/${employee.id}`}
+              onClick={(event) => event.stopPropagation()}
+            >
+              <Eye aria-hidden="true" className="size-3.5" />
+            </Link>
+            <button
+              aria-label={`Edit ${employee.firstName} ${employee.lastName}`}
+              className="inline-flex size-8 cursor-pointer items-center justify-center rounded-md text-body transition-[background-color,color] duration-150 hover:bg-canvas-soft hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+              onClick={(event) => {
+                event.stopPropagation();
+                onEdit(employee);
+              }}
+              type="button"
+            >
+              <Pencil aria-hidden="true" className="size-3.5" />
+            </button>
+            <button
+              aria-label={`Delete ${employee.firstName} ${employee.lastName}`}
+              className="inline-flex size-8 cursor-pointer items-center justify-center rounded-md text-body transition-[background-color,color] duration-150 hover:bg-danger-soft hover:text-danger focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+              onClick={(event) => {
+                event.stopPropagation();
+                onDelete(employee);
+              }}
+              type="button"
+            >
+              <Trash2 aria-hidden="true" className="size-3.5" />
+            </button>
+          </span>
+        ) : (
+          <span className="text-xs text-body">—</span>
+        ),
       },
       id: employee.id,
     })) ?? [];
 
   return (
-    <DataTable
-      rows={rows}
-      columns={columns}
-      loading={isLoading}
-      ariaLabel="Organization employees"
-      emptyState={
-        hasActiveFilters ? (
-          <span>
-            No employees match these filters.{" "}
-            <button
-              className="font-medium text-ink underline underline-offset-4"
-              onClick={onClearFilters}
-              type="button"
-            >
-              Clear filters
-            </button>
-          </span>
-        ) : (
-          "No employees yet."
-        )
-      }
-    />
+    <div className="rounded-md border border-hairline bg-surface shadow-soft">
+      <DataTable
+        rows={rows}
+        columns={columns}
+        loading={isLoading}
+        ariaLabel="Organization employees"
+        emptyState={
+          hasActiveFilters ? (
+            <span>
+              No employees match these filters.{" "}
+              <button
+                className="font-medium text-ink underline underline-offset-4"
+                onClick={onClearFilters}
+                type="button"
+              >
+                Clear filters
+              </button>
+            </span>
+          ) : (
+            "No employees yet."
+          )
+        }
+      />
+    </div>
   );
 };
 

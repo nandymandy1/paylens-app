@@ -1,9 +1,10 @@
-import type { FC } from "react";
+import type { FC, ImgHTMLAttributes } from "react";
 import cn from "@/utils/cn";
 import Image from "next/image";
 
 type PayLensLogoProps = {
   className?: string;
+  loading?: ImgHTMLAttributes<HTMLImageElement>["loading"];
   size?: "sm" | "md" | "lg";
   theme?: "auto" | "light" | "dark";
   variant?: "full" | "compact" | "mark";
@@ -17,6 +18,7 @@ const sizes = {
 
 const PayLensLogo: FC<PayLensLogoProps> = ({
   className,
+  loading = "lazy",
   size = "md",
   theme = "auto",
   variant = "full",
@@ -29,6 +31,7 @@ const PayLensLogo: FC<PayLensLogoProps> = ({
         height={120}
         src="/brand/paylens-mark.svg"
         className={cn(sizes[size], "w-auto", className)}
+        loading={loading}
       />
     );
   }
@@ -45,6 +48,7 @@ const PayLensLogo: FC<PayLensLogoProps> = ({
         alt="PayLens"
         className={cn(sizes[size], "w-auto", className)}
         src={theme === "dark" ? dark : light}
+        loading={loading}
       />
     );
   }
@@ -61,6 +65,7 @@ const PayLensLogo: FC<PayLensLogoProps> = ({
         height={64}
         src={light}
         width={240}
+        loading={loading}
       />
       <Image
         alt=""
@@ -68,6 +73,7 @@ const PayLensLogo: FC<PayLensLogoProps> = ({
         height={64}
         src={dark}
         width={240}
+        loading="lazy"
       />
     </span>
   );

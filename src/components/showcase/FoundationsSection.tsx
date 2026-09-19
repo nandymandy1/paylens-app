@@ -14,8 +14,7 @@ const swatches = [
   { label: "Periwinkle", className: "bg-accent-periwinkle" },
 ];
 const FoundationsSection: FC = () => {
-  const theme = useThemeStore((state) => state.theme);
-  const toggleTheme = useThemeStore((state) => state.toggleTheme);
+  const { theme, toggleTheme } = useThemeStore((s) => s);
 
   return (
     <ShowcaseSection

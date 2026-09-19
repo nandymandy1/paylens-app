@@ -41,7 +41,8 @@ const themeScript = `
       document.documentElement.style.colorScheme = theme;
     }
   } catch (_) {}
-})();`;
+})();
+`;
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (

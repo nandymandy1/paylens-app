@@ -84,16 +84,20 @@ const SidebarBody: FC<SidebarBodyProps> = ({
           const navLink = (
             <Link
               className={cn(
-                "relative flex items-center gap-3 rounded-sm px-3 py-2 text-sm transition-[background-color,color,transform] duration-150 ease-out hover:translate-x-px hover:bg-canvas-soft",
-                active &&
-                  "bg-canvas-soft font-medium before:absolute before:inset-y-2 before:left-0 before:w-0.5 before:bg-[linear-gradient(180deg,#FC4C02_0%,#EF2CC1_40%,#BDBBFF_70%,#3455FF_100%)]",
+                "relative flex items-center gap-3 rounded-sm px-3 py-2 text-sm transition-[background-color,color] duration-150 ease-out",
+                active
+                  ? "bg-surface-hover font-medium text-ink sidebar-nav-active"
+                  : "text-body hover:bg-surface-hover hover:text-ink",
                 collapsed && "justify-center px-2",
               )}
               href={item.href}
               onClick={onNavigate}
               aria-current={active ? "page" : undefined}
             >
-              <Icon aria-hidden="true" className="size-4 shrink-0" />
+              <Icon
+                aria-hidden="true"
+                className={cn("size-4 shrink-0", active ? "text-ink" : "text-body")}
+              />
               {!collapsed && <span>{item.label}</span>}
             </Link>
           );

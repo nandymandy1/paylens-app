@@ -57,7 +57,7 @@ describe("Google callback reconciliation", () => {
 
     render(<AuthCallbackPage />, { wrapper: Wrapper });
 
-    await waitFor(() => expect(replace).toHaveBeenCalledWith("/login"));
+    await waitFor(() => expect(replace).toHaveBeenCalledWith("/auth/login"));
     expect(useAuthSessionStore.getState().status).toBe("anonymous");
   });
 });

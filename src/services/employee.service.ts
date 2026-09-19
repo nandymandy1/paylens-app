@@ -2,9 +2,11 @@ import api from "@/services/api";
 import type { BaseResponseWithData } from "@/types/api-response.types";
 import type {
   DepartmentOption,
+  EmployeeCreateRequest,
   EmployeeDetail,
   EmployeeListPage,
   EmployeeListParams,
+  EmployeeUpdateRequest,
 } from "@/types/employee.type";
 
 export const employeeKeys = {
@@ -68,4 +70,29 @@ export const fetchDepartments = async (): Promise<DepartmentOption[]> => {
   const { data } = await api.get<BaseResponseWithData<DepartmentOption[]>>("/departments");
 
   return data.data;
+};
+
+export const createEmployee = async (input: EmployeeCreateRequest): Promise<EmployeeDetail> => {
+  const { idempotencyKey, ...body } = input;
+  const { data } = await api.post<BaseResponseWithData<EmployeeDetail>>("/employees", body, {
+    headers: { "Idempotency-Key": idempotencyKey },
+  });
+
+  return data.data;
+};
+
+export const updateEmployee = async (
+  employeeId: string,
+  input: EmployeeUpdateRequest,
+): Promise<EmployeeDetail> => {
+  const { data } = await api.patch<BaseResponseWithData<EmployeeDetail>>(
+    `/employees/${employeeId}`,
+    input,
+  );
+
+  return data.data;
+};
+
+export const deleteEmployee = async (employeeId: string): Promise<void> => {
+  await api.delete(`/employees/${employeeId}`);
 };

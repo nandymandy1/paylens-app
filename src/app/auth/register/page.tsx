@@ -16,6 +16,7 @@ import InputEmail from "@/components/ui/InputEmail";
 import InputPassword from "@/components/ui/InputPassword";
 import { useRegister } from "@/hooks/useAuth";
 import { ApiError } from "@/services/api";
+import { AUTH_ROUTES } from "@/utils/routes";
 import { registerSchema, type RegisterInput } from "@/types/auth.type";
 
 const RegisterPage: FC = () => {
@@ -51,6 +52,7 @@ const RegisterPage: FC = () => {
         description={`We sent a verification link to ${registeredEmail}. Confirm your email to finish creating your organization.`}
         eyebrow="Check your inbox"
         title="Verification email sent"
+        variant="verify"
       >
         <Alert icon={<MailCheck className="size-4" />} title="Next step" variant="success">
           Open the link within 24 hours. You can request a new link from the sign-in page if it
@@ -59,7 +61,7 @@ const RegisterPage: FC = () => {
         <div className="mt-6">
           <Link
             className="inline-flex min-h-10 w-full items-center justify-center rounded-sm bg-primary px-4 font-mono text-sm font-medium tracking-[0.005em] text-on-primary uppercase transition-opacity hover:opacity-80"
-            href="/login"
+            href={AUTH_ROUTES.login}
           >
             Go to sign in
           </Link>
@@ -74,6 +76,7 @@ const RegisterPage: FC = () => {
         description="Create your organization and become its tenant owner."
         eyebrow="Create organization"
         title="Start with PayLens"
+        variant="register"
       >
         <form className="mt-6 space-y-4" noValidate onSubmit={handleSubmit(onSubmit)}>
           <FormField
@@ -160,7 +163,7 @@ const RegisterPage: FC = () => {
         </div>
         <p className="mt-6 text-sm text-body">
           Already have an account?{" "}
-          <Link className="underline underline-offset-4" href="/login">
+          <Link className="underline underline-offset-4" href={AUTH_ROUTES.login}>
             Sign in
           </Link>
         </p>

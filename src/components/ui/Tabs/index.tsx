@@ -35,7 +35,7 @@ const Tabs: FC<TabsProps> = ({ className, defaultValue, items, onValueChange, va
       >
         {items.map((item) => (
           <TabsPrimitive.Trigger
-            className="inline-flex shrink-0 items-center gap-2 border-b-2 border-transparent px-3 py-3 text-sm text-body outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-inset data-[state=active]:border-primary data-[state=active]:font-medium data-[state=active]:text-ink disabled:cursor-not-allowed disabled:opacity-45"
+            className="inline-flex shrink-0 items-center gap-2 border-b-2 border-transparent px-3 py-3 text-sm text-body outline-none transition-[border-color,color] duration-150 hover:text-ink focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-inset data-[state=active]:border-brand-magenta data-[state=active]:font-medium data-[state=active]:text-ink disabled:cursor-not-allowed disabled:opacity-40"
             disabled={item.disabled}
             key={item.value}
             value={item.value}

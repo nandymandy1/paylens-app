@@ -17,7 +17,9 @@ describe("dashboard proxy", () => {
     const response = proxy(requestFor("/dashboard/members"));
 
     expect(response.status).toBe(307);
-    expect(response.headers.get("location")).toContain("/login?redirect_to=%2Fdashboard%2Fmembers");
+    expect(response.headers.get("location")).toContain(
+      "/auth/login?redirect_to=%2Fdashboard%2Fmembers",
+    );
   });
 
   it("lets hinted requests through to backend-guarded routes", () => {

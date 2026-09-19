@@ -109,7 +109,7 @@ describe("auth guards", () => {
     await waitFor(() => {
       expect(replace).toHaveBeenCalledTimes(1);
     });
-    expect(replace).toHaveBeenCalledWith("/login?redirect_to=%2Fdashboard%2Fmembers");
+    expect(replace).toHaveBeenCalledWith("/auth/login?redirect_to=%2Fdashboard%2Fmembers");
   });
 
   it("blocks stale protected content and offers retry on a reconciliation error", () => {

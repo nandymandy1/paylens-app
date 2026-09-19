@@ -64,13 +64,15 @@ const InvitationsTable: FC<InvitationsTableProps> = ({
     }) ?? [];
 
   return (
-    <DataTable
-      ariaLabel="Organization invitations"
-      columns={columns}
-      emptyState="No invitations."
-      loading={isLoading}
-      rows={rows}
-    />
+    <div className="rounded-md border border-hairline bg-surface shadow-soft">
+      <DataTable
+        ariaLabel="Organization invitations"
+        columns={columns}
+        emptyState="No pending invitations. Invite teammates to help manage PayLens."
+        loading={isLoading}
+        rows={rows}
+      />
+    </div>
   );
 };
 

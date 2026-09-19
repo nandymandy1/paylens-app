@@ -11,6 +11,7 @@ type DepartmentsTableProps = {
   departments: DepartmentSummary[] | undefined;
   isLoading: boolean;
   canManage: boolean;
+  onEdit: (department: DepartmentSummary) => void;
   onDelete: (department: DepartmentSummary) => void;
 };
 
@@ -26,6 +27,7 @@ const DepartmentsTable: FC<DepartmentsTableProps> = ({
   departments,
   isLoading,
   canManage,
+  onEdit,
   onDelete,
 }) => {
   const rows: DataTableRow[] =
@@ -33,44 +35,47 @@ const DepartmentsTable: FC<DepartmentsTableProps> = ({
       cells: {
         department: (
           <Link
-            className="font-medium text-ink hover:underline focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+            className="font-medium text-ink underline-offset-4 hover:underline focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
             href={`/dashboard/employees?departmentId=${department.id}`}
             onClick={(event) => event.stopPropagation()}
           >
             {department.name}
           </Link>
         ),
-        code: <span className="font-mono text-xs text-body">{department.code}</span>,
+        code: <span className="dept-code-badge">{department.code}</span>,
         employees: (
           <Link
-            className="font-mono text-xs text-ink hover:underline focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+            className="font-mono text-xs tabular-nums text-ink underline-offset-4 hover:underline focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
             href={`/dashboard/employees?departmentId=${department.id}`}
             onClick={(event) => event.stopPropagation()}
           >
             {department.employeeCount.toLocaleString("en-US")}
           </Link>
         ),
-        created: <span className="text-body">{formatDate(department.createdAt)}</span>,
+        created: <span className="text-sm text-body">{formatDate(department.createdAt)}</span>,
         actions: canManage ? (
-          <span className="flex items-center justify-end gap-1">
-            <Link
+          <span className="flex items-center justify-end gap-0.5">
+            <button
               aria-label={`Edit ${department.name}`}
-              className="inline-flex min-h-9 min-w-9 items-center justify-center rounded-sm text-body hover:bg-canvas-soft hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
-              href={`/dashboard/departments/${department.id}/edit`}
-              onClick={(event) => event.stopPropagation()}
+              className="inline-flex size-8 cursor-pointer items-center justify-center rounded-md text-body transition-[background-color,color] duration-150 hover:bg-canvas-soft hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+              onClick={(event) => {
+                event.stopPropagation();
+                onEdit(department);
+              }}
+              type="button"
             >
-              <Pencil aria-hidden="true" className="size-4" />
-            </Link>
+              <Pencil aria-hidden="true" className="size-3.5" />
+            </button>
             <button
               aria-label={`Delete ${department.name}`}
-              className="inline-flex min-h-9 min-w-9 cursor-pointer items-center justify-center rounded-sm text-body hover:bg-canvas-soft hover:text-danger focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+              className="inline-flex size-8 cursor-pointer items-center justify-center rounded-md text-body transition-[background-color,color] duration-150 hover:bg-danger-soft hover:text-danger focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
               onClick={(event) => {
                 event.stopPropagation();
                 onDelete(department);
               }}
               type="button"
             >
-              <Trash2 aria-hidden="true" className="size-4" />
+              <Trash2 aria-hidden="true" className="size-3.5" />
             </button>
           </span>
         ) : (
@@ -81,13 +86,15 @@ const DepartmentsTable: FC<DepartmentsTableProps> = ({
     })) ?? [];
 
   return (
-    <DataTable
-      rows={rows}
-      columns={columns}
-      loading={isLoading}
-      ariaLabel="Organization departments"
-      emptyState="No departments yet."
-    />
+    <div className="rounded-md border border-hairline bg-surface shadow-soft">
+      <DataTable
+        rows={rows}
+        columns={columns}
+        loading={isLoading}
+        ariaLabel="Organization departments"
+        emptyState="No departments yet."
+      />
+    </div>
   );
 };
 

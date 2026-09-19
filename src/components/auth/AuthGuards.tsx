@@ -5,6 +5,7 @@ import { Suspense, useEffect, type FC, type PropsWithChildren } from "react";
 import { useMe } from "@/hooks/useAuth";
 import useAuthSessionStore from "@/stores/auth-session";
 import { getSafePostAuthRedirect } from "@/utils/auth-redirect";
+import { AUTH_ROUTES } from "@/utils/routes";
 
 type GuardProps = PropsWithChildren<{
   redirectTo?: string | null;
@@ -39,7 +40,7 @@ const RequireAuthInner: FC<GuardProps> = ({ children, redirectTo }) => {
       const current = redirectTo ?? `${pathname}${query ? `?${query}` : ""}`;
       const target = getSafePostAuthRedirect(current);
 
-      router.replace(`/login?redirect_to=${encodeURIComponent(target)}`);
+      router.replace(`${AUTH_ROUTES.login}?redirect_to=${encodeURIComponent(target)}`);
 
       return;
     }
@@ -59,9 +60,9 @@ const RequireAuthInner: FC<GuardProps> = ({ children, redirectTo }) => {
     }
 
     if (data.onboardingRequired) {
-      router.replace("/onboarding/organization");
+      router.replace(AUTH_ROUTES.onboardingOrganization);
     } else if (data.organizationSelectionRequired) {
-      router.replace("/select-organization");
+      router.replace(AUTH_ROUTES.selectOrganization);
     }
   }, [data, router]);
 

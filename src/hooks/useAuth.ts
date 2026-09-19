@@ -15,6 +15,7 @@ import {
 } from "@/services/auth.service";
 import { ApiError } from "@/services/api";
 import useAuthSessionStore, { getAuthSessionGeneration } from "@/stores/auth-session";
+import { AUTH_ROUTES } from "@/utils/routes";
 import type {
   ForgotPasswordInput,
   LoginInput,
@@ -143,7 +144,7 @@ export const useLogout = () => {
       queryClient.removeQueries({ queryKey: ["departments"] });
       queryClient.removeQueries({ queryKey: authKeys.me() });
       endLogout();
-      router.push("/login");
+      router.push(AUTH_ROUTES.login);
     },
     onError: async () => {
       // Ambiguous: the server session may still exist. Return to unknown so

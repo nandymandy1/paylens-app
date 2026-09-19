@@ -44,7 +44,7 @@ const Modal: FC<ModalProps> = ({
         <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-canvas-dark/55 data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out data-[state=open]:fade-in motion-reduce:animate-none" />
         <DialogPrimitive.Content
           className={cn(
-            "fixed top-1/2 left-1/2 z-[60] grid w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-5 rounded-sm border border-hairline bg-surface p-6 text-ink shadow-soft outline-none data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out data-[state=open]:fade-in motion-reduce:animate-none",
+            "fixed top-1/2 left-1/2 z-[60] grid w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-5 rounded-md border border-hairline bg-surface p-6 text-ink shadow-modal outline-none data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out data-[state=open]:fade-in motion-reduce:animate-none",
             sizeClasses[size],
           )}
           onInteractOutside={(event) => {
@@ -52,16 +52,16 @@ const Modal: FC<ModalProps> = ({
           }}
         >
           <div className="pr-9">
-            <DialogPrimitive.Title className="text-xl font-medium tracking-[-0.02em]">
+            <DialogPrimitive.Title className="text-lg font-medium tracking-[-0.01em] text-ink">
               {title}
             </DialogPrimitive.Title>
             {description && (
-              <DialogPrimitive.Description className="mt-2 text-sm leading-6 text-body">
+              <DialogPrimitive.Description className="mt-1.5 text-sm leading-6 text-body">
                 {description}
               </DialogPrimitive.Description>
             )}
           </div>
-          <div className="text-sm leading-6 text-body">{children}</div>
+          <div className="text-sm leading-6 text-body px-1">{children}</div>
           {footer && (
             <div className="flex flex-wrap justify-end gap-3 border-t border-hairline pt-5">
               {footer}

@@ -34,23 +34,31 @@ const DashboardShell: FC<PropsWithChildren> = ({ children }) => {
       {/* Desktop sidebar */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-40 hidden border-r border-hairline bg-surface/95 transition-[width,background-color] duration-200 md:block",
+          "fixed inset-y-0 left-0 z-40 hidden border-r border-hairline bg-surface-sidebar/95 backdrop-blur-sm transition-[width,background-color] duration-200 md:block",
           collapsed ? "w-16" : "w-60",
         )}
       >
         <div className="flex h-full flex-col p-3">
           <div
             className={cn(
-              "min-h-16 px-3 py-3",
+              "min-h-16 px-3 py-4",
               collapsed && "flex items-center justify-center px-0",
             )}
           >
-            <PayLensLogo size={collapsed ? "sm" : "md"} variant={collapsed ? "mark" : "compact"} />
-            {!collapsed && (
-              <p className="mt-3 font-mono text-[9px] font-medium tracking-[0.1em] text-body uppercase">
-                Compensation intelligence
-              </p>
-            )}
+            <div className={cn(!collapsed && "relative")}>
+              <PayLensLogo
+                size={collapsed ? "sm" : "md"}
+                variant={collapsed ? "mark" : "compact"}
+              />
+              {!collapsed && (
+                <div className="mt-2.5 flex items-center gap-2">
+                  <span className="inline-block h-px flex-1 bg-gradient-to-r from-brand-orange via-brand-magenta to-brand-periwinkle opacity-30" />
+                  <span className="font-mono text-[8px] font-medium tracking-[0.12em] text-body/60 uppercase">
+                    Intelligence
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
           <div className="mt-2 flex-1">
             <SidebarBody
@@ -59,14 +67,16 @@ const DashboardShell: FC<PropsWithChildren> = ({ children }) => {
               showMembersAdmin={showMembersAdmin}
             />
           </div>
-          <Tooltip content={collapsed ? "Expand sidebar" : "Collapse sidebar"} side="right">
-            <IconButton
-              variant="outline"
-              onClick={toggleSidebar}
-              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-              icon={collapsed ? <ChevronsRight size={16} /> : <ChevronsLeft size={16} />}
-            />
-          </Tooltip>
+          <div className="border-t border-hairline pt-3">
+            <Tooltip content={collapsed ? "Expand sidebar" : "Collapse sidebar"} side="right">
+              <IconButton
+                variant="outline"
+                onClick={toggleSidebar}
+                aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+                icon={collapsed ? <ChevronsRight size={16} /> : <ChevronsLeft size={16} />}
+              />
+            </Tooltip>
+          </div>
         </div>
       </aside>
 
@@ -100,6 +110,7 @@ const DashboardShell: FC<PropsWithChildren> = ({ children }) => {
           data-active-path={pathname}
         >
           <div aria-hidden="true" className="dashboard-canvas-aura" />
+          <div aria-hidden="true" className="dashboard-canvas-aura-secondary" />
           {children}
         </main>
       </div>

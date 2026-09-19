@@ -2,26 +2,41 @@
 
 :root,
 html[data-theme="light"] {
-  --canvas: #ffffff;
-  --canvas-soft: #f5f5f5;
+  --canvas: #fafafc;
+  --canvas-soft: #f0f0f5;
   --canvas-dark: #010120;
   --surface: #ffffff;
   --surface-subtle: #ebebeb;
+  --surface-elevated: #ffffff;
+  --surface-sidebar: #ffffff;
+  --surface-header: rgba(255 255 255 / 0.88);
+  --surface-hover: #f5f5fa;
   --surface-dark-soft: #313641;
-  --ink: #000000;
-  --body: #666666;
+  --ink: #0a0a1a;
+  --body: #6b6b80;
+  --body-strong: #3a3a50;
   --on-dark: #ffffff;
-  --primary: #000000;
+  --primary: #0a0a1a;
   --on-primary: #ffffff;
-  --hairline: #d9d9d9;
-  --focus: #4f46e5;
+  --hairline: #e2e2ea;
+  --hairline-strong: #d0d0da;
+  --focus: #7c5cff;
   --accent-mint: #c8f6f9;
   --brand-orange: #fc4c02;
   --brand-magenta: #ef2cc1;
   --brand-periwinkle: #bdbbff;
   --brand-blue: #3455ff;
+  --brand-gradient: linear-gradient(135deg, #fc4c02 0%, #ef2cc1 40%, #bdbbff 70%, #3455ff 100%);
+  --brand-gradient-horizontal: linear-gradient(
+    90deg,
+    #fc4c02 0%,
+    #ef2cc1 35%,
+    #bdbbff 65%,
+    #3455ff 100%
+  );
+  --brand-warm: #fc4c02;
   --accent-periwinkle: #bdbbff;
-  --success: #166534;
+  --success: #15803d;
   --success-soft: #dcfce7;
   --danger: #b91c1c;
   --danger-soft: #fee2e2;
@@ -29,34 +44,191 @@ html[data-theme="light"] {
   --warning-soft: #fef3c7;
   --info: #1d4ed8;
   --info-soft: #dbeafe;
-  --shadow-soft: 0 4px 10px rgb(1 1 32 / 10%);
+  --shadow-soft: 0 2px 8px rgb(10 10 26 / 6%);
+  --shadow-elevated: 0 4px 16px rgb(10 10 26 / 8%), 0 1px 4px rgb(10 10 26 / 4%);
+  --shadow-modal: 0 8px 32px rgb(10 10 26 / 12%), 0 2px 8px rgb(10 10 26 / 6%);
+  /* Cinematic / landing tokens — light */
+  --cinema-bg: #f7f7fb;
+  --cinema-bg-alt: #edeaf2;
+  --cinema-surface: #ffffff;
+  --cinema-surface-solid: #ffffff;
+  --cinema-surface-elevated: #ffffff;
+  --cinema-border: #d9dbe7;
+  --cinema-border-strong: #c0c2d0;
+  --cinema-text: #11111d;
+  --cinema-text-secondary: #55586a;
+  --cinema-text-muted: #6b6b80;
+  --cinema-text-faint: #8585a0;
+  --cinema-warm-glow: rgba(252 76 2 / 0.08);
+  --cinema-cool-glow: rgba(189 187 255 / 0.12);
+  --cinema-cyan-glow: rgba(200 246 249 / 0.1);
+  --cinema-magenta-glow: rgba(239 44 193 / 0.07);
+  --cinema-ribbon-opacity: 0.5;
+  --cinema-logo-ghost: 0.08;
+  --cinema-grid-color: rgba(0 0 0 / 0.04);
+  --cinema-card-bg: #ffffff;
+  --cinema-card-border: #d9dbe7;
+  --cinema-card-shadow: 0 2px 12px rgb(0 0 0 / 0.06), 0 1px 3px rgb(0 0 0 / 0.04);
+  --cinema-card-shadow-hover: 0 8px 28px rgb(0 0 0 / 0.08), 0 2px 6px rgb(0 0 0 / 0.05);
+  --cinema-input-bg: #ffffff;
+  --cinema-input-border: #c8cad6;
+  --cinema-input-focus: var(--brand-periwinkle);
+  --cinema-nav-bg: rgba(255 255 255 / 0.88);
+  --cinema-nav-border: #d9dbe7;
+  --cinema-nav-text: #55586a;
+  --cinema-nav-text-hover: #11111d;
+  --cinema-cta-bg: #11111d;
+  --cinema-cta-text: #ffffff;
+  --cinema-hero-text: #11111d;
+  --cinema-hero-subtext: #55586a;
+  --cinema-hero-eyebrow: #737689;
+  --cinema-hero-badge-bg: rgba(0 0 0 / 0.06);
+  --cinema-hero-badge-text: #55586a;
+  --cinema-hero-card-bg: #ffffff;
+  --cinema-hero-card-border: #d9dbe7;
+  --cinema-hero-card-text: #11111d;
+  --cinema-hero-card-muted: #6b6b80;
+  --cinema-hero-card-accent: rgba(0 0 0 / 0.05);
+  --cinema-hero-mark-opacity: 0.12;
+  --cinema-hero-mark-shadow: 0 12px 40px rgb(239 44 193 / 0.12);
+  --cinema-section-alt-bg: #f0eff4;
+  --cinema-timeline-line: #d9dbe7;
+  --cinema-timeline-node: #c0c2d0;
+  --cinema-timeline-card-bg: #ffffff;
+  --cinema-timeline-card-border: #d9dbe7;
+  --cinema-security-flow-bg: #f0eff4;
+  --cinema-security-flow-border: #d9dbe7;
+  --cinema-security-flow-text: #55586a;
+  --cinema-workflow-connector: #d0d2e0;
+  --cinema-footer-bg: #f0eff4;
+  --cinema-footer-text: #55586a;
+  --cinema-footer-link: #3a3a50;
+  --cinema-footer-link-hover: #11111d;
+  --cinema-footer-wordmark: rgba(0 0 0 / 0.06);
+  --cinema-footer-border: #d9dbe7;
+  --cinema-cta-section-bg: #11111d;
+  --cinema-cta-section-text: #ffffff;
+  --cinema-auth-bg: #f7f7fb;
+  --cinema-auth-card-bg: #ffffff;
+  --cinema-auth-card-border: #d9dbe7;
+  --cinema-auth-card-shadow: 0 4px 20px rgb(0 0 0 / 0.06), 0 1px 4px rgb(0 0 0 / 0.04);
+  --cinema-auth-brand-bg: #f0eff4;
+  --cinema-auth-brand-text: #11111d;
 }
 
 html[data-theme="dark"] {
-  --canvas: #010120;
-  --canvas-soft: #11112b;
-  --surface: #0d0d2b;
-  --surface-subtle: #26263a;
-  --ink: #ffffff;
-  --body: #b8b8c6;
-  --primary: #ffffff;
-  --on-primary: #010120;
-  --hairline: #3a3a50;
+  --canvas: #06061a;
+  --canvas-soft: #0c0c24;
+  --canvas-dark: #010120;
+  --surface: #0e0e2a;
+  --surface-subtle: #1a1a3a;
+  --surface-elevated: #141432;
+  --surface-sidebar: #0a0a22;
+  --surface-header: rgba(10 10 34 / 0.88);
+  --surface-hover: #16163a;
+  --surface-dark-soft: #313641;
+  --ink: #f0f0fa;
+  --body: #9898b0;
+  --body-strong: #d0d0e0;
+  --on-dark: #ffffff;
+  --primary: #f0f0fa;
+  --on-primary: #06061a;
+  --hairline: #1e1e3e;
+  --hairline-strong: #2a2a4a;
   --focus: #bdbbff;
   --accent-mint: #8edbe0;
   --brand-orange: #fc4c02;
   --brand-magenta: #ef2cc1;
   --brand-periwinkle: #bdbbff;
   --brand-blue: #3455ff;
+  --brand-gradient: linear-gradient(135deg, #fc4c02 0%, #ef2cc1 40%, #bdbbff 70%, #3455ff 100%);
+  --brand-gradient-horizontal: linear-gradient(
+    90deg,
+    #fc4c02 0%,
+    #ef2cc1 35%,
+    #bdbbff 65%,
+    #3455ff 100%
+  );
+  --brand-warm: #fc4c02;
   --accent-periwinkle: #bdbbff;
   --success: #bbf7d0;
-  --success-soft: #153b2a;
+  --success-soft: #0f2a1a;
   --danger: #fecaca;
-  --danger-soft: #4a1d25;
+  --danger-soft: #2a1018;
   --warning: #fde68a;
-  --warning-soft: #493319;
+  --warning-soft: #2a2010;
   --info: #bfdbfe;
-  --info-soft: #172f56;
+  --info-soft: #0f1a30;
+  --shadow-soft: 0 2px 8px rgb(0 0 0 / 20%);
+  --shadow-elevated: 0 4px 16px rgb(0 0 0 / 28%), 0 1px 4px rgb(0 0 0 / 12%);
+  --shadow-modal: 0 8px 32px rgb(0 0 0 / 36%), 0 2px 8px rgb(0 0 0 / 16%);
+  /* Cinematic / landing tokens — dark */
+  --cinema-bg: #06061a;
+  --cinema-bg-alt: #0a0a24;
+  --cinema-surface: #12122e;
+  --cinema-surface-solid: #0e0e2a;
+  --cinema-surface-elevated: #16163a;
+  --cinema-border: rgba(255 255 255 / 0.1);
+  --cinema-border-strong: rgba(255 255 255 / 0.16);
+  --cinema-text: #f0f0fa;
+  --cinema-text-secondary: #b0b0c8;
+  --cinema-text-muted: #9898b0;
+  --cinema-text-faint: #6b6b80;
+  --cinema-warm-glow: rgba(252 76 2 / 0.15);
+  --cinema-cool-glow: rgba(189 187 255 / 0.12);
+  --cinema-cyan-glow: rgba(200 246 249 / 0.08);
+  --cinema-magenta-glow: rgba(239 44 193 / 0.12);
+  --cinema-ribbon-opacity: 0.4;
+  --cinema-logo-ghost: 0.05;
+  --cinema-grid-color: rgba(255 255 255 / 0.04);
+  --cinema-card-bg: #12122e;
+  --cinema-card-border: rgba(255 255 255 / 0.1);
+  --cinema-card-shadow: 0 8px 32px rgb(0 0 0 / 0.3);
+  --cinema-card-shadow-hover: 0 12px 40px rgb(0 0 0 / 0.4);
+  --cinema-input-bg: #0e0e2a;
+  --cinema-input-border: #222244;
+  --cinema-input-focus: var(--brand-periwinkle);
+  --cinema-nav-bg: rgba(6 6 26 / 0.88);
+  --cinema-nav-border: rgba(255 255 255 / 0.1);
+  --cinema-nav-text: #b0b0c8;
+  --cinema-nav-text-hover: #ffffff;
+  --cinema-cta-bg: #ffffff;
+  --cinema-cta-text: #06061a;
+  --cinema-hero-text: #ffffff;
+  --cinema-hero-subtext: #b0b0c8;
+  --cinema-hero-eyebrow: #bdbbff;
+  --cinema-hero-badge-bg: rgba(255 255 255 / 0.06);
+  --cinema-hero-badge-text: #b0b0c8;
+  --cinema-hero-card-bg: #12122e;
+  --cinema-hero-card-border: rgba(255 255 255 / 0.12);
+  --cinema-hero-card-text: #ffffff;
+  --cinema-hero-card-muted: #b0b0c8;
+  --cinema-hero-card-accent: rgba(255 255 255 / 0.06);
+  --cinema-hero-mark-opacity: 0.06;
+  --cinema-hero-mark-shadow: 0 12px 40px rgb(239 44 193 / 0.15);
+  --cinema-section-alt-bg: #0a0a24;
+  --cinema-timeline-line: rgba(189 187 255 / 0.15);
+  --cinema-timeline-node: rgba(255 255 255 / 0.15);
+  --cinema-timeline-card-bg: #12122e;
+  --cinema-timeline-card-border: rgba(255 255 255 / 0.1);
+  --cinema-security-flow-bg: #12122e;
+  --cinema-security-flow-border: rgba(255 255 255 / 0.1);
+  --cinema-security-flow-text: #b0b0c8;
+  --cinema-workflow-connector: rgba(189 187 255 / 0.2);
+  --cinema-footer-bg: #040414;
+  --cinema-footer-text: #b0b0c8;
+  --cinema-footer-link: #c8c8e0;
+  --cinema-footer-link-hover: #ffffff;
+  --cinema-footer-wordmark: rgba(189 187 255 / 0.08);
+  --cinema-footer-border: rgba(255 255 255 / 0.08);
+  --cinema-cta-section-bg: #06061a;
+  --cinema-cta-section-text: #ffffff;
+  --cinema-auth-bg: #06061a;
+  --cinema-auth-card-bg: #0e0e2a;
+  --cinema-auth-card-border: rgba(255 255 255 / 0.1);
+  --cinema-auth-card-shadow: 0 4px 24px rgb(0 0 0 / 0.3);
+  --cinema-auth-brand-bg: #0a0a1a;
+  --cinema-auth-brand-text: #ffffff;
 }
 
 @theme inline {
@@ -65,14 +237,41 @@ html[data-theme="dark"] {
   --color-canvas-dark: var(--canvas-dark);
   --color-surface: var(--surface);
   --color-surface-subtle: var(--surface-subtle);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-surface-sidebar: var(--surface-sidebar);
+  --color-surface-header: var(--surface-header);
+  --color-surface-hover: var(--surface-hover);
   --color-surface-dark-soft: var(--surface-dark-soft);
   --color-ink: var(--ink);
   --color-body: var(--body);
+  --color-body-strong: var(--body-strong);
   --color-on-dark: var(--on-dark);
   --color-primary: var(--primary);
   --color-on-primary: var(--on-primary);
   --color-hairline: var(--hairline);
+  --color-hairline-strong: var(--hairline-strong);
   --color-focus: var(--focus);
+  --color-cinema-bg: var(--cinema-bg);
+  --color-cinema-surface: var(--cinema-surface);
+  --color-cinema-text: var(--cinema-text);
+  --color-cinema-text-secondary: var(--cinema-text-secondary);
+  --color-cinema-text-muted: var(--cinema-text-muted);
+  --color-cinema-text-faint: var(--cinema-text-faint);
+  --color-cinema-border: var(--cinema-border);
+  --color-cinema-border-strong: var(--cinema-border-strong);
+  --color-cinema-card-bg: var(--cinema-card-bg);
+  --color-cinema-card-border: var(--cinema-card-border);
+  --color-cinema-hero-text: var(--cinema-hero-text);
+  --color-cinema-hero-subtext: var(--cinema-hero-subtext);
+  --color-cinema-hero-eyebrow: var(--cinema-hero-eyebrow);
+  --color-cinema-hero-card-bg: var(--cinema-hero-card-bg);
+  --color-cinema-hero-card-border: var(--cinema-hero-card-border);
+  --color-cinema-hero-card-text: var(--cinema-hero-card-text);
+  --color-cinema-hero-card-muted: var(--cinema-hero-card-muted);
+  --color-cinema-footer-text: var(--cinema-footer-text);
+  --color-cinema-footer-link: var(--cinema-footer-link);
+  --color-cinema-footer-border: var(--cinema-footer-border);
+  --color-cinema-nav-text: var(--cinema-nav-text);
   --color-accent-mint: var(--accent-mint);
   --color-accent-periwinkle: var(--accent-periwinkle);
   --color-brand-orange: var(--brand-orange);
@@ -90,6 +289,8 @@ html[data-theme="dark"] {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --shadow-soft: var(--shadow-soft);
+  --shadow-elevated: var(--shadow-elevated);
+  --shadow-modal: var(--shadow-modal);
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
 }
@@ -112,8 +313,14 @@ html[data-theme="dark"] {
   }
 }
 
-* {
-  border-color: var(--hairline);
+@layer base {
+  /* Default hairline borders app-wide. Must live in a layer: unlayered
+     author CSS beats Tailwind's layered utilities, which previously forced
+     every border (alerts, badges, toasts, invalid fields) to hairline and
+     made all border-* variant classes dead. */
+  * {
+    border-color: var(--hairline);
+  }
 }
 
 html {
@@ -121,11 +328,17 @@ html {
   color-scheme: light;
 }
 
+html[data-theme="dark"] {
+  color-scheme: dark;
+}
+
 body {
   background: var(--canvas);
   color: var(--ink);
   font-family: var(--font-geist-sans), sans-serif;
   font-feature-settings: "ss01";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 html[data-theme="dark"] .paylens-logo-auto .paylens-logo-light {
@@ -314,17 +527,35 @@ html[data-theme="dark"] .paylens-logo-auto .paylens-logo-dark {
 
 .dashboard-canvas-aura {
   position: absolute;
-  top: -14rem;
-  right: -12rem;
+  top: -18rem;
+  right: -14rem;
   z-index: 0;
-  width: 34rem;
-  height: 34rem;
+  width: 42rem;
+  height: 42rem;
   border-radius: 9999px;
   background: radial-gradient(
     circle,
-    rgb(239 44 193 / 5%) 0%,
+    rgb(239 44 193 / 6%) 0%,
+    rgb(189 187 255 / 4%) 32%,
+    rgb(52 85 255 / 2%) 55%,
+    transparent 72%
+  );
+  pointer-events: none;
+}
+
+.dashboard-canvas-aura-secondary {
+  position: absolute;
+  bottom: -12rem;
+  left: -10rem;
+  z-index: 0;
+  width: 30rem;
+  height: 30rem;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle,
+    rgb(252 76 2 / 4%) 0%,
     rgb(189 187 255 / 3%) 38%,
-    transparent 70%
+    transparent 68%
   );
   pointer-events: none;
 }
@@ -339,9 +570,19 @@ html[data-theme="dark"] .paylens-logo-auto .paylens-logo-dark {
 html[data-theme="dark"] .dashboard-canvas-aura {
   background: radial-gradient(
     circle,
-    rgb(239 44 193 / 7%) 0%,
-    rgb(52 85 255 / 4%) 42%,
+    rgb(239 44 193 / 8%) 0%,
+    rgb(52 85 255 / 5%) 36%,
+    rgb(189 187 255 / 2%) 55%,
     transparent 72%
+  );
+}
+
+html[data-theme="dark"] .dashboard-canvas-aura-secondary {
+  background: radial-gradient(
+    circle,
+    rgb(252 76 2 / 5%) 0%,
+    rgb(189 187 255 / 3%) 38%,
+    transparent 68%
   );
 }
 
@@ -351,8 +592,206 @@ a {
 }
 
 ::selection {
-  background: var(--accent-periwinkle);
+  background: var(--brand-periwinkle);
   color: #000000;
+}
+
+/* Sidebar active nav glow */
+.sidebar-nav-active {
+  position: relative;
+  background: var(--surface-hover);
+}
+
+.sidebar-nav-active::before {
+  content: "";
+  position: absolute;
+  inset-y: 1;
+  left: 0;
+  width: 3px;
+  border-radius: 0 2px 2px 0;
+  background: var(--brand-gradient);
+}
+
+/* Table row hover */
+.table-row-hover {
+  transition: background-color 120ms ease-out;
+}
+
+.table-row-hover:hover {
+  background-color: var(--surface-hover);
+}
+
+/* Brand gradient text utility */
+.brand-gradient-text {
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Timeline gradient line */
+.timeline-gradient-line {
+  background: linear-gradient(
+    180deg,
+    var(--brand-magenta) 0%,
+    var(--brand-periwinkle) 45%,
+    var(--brand-blue) 100%
+  );
+}
+
+/* Timeline dot states */
+.timeline-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  border: 2px solid var(--surface);
+  background: var(--body);
+  transition:
+    background-color 150ms ease-out,
+    border-color 150ms ease-out,
+    box-shadow 150ms ease-out;
+}
+
+.timeline-dot-latest {
+  background: var(--brand-magenta);
+  border-color: var(--surface);
+  box-shadow: 0 0 0 3px rgb(239 44 193 / 15%);
+}
+
+/* Focus ring override for brand */
+.focus-brand:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--surface),
+    0 0 0 4px var(--focus);
+}
+
+/* Compensated card accent border */
+.card-accent-top {
+  position: relative;
+}
+
+.card-accent-top::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 2px;
+  background: var(--brand-gradient);
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+}
+
+/* Elevated card surface */
+.card-elevated {
+  box-shadow: var(--shadow-soft);
+  transition:
+    box-shadow 150ms ease-out,
+    transform 150ms ease-out;
+}
+
+.card-elevated:hover {
+  box-shadow: var(--shadow-elevated);
+}
+
+/* Dashboard page header accent line */
+.page-header-accent {
+  position: relative;
+}
+
+.page-header-accent::after {
+  content: "";
+  display: block;
+  width: 48px;
+  height: 2px;
+  margin-top: 12px;
+  background: var(--brand-gradient-horizontal);
+  border-radius: 1px;
+}
+
+/* Department code badge */
+.dept-code-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  background: var(--canvas-soft);
+  color: var(--body);
+  border: 1px solid var(--hairline);
+}
+
+/* Compensation amount emphasis */
+.comp-amount {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/* Badge subtle */
+.badge-subtle {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--canvas-soft);
+  color: var(--body);
+  border: 1px solid var(--hairline);
+}
+
+/* Landing page — hero */
+.landing-hero {
+  min-height: max(100svh, 640px);
+}
+
+.landing-cta-primary {
+  position: relative;
+  overflow: hidden;
+}
+
+.landing-cta-primary::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    transparent 30%,
+    rgba(239, 44, 193, 0.08) 50%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 200ms ease-out;
+}
+
+.landing-cta-primary:hover::before {
+  opacity: 1;
+}
+
+/* Landing — section transitions */
+.landing-section-glow {
+  position: relative;
+}
+
+.landing-section-glow::before {
+  content: "";
+  position: absolute;
+  inset-inline: 20%;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(189, 187, 255, 0.1) 30%,
+    rgba(239, 44, 193, 0.08) 50%,
+    rgba(189, 187, 255, 0.1) 70%,
+    transparent 100%
+  );
 }
 
 @media (prefers-reduced-motion: reduce) {

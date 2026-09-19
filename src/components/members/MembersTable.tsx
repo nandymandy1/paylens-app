@@ -69,7 +69,7 @@ const MembersTable: FC<MembersTableProps> = ({
               <Badge variant="info">{formatEnumLabel(member.role)}</Badge>
             </span>
           ) : (
-            <div onClick={(event) => event.stopPropagation()}>
+            <div className="flex h-9 items-center" onClick={(event) => event.stopPropagation()}>
               <Select
                 aria-label={`Role for ${member.email}`}
                 defaultValue={member.role}
@@ -92,13 +92,15 @@ const MembersTable: FC<MembersTableProps> = ({
     })) ?? [];
 
   return (
-    <DataTable
-      ariaLabel="Active organization members"
-      columns={columns}
-      emptyState="No members yet."
-      loading={isLoading}
-      rows={rows}
-    />
+    <div className="rounded-md border border-hairline bg-surface shadow-soft">
+      <DataTable
+        ariaLabel="Active organization members"
+        columns={columns}
+        emptyState="No members yet."
+        loading={isLoading}
+        rows={rows}
+      />
+    </div>
   );
 };
 

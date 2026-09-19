@@ -39,9 +39,9 @@ const Avatar: FC<AvatarProps> = ({
   return (
     <span
       className={cn(
-        "relative inline-flex shrink-0 items-center justify-center overflow-hidden border border-hairline bg-accent-mint font-mono font-medium text-black uppercase",
+        "relative inline-flex shrink-0 items-center justify-center overflow-hidden border border-hairline/50 bg-accent-mint font-mono font-medium text-black uppercase ring-2 ring-surface",
         typeof size === "number" ? undefined : sizeClasses[size],
-        shape === "circle" ? "rounded-full" : "rounded-sm",
+        shape === "circle" ? "rounded-full" : "rounded-md",
         className,
       )}
       style={typeof size === "number" ? { height: pixels, width: pixels } : undefined}

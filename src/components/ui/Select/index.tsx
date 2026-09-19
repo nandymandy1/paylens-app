@@ -82,7 +82,9 @@ const Select = <TValue extends string = string>({
         className={cn(
           "flex w-full items-center gap-2 rounded-sm border bg-surface text-left text-ink outline-none transition-colors",
           "border-hairline hover:border-body/50 focus-visible:border-focus focus-visible:ring-2 focus-visible:ring-focus/30",
-          "data-[state=open]:border-focus data-[state=open]:ring-2 data-[state=open]:ring-focus/30",
+          // Open state is color-only: an outer ring here can perturb scroll
+          // containers (e.g. dropdowns inside tables) and resize rows.
+          "data-[state=open]:border-focus",
           "disabled:cursor-not-allowed disabled:opacity-50",
           invalid && "border-danger focus-visible:border-danger focus-visible:ring-danger/30",
           SELECT_TRIGGER_SIZE_CLASSES[size],

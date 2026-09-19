@@ -41,6 +41,19 @@ const fetchEmployeeMock = vi.hoisted(() =>
   })),
 );
 
+const fetchCurrentCompensationMock = vi.hoisted(() => vi.fn(() => new Promise<never>(() => {})));
+const fetchCompensationHistoryMock = vi.hoisted(() => vi.fn(() => new Promise<never>(() => {})));
+
+vi.mock("@/services/compensation.service", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/services/compensation.service")>();
+
+  return {
+    ...actual,
+    fetchCurrentCompensation: fetchCurrentCompensationMock,
+    fetchCompensationHistory: fetchCompensationHistoryMock,
+  };
+});
+
 vi.mock("@/services/employee.service", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/services/employee.service")>();
 
@@ -86,7 +99,7 @@ describe("employee profile", () => {
     }));
   });
 
-  it("loads workforce data with a compensation placeholder and a back link", async () => {
+  it("loads workforce data with compensation loading states and a back link", async () => {
     renderPage();
 
     const names = await screen.findAllByText("Olivia Carter");
@@ -96,9 +109,8 @@ describe("employee profile", () => {
     expect(screen.getByText("PLD-004281")).toBeTruthy();
     expect(screen.getByText("Engineering")).toBeTruthy();
     expect(screen.getByText("Engineer")).toBeTruthy();
-    expect(
-      screen.getByText("Compensation will be available in the compensation workspace."),
-    ).toBeTruthy();
+    expect(screen.getByText("Current compensation")).toBeTruthy();
+    expect(screen.getByLabelText("Loading compensation")).toBeTruthy();
 
     const backLink = screen.getByText("Employees").closest("a");
 

@@ -1,6 +1,7 @@
 "use client";
 
 import type { FC } from "react";
+import GoogleIcon from "@/components/icons/GoogleIcon";
 import Button from "@/components/ui/Button";
 import { useProviders } from "@/hooks/useAuth";
 import { googleStartUrl } from "@/services/auth.service";
@@ -25,8 +26,9 @@ const GoogleButton: FC<GoogleButtonProps> = ({ invitationId, label, redirectTo }
         window.location.href = googleStartUrl({ redirectTo, invitationId });
       }}
       variant="outline"
+      prefixIcon={<GoogleIcon className="size-[18px]" />}
     >
-      {label ?? "Continue with Google"}
+      <span>{label ?? "Continue with Google"}</span>
     </Button>
   );
 };

@@ -44,7 +44,7 @@ const Drawer: FC<DrawerProps> = ({
         <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-canvas-dark/55 data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out data-[state=open]:fade-in motion-reduce:animate-none" />
         <DialogPrimitive.Content
           className={cn(
-            "fixed z-[60] flex overflow-y-auto border-hairline bg-surface p-6 text-ink shadow-soft outline-none data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out data-[state=open]:fade-in motion-reduce:animate-none",
+            "fixed z-[60] flex overflow-y-auto border-hairline bg-surface-sidebar p-6 text-ink shadow-elevated outline-none data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out data-[state=open]:fade-in motion-reduce:animate-none",
             directionClasses[direction],
           )}
           onInteractOutside={(event) => {
@@ -53,11 +53,11 @@ const Drawer: FC<DrawerProps> = ({
         >
           <div className="flex min-h-full w-full flex-col">
             <div className="pr-9">
-              <DialogPrimitive.Title className="text-xl font-medium tracking-[-0.02em]">
+              <DialogPrimitive.Title className="text-lg font-medium tracking-[-0.01em] text-ink">
                 {title}
               </DialogPrimitive.Title>
               {description && (
-                <DialogPrimitive.Description className="mt-2 text-sm leading-6 text-body">
+                <DialogPrimitive.Description className="mt-1.5 text-sm leading-6 text-body">
                   {description}
                 </DialogPrimitive.Description>
               )}
@@ -71,7 +71,7 @@ const Drawer: FC<DrawerProps> = ({
           </div>
           <DialogPrimitive.Close
             aria-label="Close drawer"
-            className="absolute top-4 right-4 inline-flex size-9 items-center justify-center rounded-sm text-body outline-none hover:bg-surface-subtle hover:text-ink focus-visible:ring-2 focus-visible:ring-focus"
+            className="absolute top-4 right-4 inline-flex size-8 items-center justify-center rounded-md text-body outline-none hover:bg-surface-subtle hover:text-ink focus-visible:ring-2 focus-visible:ring-focus"
           >
             <X aria-hidden="true" className="size-4" />
           </DialogPrimitive.Close>

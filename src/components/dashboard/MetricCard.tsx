@@ -12,13 +12,13 @@ const MetricCard: FC<MetricCardProps> = ({ description, icon, label, value }) =>
   <Card variant="highlight">
     <Card.Content className="p-5">
       <div className="flex items-start justify-between gap-4">
-        <p className="font-mono text-[10px] font-medium tracking-[0.09em] text-body uppercase">
+        <p className="font-mono text-[10px] font-medium tracking-[0.08em] text-body/60 uppercase">
           {label}
         </p>
-        {icon && <span className="text-body">{icon}</span>}
+        {icon && <span className="text-body/50">{icon}</span>}
       </div>
-      <p className="mt-6 text-3xl font-medium tracking-tight">{value}</p>
-      {description && <p className="mt-2 text-sm leading-5 text-body">{description}</p>}
+      <p className="mt-4 text-xl font-medium tracking-tight text-ink">{value}</p>
+      {description && <p className="mt-1.5 text-xs leading-5 text-body">{description}</p>}
     </Card.Content>
   </Card>
 );

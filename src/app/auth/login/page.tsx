@@ -17,6 +17,7 @@ import InputPassword from "@/components/ui/InputPassword";
 import { useLogin } from "@/hooks/useAuth";
 import { ApiError } from "@/services/api";
 import { getSafePostAuthRedirect } from "@/utils/auth-redirect";
+import { AUTH_ROUTES } from "@/utils/routes";
 import { loginSchema, type LoginInput } from "@/types/auth.type";
 
 const LoginForm: FC<{ redirectTo: string }> = ({ redirectTo }) => {
@@ -53,6 +54,7 @@ const LoginForm: FC<{ redirectTo: string }> = ({ redirectTo }) => {
       description="Sign in to your PayLens organization."
       eyebrow="Sign in"
       title="Welcome back"
+      variant="login"
     >
       {passwordReset && (
         <Alert title="Password updated" variant="success">
@@ -89,10 +91,10 @@ const LoginForm: FC<{ redirectTo: string }> = ({ redirectTo }) => {
         <GoogleButton redirectTo={redirectTo} />
       </div>
       <div className="mt-6 flex items-center justify-between text-sm">
-        <Link className="auth-link text-body" href="/forgot-password">
+        <Link className="auth-link text-body" href={AUTH_ROUTES.forgotPassword}>
           Forgot password?
         </Link>
-        <Link className="auth-link text-body" href="/register">
+        <Link className="auth-link text-body" href={AUTH_ROUTES.register}>
           Create organization
         </Link>
       </div>

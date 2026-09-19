@@ -30,14 +30,14 @@ const DataTable: FC<DataTableProps> = ({
   loading = false,
   rows,
 }) => (
-  <div className="w-full min-w-0 overflow-x-auto rounded-sm border border-hairline bg-surface">
+  <div className="w-full min-w-0 overflow-x-auto">
     <table aria-label={ariaLabel} className="w-full min-w-[42rem] border-collapse text-sm">
-      <thead className="bg-canvas-soft">
+      <thead className="bg-canvas-soft/60">
         <tr>
           {columns.map((column) => (
             <th
               className={cn(
-                "h-11 px-4 font-mono text-[10px] font-medium tracking-[0.08em] text-body uppercase",
+                "h-10 px-4 font-mono text-[10px] font-medium tracking-[0.08em] text-body/60 uppercase",
                 alignment(column.align),
                 column.className,
               )}
@@ -66,7 +66,7 @@ const DataTable: FC<DataTableProps> = ({
           rows.map((row) => (
             <tr
               className={cn(
-                "h-16 transition-colors duration-150 hover:bg-canvas-soft",
+                "h-14 transition-[background-color] duration-120 hover:bg-surface-hover",
                 row.onClick && "cursor-pointer",
                 row.className,
               )}

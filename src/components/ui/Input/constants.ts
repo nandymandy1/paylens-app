@@ -1,7 +1,7 @@
 import type { InputSize } from "./types";
 
 export const INPUT_BASE =
-  "block w-full rounded-sm border bg-surface text-ink placeholder:text-body transition-[border-color,box-shadow,background-color] duration-150 ease-out hover:border-ink/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus/60 disabled:cursor-not-allowed disabled:bg-canvas-soft disabled:opacity-60";
+  "block w-full rounded-md border bg-surface text-ink placeholder:text-body transition-[border-color,box-shadow,background-color] duration-150 ease-out hover:border-hairline-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-surface disabled:cursor-not-allowed disabled:bg-canvas-soft disabled:opacity-60";
 
 export const INPUT_SIZE_CLASSES: Record<InputSize, string> = {
   sm: "min-h-9 px-3 text-sm",

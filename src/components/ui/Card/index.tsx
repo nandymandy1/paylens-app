@@ -15,18 +15,18 @@ type CardComponent = FC<CardProps> & {
 };
 
 const cardVariantClasses = {
-  default: "bg-surface",
+  default: "bg-surface shadow-soft",
   soft: "bg-canvas-soft",
   interactive:
-    "bg-surface transition-[background-color,border-color,transform] duration-150 ease-out hover:-translate-y-px hover:border-ink/20 hover:bg-canvas-soft",
+    "bg-surface transition-[background-color,border-color,box-shadow,transform] duration-150 ease-out hover:-translate-y-px hover:shadow-elevated hover:border-ink/15",
   highlight:
-    "relative bg-surface before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-[linear-gradient(120deg,#FC4C02_0%,#EF2CC1_40%,#BDBBFF_70%,#3455FF_100%)]",
+    "relative bg-surface shadow-soft before:absolute before:inset-x-0 before:top-0 before:h-[2px] before:bg-[linear-gradient(90deg,#FC4C02_0%,#EF2CC1_35%,#BDBBFF_65%,#3455FF_100%)]",
 };
 
 const CardRoot: FC<CardProps> = ({ children, className, variant = "default" }) => (
   <article
     className={cn(
-      "overflow-hidden rounded-sm border border-hairline text-ink",
+      "overflow-hidden rounded-md border border-hairline text-ink",
       cardVariantClasses[variant],
       className,
     )}
