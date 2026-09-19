@@ -18,6 +18,13 @@ type SidebarNavItem = {
   workforceOnly?: boolean;
 };
 
+type SidebarBodyProps = {
+  collapsed: boolean;
+  onNavigate?: () => void;
+  showMembersAdmin: boolean;
+  showEmployees?: boolean;
+};
+
 const NAV_ITEMS: SidebarNavItem[] = [
   {
     icon: LayoutDashboard,
@@ -48,13 +55,6 @@ const NAV_ITEMS: SidebarNavItem[] = [
   },
 ];
 
-type SidebarBodyProps = {
-  collapsed: boolean;
-  onNavigate?: () => void;
-  showMembersAdmin: boolean;
-  showEmployees?: boolean;
-};
-
 const SidebarBody: FC<SidebarBodyProps> = ({
   collapsed,
   onNavigate,
@@ -62,6 +62,7 @@ const SidebarBody: FC<SidebarBodyProps> = ({
   showEmployees = true,
 }) => {
   const pathname = usePathname();
+
   const items = NAV_ITEMS.filter((item) => {
     if (item.adminOnly) {
       return showMembersAdmin;

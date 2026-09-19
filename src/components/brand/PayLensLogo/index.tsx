@@ -9,7 +9,11 @@ type PayLensLogoProps = {
   variant?: "full" | "compact" | "mark";
 };
 
-const sizes = { sm: "h-6", md: "h-8", lg: "h-11" };
+const sizes = {
+  sm: "h-6",
+  md: "h-8",
+  lg: "h-11",
+};
 
 const PayLensLogo: FC<PayLensLogoProps> = ({
   className,
@@ -21,10 +25,10 @@ const PayLensLogo: FC<PayLensLogoProps> = ({
     return (
       <Image
         alt="PayLens"
-        className={cn(sizes[size], "w-auto", className)}
-        height={64}
-        src="/brand/paylens-mark.svg"
         width={64}
+        height={120}
+        src="/brand/paylens-mark.svg"
+        className={cn(sizes[size], "w-auto", className)}
       />
     );
   }
@@ -36,11 +40,11 @@ const PayLensLogo: FC<PayLensLogoProps> = ({
   if (theme !== "auto") {
     return (
       <Image
+        height={64}
+        width={240}
         alt="PayLens"
         className={cn(sizes[size], "w-auto", className)}
-        height={64}
         src={theme === "dark" ? dark : light}
-        width={240}
       />
     );
   }
