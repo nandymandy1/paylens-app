@@ -18,12 +18,17 @@ const MAX_BYTES = 25 * 1024 * 1024;
 type EmployeeImportWizardProps = {
   open: boolean;
   onClose: () => void;
+  importId?: string | null;
 };
 
-const EmployeeImportWizard: FC<EmployeeImportWizardProps> = ({ open, onClose }) => {
+const EmployeeImportWizard: FC<EmployeeImportWizardProps> = ({
+  open,
+  onClose,
+  importId: initialImportId,
+}) => {
   const [file, setFile] = useState<File | null>(null);
   const [createMissing, setCreateMissing] = useState(true);
-  const [importId, setImportId] = useState<string | null>(null);
+  const [importId, setImportId] = useState<string | null>(initialImportId ?? null);
   const [localError, setLocalError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -36,7 +41,7 @@ const EmployeeImportWizard: FC<EmployeeImportWizardProps> = ({ open, onClose }) 
   const handleClose = (): void => {
     setFile(null);
     setLocalError(null);
-    setImportId(null);
+    setImportId(initialImportId ?? null);
     setCreateMissing(true);
     onClose();
   };
@@ -99,8 +104,12 @@ const EmployeeImportWizard: FC<EmployeeImportWizardProps> = ({ open, onClose }) 
   const status = job?.status ?? null;
   const reviewing = status === "READY_FOR_REVIEW";
   const summary = job?.previewSummary ?? null;
-  const blocked = reviewing && (job?.invalidRows ?? 0) > 0;
+  const blocked =
+    reviewing &&
+    ((job?.invalidRows ?? 0) > 0 ||
+      ((summary?.missingDepartments?.length ?? 0) > 0 && !createMissing));
   const missing = summary?.missingDepartments ?? [];
+  const planByFrom = new Map((summary?.departmentPlan ?? []).map((entry) => [entry.from, entry]));
 
   return (
     <Modal
@@ -199,11 +208,21 @@ const EmployeeImportWizard: FC<EmployeeImportWizardProps> = ({ open, onClose }) 
           </p>
           {missing.length > 0 && (
             <div className="flex flex-col gap-1">
-              <p className="text-sm font-medium text-ink">Departments to create</p>
+              <p className="text-sm font-medium text-ink">Department mapping</p>
               <ul className="list-disc pl-5 text-sm text-body">
-                {missing.map((name) => (
-                  <li key={name}>{name}</li>
-                ))}
+                {missing.map((name) => {
+                  const planned = planByFrom.get(name);
+
+                  return (
+                    <li key={name}>
+                      {planned && planned.name !== name
+                        ? `${name} → ${planned.name} (${planned.code})`
+                        : planned
+                          ? `${planned.name} (${planned.code})`
+                          : name}
+                    </li>
+                  );
+                })}
               </ul>
               <Checkbox
                 checked={createMissing}
@@ -215,7 +234,9 @@ const EmployeeImportWizard: FC<EmployeeImportWizardProps> = ({ open, onClose }) 
           {blocked && (
             <>
               <Alert variant="danger">
-                Fix {job.invalidRows} invalid rows and start a new import. Confirmation is disabled.
+                {job.invalidRows > 0
+                  ? `Fix ${job.invalidRows} invalid rows and start a new import. Confirmation is disabled.`
+                  : "Choose to create missing departments before confirming this import."}
               </Alert>
               <Button
                 disabled={report.isPending}

@@ -15,6 +15,7 @@ import {
   X,
 } from "lucide-react";
 import IconButton from "@/components/ui/IconButton";
+import EmployeeImportWizard from "@/components/transfers/EmployeeImportWizard";
 import {
   useCancelExport,
   useCancelImport,
@@ -33,14 +34,9 @@ import {
   isImportActive,
   type EmployeeExportJob,
   type EmployeeImportJob,
+  normalizeTransferProgress,
 } from "@/types/employee-transfer.type";
 import cn from "@/utils/cn";
-
-const percentOf = (processed: number, total: number): number => {
-  if (!total) return 0;
-
-  return Math.min(100, Math.round((processed / total) * 100));
-};
 
 const EXPORT_STAGE_TEXT: Record<EmployeeExportJob["status"], string> = {
   QUEUED: "Queued",
@@ -54,6 +50,41 @@ const EXPORT_STAGE_TEXT: Record<EmployeeExportJob["status"], string> = {
   FAILED: "Failed",
   EXPIRED: "Expired",
 };
+
+const IMPORT_STAGE_TEXT: Record<EmployeeImportJob["status"], string> = {
+  AWAITING_UPLOAD: "Awaiting upload",
+  QUEUED: "Queued",
+  VALIDATING: "Validating file",
+  PAUSING: "Pausing…",
+  PAUSED: "Paused",
+  READY_FOR_REVIEW: "Review required",
+  APPLY_QUEUED: "Queued to apply",
+  APPLYING: "Applying changes",
+  CANCELLING: "Cancelling…",
+  CANCELLED: "Cancelled",
+  CANCELLED_PARTIAL: "Cancelled with partial changes",
+  COMPLETED: "Completed",
+  COMPLETED_WITH_ERRORS: "Completed with errors",
+  FAILED: "Failed",
+  EXPIRED: "Expired",
+};
+
+const isTerminal = (status: string): boolean =>
+  [
+    "COMPLETED",
+    "COMPLETED_WITH_ERRORS",
+    "FAILED",
+    "CANCELLED",
+    "CANCELLED_PARTIAL",
+    "EXPIRED",
+  ].includes(status);
+
+const dismissKey = (kind: "export" | "import", id: string): string => `${kind}:${id}`;
+
+const isActiveBadgeStatus = (status: string): boolean =>
+  status === "PAUSED" ||
+  isExportActive(status as EmployeeExportJob["status"]) ||
+  isImportActive(status as EmployeeImportJob["status"]);
 
 type Control = {
   action: "pause" | "resume" | "cancel" | "download" | "retry";
@@ -123,8 +154,9 @@ const ExportRow: FC<{
   job: EmployeeExportJob;
   busy: boolean;
   onAction: (action: Control["action"], job: EmployeeExportJob) => void;
-}> = ({ job, busy, onAction }) => {
-  const percent = job.progressPercent || percentOf(job.processedRows, job.totalRows);
+  onDismiss: () => void;
+}> = ({ job, busy, onAction, onDismiss }) => {
+  const percent = normalizeTransferProgress(job);
   const active = isExportActive(job.status);
 
   return (
@@ -173,28 +205,37 @@ const ExportRow: FC<{
             variant="outline"
           />
         ))}
+        {isTerminal(job.status) && (
+          <IconButton
+            aria-label="Dismiss export"
+            icon={<X aria-hidden="true" className="size-4" />}
+            onClick={onDismiss}
+            size="sm"
+            title="Dismiss"
+            variant="outline"
+          />
+        )}
       </div>
     </div>
   );
 };
 
-const ImportRow: FC<{ job: EmployeeImportJob }> = ({ job }) => {
+const ImportRow: FC<{ job: EmployeeImportJob; onDismiss: () => void; onReview: () => void }> = ({
+  job,
+  onDismiss,
+  onReview,
+}) => {
   const pause = usePauseImport();
   const resume = useResumeImport();
   const cancel = useCancelImport();
   const report = useDownloadImportReport();
   const busy = pause.isPending || resume.isPending || cancel.isPending || report.isPending;
-  const total = job.totalRows || job.validatedRows;
-  const done =
-    job.status === "APPLYING" || job.status.startsWith("COMPLETED")
-      ? job.processedRows
-      : job.validatedRows;
-  const percent = percentOf(done, total);
+  const percent = normalizeTransferProgress(job);
   const active = isImportActive(job.status);
 
   const actions: { label: string; icon: ReactNode; run: () => void }[] = [];
 
-  if (job.status === "VALIDATING" || job.status === "APPLYING") {
+  if (job.status === "APPLYING") {
     actions.push({
       label: "Pause import",
       icon: <Pause aria-hidden="true" className="size-4" />,
@@ -210,7 +251,7 @@ const ImportRow: FC<{ job: EmployeeImportJob }> = ({ job }) => {
     });
   }
 
-  if (active && job.status !== "APPLY_QUEUED") {
+  if (["VALIDATING", "APPLY_QUEUED", "APPLYING", "PAUSED"].includes(job.status)) {
     actions.push({
       label: "Stop import",
       icon: <X aria-hidden="true" className="size-4" />,
@@ -218,11 +259,19 @@ const ImportRow: FC<{ job: EmployeeImportJob }> = ({ job }) => {
     });
   }
 
-  if (job.status === "READY_FOR_REVIEW" || job.status === "FAILED") {
+  if (job.status === "READY_FOR_REVIEW") {
     actions.push({
       label: "Download error report",
       icon: <Download aria-hidden="true" className="size-4" />,
       run: () => report.mutate({ importId: job.id, type: "validation" }),
+    });
+  }
+
+  if (job.status === "READY_FOR_REVIEW") {
+    actions.unshift({
+      label: "Review import",
+      icon: <Play aria-hidden="true" className="size-4" />,
+      run: onReview,
     });
   }
 
@@ -263,7 +312,7 @@ const ImportRow: FC<{ job: EmployeeImportJob }> = ({ job }) => {
           />
         </div>
         <p className="text-xs text-body">
-          {job.status.replaceAll("_", " ")} · {percent}%
+          {IMPORT_STAGE_TEXT[job.status]} · {percent}%
           {job.status === "READY_FOR_REVIEW" &&
             ` · ${job.createRows} new · ${job.updateRows} updates · ${job.invalidRows} errors`}
           {job.status.startsWith("COMPLETED") &&
@@ -283,13 +332,33 @@ const ImportRow: FC<{ job: EmployeeImportJob }> = ({ job }) => {
             variant="outline"
           />
         ))}
+        {isTerminal(job.status) && (
+          <IconButton
+            aria-label="Dismiss import"
+            icon={<X aria-hidden="true" className="size-4" />}
+            onClick={onDismiss}
+            size="sm"
+            title="Dismiss"
+            variant="outline"
+          />
+        )}
       </div>
     </div>
   );
 };
 
 const DataTransferCenter: FC = () => {
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(false);
+  const [dismissed, setDismissed] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+
+    try {
+      return JSON.parse(sessionStorage.getItem("paylens-dismissed-transfers") ?? "[]") as string[];
+    } catch {
+      return [];
+    }
+  });
+  const [reviewImportId, setReviewImportId] = useState<string | null>(null);
   const exports = useEmployeeExports();
   const imports = useEmployeeImports();
   const pauseExport = usePauseExport();
@@ -298,17 +367,39 @@ const DataTransferCenter: FC = () => {
   const downloadExport = useDownloadExport();
   const createExport = useCreateExport();
 
-  const exportJobs = exports.data ?? [];
-  const importJobs = imports.data ?? [];
-  const total = exportJobs.length + importJobs.length;
+  const dismiss = (key: string): void => {
+    setDismissed((previous) => {
+      const next = [...new Set([...previous, key])];
+
+      sessionStorage.setItem("paylens-dismissed-transfers", JSON.stringify(next));
+
+      return next;
+    });
+  };
+  const exportJobs = (exports.data ?? []).filter(
+    (job) => !dismissed.includes(dismissKey("export", job.id)),
+  );
+  const importJobs = (imports.data ?? []).filter(
+    (job) => !dismissed.includes(dismissKey("import", job.id)),
+  );
+  const activeExports = exportJobs.filter((job) => isActiveBadgeStatus(job.status));
+  const activeImports = importJobs.filter(
+    (job) => isActiveBadgeStatus(job.status) && job.status !== "READY_FOR_REVIEW",
+  );
+  const attentionImports = importJobs.filter((job) => job.status === "READY_FOR_REVIEW");
+  const recent = [
+    ...exportJobs.map((job) => ({ kind: "export" as const, job })),
+    ...importJobs.map((job) => ({ kind: "import" as const, job })),
+  ]
+    .filter(({ job }) => isTerminal(job.status))
+    .sort((a, b) => new Date(b.job.createdAt).getTime() - new Date(a.job.createdAt).getTime())
+    .slice(0, 5);
   const busy =
     pauseExport.isPending ||
     resumeExport.isPending ||
     cancelExport.isPending ||
     downloadExport.isPending ||
     createExport.isPending;
-
-  if (total === 0) return null;
 
   const handleExportAction = (action: Control["action"], job: EmployeeExportJob): void => {
     switch (action) {
@@ -331,16 +422,17 @@ const DataTransferCenter: FC = () => {
     }
   };
 
-  const activeCount = [...exportJobs, ...importJobs].filter((job) =>
-    "processedRows" in job && "totalRows" in job && "fileName" in job
-      ? isExportActive(job.status)
-      : isImportActive(job.status as EmployeeImportJob["status"]),
-  ).length;
+  const activeCount = activeExports.length + activeImports.length + attentionImports.length;
 
-  return (
+  if (activeCount === 0 && recent.length === 0) return null;
+
+  const panel = (
     <section
       aria-label="Data transfers"
-      className="fixed right-4 bottom-4 z-40 w-[380px] max-w-[calc(100vw-2rem)] rounded-md border border-hairline bg-surface text-ink shadow-modal"
+      className={cn(
+        "z-40 w-[380px] max-w-[calc(100vw-2rem)] rounded-md border border-hairline bg-surface text-ink shadow-modal",
+        "absolute top-11 right-0",
+      )}
     >
       <div className="flex items-center gap-2 px-3 py-2">
         <FileDown aria-hidden="true" className="size-4 shrink-0 text-body" />
@@ -365,15 +457,88 @@ const DataTransferCenter: FC = () => {
       </div>
       {expanded && (
         <div className="max-h-80 overflow-y-auto border-t border-hairline px-3 pb-2">
-          {exportJobs.map((job) => (
-            <ExportRow key={job.id} busy={busy} job={job} onAction={handleExportAction} />
+          {activeCount === 0 && recent.length === 0 && (
+            <p className="py-4 text-sm text-body">No recent activity</p>
+          )}
+          {activeExports.length + activeImports.length > 0 && (
+            <p className="pt-3 text-xs font-medium text-body">ACTIVE</p>
+          )}
+          {activeExports.map((job) => (
+            <ExportRow
+              key={job.id}
+              busy={busy}
+              job={job}
+              onAction={handleExportAction}
+              onDismiss={() => dismiss(dismissKey("export", job.id))}
+            />
           ))}
-          {importJobs.map((job) => (
-            <ImportRow key={job.id} job={job} />
+          {activeImports.map((job) => (
+            <ImportRow
+              key={job.id}
+              job={job}
+              onDismiss={() => dismiss(dismissKey("import", job.id))}
+              onReview={() => setReviewImportId(job.id)}
+            />
           ))}
+          {attentionImports.length > 0 && (
+            <p className="pt-3 text-xs font-medium text-body">NEEDS ATTENTION</p>
+          )}
+          {attentionImports.map((job) => (
+            <ImportRow
+              key={job.id}
+              job={job}
+              onDismiss={() => dismiss(dismissKey("import", job.id))}
+              onReview={() => setReviewImportId(job.id)}
+            />
+          ))}
+          {recent.length > 0 && <p className="pt-3 text-xs font-medium text-body">RECENT</p>}
+          {recent.map(({ kind, job }) =>
+            kind === "export" ? (
+              <ExportRow
+                key={job.id}
+                busy={busy}
+                job={job}
+                onAction={handleExportAction}
+                onDismiss={() => dismiss(dismissKey("export", job.id))}
+              />
+            ) : (
+              <ImportRow
+                key={job.id}
+                job={job}
+                onDismiss={() => dismiss(dismissKey("import", job.id))}
+                onReview={() => setReviewImportId(job.id)}
+              />
+            ),
+          )}
         </div>
       )}
+      {reviewImportId && (
+        <EmployeeImportWizard
+          importId={reviewImportId}
+          onClose={() => setReviewImportId(null)}
+          open
+        />
+      )}
     </section>
+  );
+
+  return (
+    <div className="relative">
+      <button
+        aria-label="Open data transfers"
+        className="relative inline-flex size-9 items-center justify-center rounded-sm border border-hairline text-body transition-colors hover:bg-canvas-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+        onClick={() => setExpanded((previous) => !previous)}
+        type="button"
+      >
+        <FileDown aria-hidden="true" className="size-4" />
+        {activeCount > 0 && (
+          <span className="absolute -top-1 -right-1 grid min-w-4 place-items-center rounded-full bg-ink px-1 text-[10px] leading-4 text-surface">
+            {activeCount}
+          </span>
+        )}
+      </button>
+      {expanded && panel}
+    </div>
   );
 };
 

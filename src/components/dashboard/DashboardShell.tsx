@@ -14,7 +14,6 @@ import cn from "@/utils/cn";
 import SidebarBody from "./SidebarBody";
 import DashboardHeader from "./DashboardHeader";
 import PayLensLogo from "@/components/brand/PayLensLogo";
-import DataTransferCenter from "@/components/transfers/DataTransferCenter";
 
 const DashboardShell: FC<PropsWithChildren> = ({ children }) => {
   const pathname = usePathname();
@@ -113,7 +112,6 @@ const DashboardShell: FC<PropsWithChildren> = ({ children }) => {
           <div aria-hidden="true" className="dashboard-canvas-aura" />
           <div aria-hidden="true" className="dashboard-canvas-aura-secondary" />
           {children}
-          {showEmployees && <DataTransferCenter />}
         </main>
       </div>
     </div>

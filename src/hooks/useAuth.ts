@@ -149,6 +149,7 @@ export const useLogout = () => {
       queryClient.removeQueries({ queryKey: ["employee-imports"] });
       queryClient.removeQueries({ queryKey: ["departments"] });
       queryClient.removeQueries({ queryKey: authKeys.me() });
+      sessionStorage.removeItem("paylens-dismissed-transfers");
       endLogout();
       router.push(AUTH_ROUTES.login);
     },

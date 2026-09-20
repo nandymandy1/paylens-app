@@ -214,9 +214,7 @@ export const useStartImport = () => {
       try {
         await uploadFileToSignedUrl(created.uploadUrl, file, contentType);
       } catch {
-        throw new Error(
-          "File upload to storage failed. Check your connection and try again.",
-        );
+        throw new Error("File upload to storage failed. Check your connection and try again.");
       }
 
       // Step 3 (backend): verify the object and start validation/processing.

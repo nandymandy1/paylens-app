@@ -1,3 +1,4 @@
+import axios from "axios";
 import api from "@/services/api";
 import type { BaseResponseWithData } from "@/types/api-response.types";
 import type {
@@ -98,7 +99,7 @@ export const uploadFileToSignedUrl = async (
   file: File,
   contentType: string,
 ): Promise<void> => {
-  await api.put(uploadUrl, file, {
+  await axios.put(uploadUrl, file, {
     headers: { "Content-Type": contentType },
     timeout: 120_000,
     withCredentials: false,

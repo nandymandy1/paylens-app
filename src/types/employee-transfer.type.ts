@@ -42,6 +42,13 @@ export type EmployeeImportStatus =
   | "FAILED"
   | "EXPIRED";
 
+export type ImportDepartmentPlanEntry = {
+  from: string;
+  name: string;
+  code: string;
+  source: "ai" | "sheet" | "generated";
+};
+
 export type ImportPreviewSummary = {
   totalRows?: number;
   createRows?: number;
@@ -50,6 +57,7 @@ export type ImportPreviewSummary = {
   invalidRows?: number;
   matchedDepartments?: string[];
   missingDepartments?: string[];
+  departmentPlan?: ImportDepartmentPlanEntry[];
   warnings?: string[];
   firstErrors?: {
     row: number;
@@ -74,6 +82,7 @@ export type EmployeeImportJob = {
   updateRows: number;
   unchangedRows: number;
   processedRows: number;
+  progressPercent: number;
   createdRows: number;
   updatedRows: number;
   failedRows: number;
@@ -83,6 +92,30 @@ export type EmployeeImportJob = {
   validatedAt: string | null;
   completedAt: string | null;
   errorCode: string | null;
+};
+
+/** Prefer the server's lifecycle-aware value; derive only for older responses. */
+export const normalizeTransferProgress = (job: {
+  progressPercent?: number | null;
+  processedRows?: number;
+  validatedRows?: number;
+  totalRows?: number;
+  status?: string;
+}): number => {
+  if (
+    typeof job.progressPercent === "number" &&
+    Number.isFinite(job.progressPercent) &&
+    job.progressPercent >= 0 &&
+    job.progressPercent <= 100
+  )
+    return Math.round(job.progressPercent);
+
+  const total = job.totalRows ?? 0;
+
+  if (!total) return 0;
+  const processed = job.status === "APPLYING" ? (job.processedRows ?? 0) : (job.validatedRows ?? 0);
+
+  return Math.min(100, Math.round((processed / total) * 100));
 };
 
 export type CreateImportResponse = {

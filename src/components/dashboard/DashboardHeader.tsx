@@ -13,6 +13,7 @@ import cn from "@/utils/cn";
 import { formatEnumLabel, getInitials } from "@/utils/string";
 import { AUTH_ROUTES } from "@/utils/routes";
 import PayLensLogo from "@/components/brand/PayLensLogo";
+import DataTransferCenter from "@/components/transfers/DataTransferCenter";
 
 type DashboardHeaderProps = {
   sidebarCollapsed: boolean;
@@ -61,6 +62,7 @@ const DashboardHeader: FC<DashboardHeaderProps> = ({ onOpenMobileSidebar, sideba
         onClick={toggleTheme}
         variant="outline"
       />
+      <DataTransferCenter />
       <Popover
         align="end"
         content={
