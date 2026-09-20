@@ -1,13 +1,12 @@
 "use client";
 
-import type { FC, ReactElement, ReactNode } from "react";
+import type { FC, PropsWithChildren, ReactElement, ReactNode } from "react";
 import { X } from "lucide-react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import cn from "@/utils/cn";
 
 type DrawerDirection = "left" | "right" | "top" | "bottom";
-type DrawerProps = {
-  children: ReactNode;
+type DrawerProps = PropsWithChildren<{
   closeOnOutsideInteraction?: boolean;
   defaultOpen?: boolean;
   description?: ReactNode;
@@ -17,7 +16,7 @@ type DrawerProps = {
   open?: boolean;
   title: ReactNode;
   trigger?: ReactElement;
-};
+}>;
 
 const directionClasses: Record<DrawerDirection, string> = {
   left: "inset-y-0 left-0 w-[min(100%-2rem,28rem)] border-r",

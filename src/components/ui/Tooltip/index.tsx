@@ -1,16 +1,15 @@
 "use client";
 
-import type { FC, ReactElement, ReactNode } from "react";
+import type { FC, PropsWithChildren, ReactNode } from "react";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 import cn from "@/utils/cn";
 
-type TooltipProps = {
-  children: ReactElement;
+type TooltipProps = PropsWithChildren<{
   className?: string;
   content: ReactNode;
   delayDuration?: number;
   side?: "top" | "right" | "bottom" | "left";
-};
+}>;
 
 const Tooltip: FC<TooltipProps> = ({
   children,

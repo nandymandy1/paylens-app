@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState, type FC, type ReactNode } from "react";
+import Link from "next/link";
+import { PropsWithChildren, useEffect, useRef, useState, type FC, type ReactNode } from "react";
 import gsap from "gsap";
 import {
   ArrowUpRight,
@@ -20,6 +21,8 @@ import {
   Zap,
 } from "lucide-react";
 import cn from "@/utils/cn";
+import { AUTH_ROUTES } from "@/utils/routes";
+import { REVIEWER_DEMO } from "@/components/auth/constants";
 
 const EXTERNAL = { target: "_blank", rel: "noopener noreferrer" };
 const ASSET_BASE_URL = "https://assets.signalog.co/Global/Personal-Nandy";
@@ -93,6 +96,26 @@ const CopyCode: FC<{ children: string }> = ({ children }) => {
   );
 };
 
+const CopyTextButton: FC<{ text: string; children: ReactNode }> = ({ text, children }) => {
+  const [copied, setCopied] = useState(false);
+  const copy = async () => {
+    await navigator.clipboard.writeText(text);
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1500);
+  };
+
+  return (
+    <button
+      className="inline-flex min-h-10 items-center gap-2 rounded-sm border border-black/10 bg-white px-4 text-sm font-medium text-[#0b0b1c] transition hover:-translate-y-px hover:border-black/25 dark:border-white/15 dark:bg-white/5 dark:text-white dark:hover:border-white/30"
+      onClick={() => void copy()}
+      type="button"
+    >
+      {copied ? <Check className="size-3.5" /> : <Clipboard className="size-3.5" />}
+      <span>{copied ? "Copied" : children}</span>
+    </button>
+  );
+};
+
 const TechIcon: FC<{
   alt: string;
   src: string;
@@ -124,13 +147,14 @@ const TechIcon: FC<{
   </span>
 );
 
-const Section: FC<{
-  id: string;
-  eyebrow: string;
-  title: string;
-  children: ReactNode;
-  lead?: string;
-}> = ({ id, eyebrow, title, lead, children }) => (
+const Section: FC<
+  PropsWithChildren<{
+    id: string;
+    eyebrow: string;
+    title: string;
+    lead?: string;
+  }>
+> = ({ id, eyebrow, title, lead, children }) => (
   <section
     className="scroll-mt-24 border-t border-black/8 py-16 dark:border-white/10 sm:py-24"
     id={id}
@@ -148,7 +172,7 @@ const Section: FC<{
   </section>
 );
 
-const ExternalButton: FC<{ href: string; children: ReactNode; className?: string }> = ({
+const ExternalButton: FC<PropsWithChildren<{ href: string; className?: string }>> = ({
   href,
   children,
   className,
@@ -272,6 +296,18 @@ const envRows = [
     "Selects the advisory mapping model",
     "Configuration · optional",
     "Configured by deployment",
+  ],
+  [
+    "SEED_REVIEWER_DEMO",
+    "Enables the public reviewer demo account bootstrap during deployment",
+    "Boolean · default false · not a secret",
+    "false",
+  ],
+  [
+    "REVIEWER_DEMO_PASSWORD",
+    "Password hashed into the reviewer demo User; required when SEED_REVIEWER_DEMO is true",
+    "Credential · disclosed to reviewers on this page",
+    "ThereWeGoAgain@123",
   ],
 ] as const;
 
@@ -401,12 +437,37 @@ const DocsContent: FC = () => {
             <div className="mt-5 grid gap-3 rounded-md border border-[#bdbbff]/50 bg-[#bdbbff]/15 p-5 sm:grid-cols-[1fr_auto] dark:border-[#bdbbff]/20 dark:bg-[#bdbbff]/10">
               <div>
                 <p className="font-mono text-[10px] tracking-[.1em] text-[#6840ba] uppercase dark:text-[#d6ceff]">
-                  Reviewer demo
+                  Reviewer demo · email verified
                 </p>
-                <p className="mt-2 text-sm text-black/65 dark:text-white/65">
-                  Dedicated seeded account details will be supplied here by the Professor. No
-                  production credentials are published in this documentation.
+                <dl className="mt-3 space-y-1.5 text-sm text-black/70 dark:text-white/70">
+                  <div className="flex flex-wrap gap-x-2">
+                    <dt className="text-black/45 dark:text-white/45">Company:</dt>
+                    <dd className="font-medium">Demo Company · Tenant Owner</dd>
+                  </div>
+                  <div className="flex flex-wrap gap-x-2">
+                    <dt className="text-black/45 dark:text-white/45">Email:</dt>
+                    <dd className="font-mono text-[13px]">{REVIEWER_DEMO.email}</dd>
+                  </div>
+                  <div className="flex flex-wrap gap-x-2">
+                    <dt className="text-black/45 dark:text-white/45">Password:</dt>
+                    <dd className="font-mono text-[13px]">{REVIEWER_DEMO.password}</dd>
+                  </div>
+                </dl>
+                <p className="mt-3 text-sm leading-6 text-black/60 dark:text-white/60">
+                  Intentionally public evaluation workspace — do not store real or sensitive
+                  information in this tenant. The same credentials can be populated directly from
+                  the login screen using “Use Demo Account”.
                 </p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <Link
+                    className="inline-flex min-h-10 items-center gap-2 rounded-sm border border-transparent bg-gradient-to-r from-[#fc4c02] via-[#ef2cc1] to-[#7c5cff] px-4 text-sm font-medium text-white shadow-[0_12px_32px_rgba(239,44,193,.36)] transition hover:-translate-y-px hover:brightness-110 dark:text-white"
+                    href={AUTH_ROUTES.login}
+                  >
+                    Open Demo Login
+                  </Link>
+                  <CopyTextButton text={REVIEWER_DEMO.email}>Copy Email</CopyTextButton>
+                  <CopyTextButton text={REVIEWER_DEMO.password}>Copy Password</CopyTextButton>
+                </div>
               </div>
               <ExternalButton href={links.app}>Open Demo</ExternalButton>
             </div>
@@ -442,10 +503,11 @@ const DocsContent: FC = () => {
                   ))}
                 </div>
                 <p className="mt-5 max-w-2xl text-sm leading-6 text-black/65 dark:text-white/65">
-                  Import this after creating or selecting a workspace to quickly populate PayLens
-                  for evaluation. The dataset contains synthetic names and{" "}
-                  <code>@novastack.example</code> email addresses; it is for product evaluation only
-                  and does not send external email.
+                  Sign in with the reviewer demo account above, then import this file into Demo
+                  Company to quickly populate PayLens for evaluation. The dataset contains synthetic
+                  names and <code>@novastack.example</code> email addresses; it is for product
+                  evaluation only and does not send external email. The demo seed itself never
+                  prepopulates employees — the import is the product workflow under review.
                 </p>
               </div>
               <div className="flex flex-wrap gap-2 lg:flex-col">
@@ -1025,10 +1087,11 @@ const DocsContent: FC = () => {
             </div>
             <p className="mt-5 text-sm leading-6 text-black/60 dark:text-white/60">
               Prisma migrations are checked in and deployment uses{" "}
-              <code>prisma migrate deploy</code>, never <code>db push</code>. Seed commands (
-              <code>seed</code>, <code>seed:verify</code>, <code>seed:rollback</code>) exercise
-              multi-tenancy, large employee directories, departments, and safe demo flows without
-              publishing account credentials.
+              <code>prisma migrate deploy</code>, never <code>db push</code>. The narrow reviewer
+              bootstrap (<code>seed:reviewer-demo</code>) may run on boot when explicitly enabled;
+              the full engineering seed (<code>seed</code>, <code>seed:verify</code>,{" "}
+              <code>seed:rollback</code>) exercises multi-tenancy, large employee directories,
+              departments, and safe demo flows without publishing account credentials.
             </p>
           </Section>
 
@@ -1101,13 +1164,36 @@ npm run seed:verify`}</CopyCode>
               phase is empty before continuing, and does not wrap the entire deletion in one giant
               transaction. The advisory lock prevents a seed and rollback from running together.
             </p>
+            <div className="mt-5 grid gap-3 rounded-md border border-black/10 p-5 sm:grid-cols-2 dark:border-white/10">
+              <div>
+                <p className="font-mono text-[10px] tracking-[.1em] text-[#6840ba] uppercase dark:text-[#d6ceff]">
+                  A · Reviewer account bootstrap
+                </p>
+                <p className="mt-2 text-sm leading-6 text-black/60 dark:text-white/60">
+                  <code>npm run seed:reviewer-demo</code> creates only Demo Company, the verified
+                  Demo User, and the owner membership. It is create-once and idempotent: reruns
+                  never touch reviewer workspace data. The assessment deployment runs it
+                  automatically through <code>SEED_REVIEWER_DEMO=true</code>.
+                </p>
+              </div>
+              <div>
+                <p className="font-mono text-[10px] tracking-[.1em] text-[#6840ba] uppercase dark:text-[#d6ceff]">
+                  B · Engineering local dataset
+                </p>
+                <p className="mt-2 text-sm leading-6 text-black/60 dark:text-white/60">
+                  <code>npm run seed</code> builds the full deterministic development and test
+                  dataset (30 organizations, 10,000 employees). It remains blocked from{" "}
+                  <code>NODE_ENV=production</code> and never runs during deployment.
+                </p>
+              </div>
+            </div>
           </Section>
 
           <Section eyebrow="Reviewer path" id="walkthrough" title="Suggested 5-minute review">
             <ol className="grid gap-3 sm:grid-cols-2">
               {[
                 "Open /docs and review the architecture and technology stack.",
-                "Open the live app; create an account or use the Reviewer Demo when supplied.",
+                "Open the login page, click “Use Demo Account”, and sign in with the public reviewer credentials.",
                 "Create or select an organization workspace.",
                 "Download the 10,000 Employee synthetic CSV.",
                 "Open Employees → Import and upload the CSV.",

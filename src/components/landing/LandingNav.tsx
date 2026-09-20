@@ -4,18 +4,13 @@ import Link from "next/link";
 import { LogOut, Moon, Sun } from "lucide-react";
 import { useEffect, useState, type FC } from "react";
 import PayLensLogo from "@/components/brand/PayLensLogo";
+import PublicMobileMenu from "@/components/landing/PublicMobileMenu";
+import { PUBLIC_NAV_LINKS as NAV_LINKS } from "@/components/landing/public-nav-links";
 import { useLogout, useMe } from "@/hooks/useAuth";
 import useThemeStore from "@/stores/theme";
 import useAuthSessionStore from "@/stores/auth-session";
 import { AUTH_ROUTES } from "@/utils/routes";
 import cn from "@/utils/cn";
-
-const NAV_LINKS = [
-  { href: "/home#product", label: "Product" },
-  { href: "/home#how-it-works", label: "How it works" },
-  { href: "/home#security", label: "Security" },
-  { href: "/docs", label: "Reviewer's Guide" },
-];
 
 const LandingNav: FC = () => {
   const theme = useThemeStore((s) => s.theme);
@@ -102,6 +97,7 @@ const LandingNav: FC = () => {
             </>
           )}
         </nav>
+        <PublicMobileMenu tone="cinema" />
       </div>
     </header>
   );

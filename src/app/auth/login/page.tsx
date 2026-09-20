@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { AlertCircle } from "lucide-react";
 import Alert from "@/components/ui/Alert";
 import AuthCard from "@/components/auth/AuthCard";
+import DemoAccountButton from "@/components/auth/DemoAccountButton";
 import GoogleButton from "@/components/auth/GoogleButton";
 import { RequireAnonymous } from "@/components/auth/AuthGuards";
 import Button from "@/components/ui/Button";
@@ -30,7 +31,13 @@ const LoginForm: FC<{ redirectTo: string }> = ({ redirectTo }) => {
     handleSubmit,
     register,
     setError,
+    setValue,
   } = useForm<LoginInput>({ resolver: zodResolver(loginSchema) });
+
+  const fillDemoAccount = (credentials: { email: string; password: string }) => {
+    setValue("email", credentials.email, { shouldDirty: true, shouldValidate: true });
+    setValue("password", credentials.password, { shouldDirty: true, shouldValidate: true });
+  };
 
   const onSubmit = (values: LoginInput) => {
     login.mutate(values, {
@@ -87,6 +94,7 @@ const LoginForm: FC<{ redirectTo: string }> = ({ redirectTo }) => {
           Sign in
         </Button>
       </form>
+      <DemoAccountButton onFill={fillDemoAccount} />
       <div className="mt-4">
         <GoogleButton redirectTo={redirectTo} />
       </div>

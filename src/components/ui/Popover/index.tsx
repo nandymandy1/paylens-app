@@ -1,18 +1,17 @@
 "use client";
 
-import type { FC, ReactElement, ReactNode } from "react";
+import type { FC, PropsWithChildren, ReactNode } from "react";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 import cn from "@/utils/cn";
 
-type PopoverProps = {
+type PopoverProps = PropsWithChildren<{
   align?: "start" | "center" | "end";
-  children: ReactElement;
   className?: string;
   content: ReactNode;
   onOpenChange?: (open: boolean) => void;
   open?: boolean;
   side?: "top" | "right" | "bottom" | "left";
-};
+}>;
 
 const Popover: FC<PopoverProps> = ({
   align = "center",

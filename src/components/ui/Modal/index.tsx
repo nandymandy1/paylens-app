@@ -1,13 +1,12 @@
 "use client";
 
-import type { FC, ReactElement, ReactNode } from "react";
+import type { FC, PropsWithChildren, ReactElement, ReactNode } from "react";
 import { X } from "lucide-react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import cn from "@/utils/cn";
 
 type ModalSize = "sm" | "md" | "lg" | "xl";
-type ModalProps = {
-  children: ReactNode;
+type ModalProps = PropsWithChildren<{
   closeOnOutsideInteraction?: boolean;
   defaultOpen?: boolean;
   description?: ReactNode;
@@ -17,7 +16,7 @@ type ModalProps = {
   size?: ModalSize;
   title: ReactNode;
   trigger?: ReactElement;
-};
+}>;
 
 const sizeClasses: Record<ModalSize, string> = {
   sm: "max-w-sm",
