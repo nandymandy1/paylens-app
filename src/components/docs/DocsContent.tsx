@@ -33,6 +33,7 @@ const techIcons = {
   bullmq: `${ASSET_BASE_URL}/bullmq.svg`,
   r2: `${ASSET_BASE_URL}/2944787.webp`,
   openai: `${ASSET_BASE_URL}/openai.webp`,
+  github: `${ASSET_BASE_URL}/2111432.png`,
   smtp: `${ASSET_BASE_URL}/email-server-png-3.png`,
   google: `${ASSET_BASE_URL}/google-search-logo-icon-free-png.webp`,
 } as const;
@@ -49,6 +50,7 @@ const links = {
   demoDataset: `${ASSET_BASE_URL}/paylens-demo-10000-employees.csv`,
   resume: `${ASSET_BASE_URL}/Narendra_Maurya_Resume_ATS_2026.pdf`,
   coverLetter: `${ASSET_BASE_URL}/Narendra_Maurya_Cover_Letter_ATS_2026.docx`,
+  githubProfile: "https://github.com/nandymandy1",
 };
 
 const sectionLinks = [
@@ -63,6 +65,7 @@ const sectionLinks = [
   ["Deployment", "deployment"],
   ["Environment", "environment"],
   ["Local setup", "local-setup"],
+  ["Seed + rollback", "seed-data"],
   ["Testing", "testing"],
   ["About", "about"],
 ] as const;
@@ -1029,6 +1032,77 @@ const DocsContent: FC = () => {
             </p>
           </Section>
 
+          <Section
+            eyebrow="CLI demo data"
+            id="seed-data"
+            lead="SEED-R1 creates a deterministic local evaluation dataset. It is intentionally refused when NODE_ENV is production."
+            title="Seed 10,000 employees — and roll them back safely"
+          >
+            <div className="grid gap-4 lg:grid-cols-2">
+              <article className="rounded-md bg-[#080819] p-6 text-white">
+                <p className="font-mono text-[10px] tracking-[.1em] text-[#bdbbff] uppercase">
+                  Create and verify
+                </p>
+                <h3 className="mt-3 text-xl">Run the local seed</h3>
+                <CopyCode>{`# In paylens-server; never use NODE_ENV=production
+export SEED_DEMO_PASSWORD='choose-a-local-demo-password'
+npm run prisma:migrate
+npm run seed
+npm run seed:verify`}</CopyCode>
+                <p className="mt-4 text-sm leading-6 text-white/65">
+                  The canonical <code>paylens-demo</code> workspace receives 10,000 employees and 16
+                  Departments. The full deterministic seed also includes 30 organizations and 35
+                  controlled portal users for realistic multi-tenant review.
+                </p>
+              </article>
+              <article className="rounded-md border border-[#ef2cc1]/25 bg-[#ef2cc1]/[.05] p-6 dark:bg-[#ef2cc1]/10">
+                <p className="font-mono text-[10px] tracking-[.1em] text-[#b31685] uppercase dark:text-[#ff9ce0]">
+                  Remove only SEED-R1 data
+                </p>
+                <h3 className="mt-3 text-xl">Run the guarded rollback</h3>
+                <CopyCode>{"# In paylens-server\nnpm run seed:rollback"}</CopyCode>
+                <p className="mt-4 text-sm leading-6 text-black/60 dark:text-white/60">
+                  This is not a database reset. It removes only deterministic SEED-R1-owned rows;
+                  foreign rows or reserved-namespace collisions fail the operation safely rather
+                  than being deleted.
+                </p>
+              </article>
+            </div>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {[
+                [
+                  "Deterministic + idempotent",
+                  "Stable generated IDs, a fixed as-of date, ownership checks, and reconcile-on-rerun behavior.",
+                ],
+                [
+                  "Bounded database I/O",
+                  "Employees, compensation, history, reconciliation, and rollback use 500-row batches.",
+                ],
+                [
+                  "Traceable verification",
+                  "Each phase and batch emits timing spans; verification checks expected rows and a fingerprint.",
+                ],
+                [
+                  "Dependency-safe rollback",
+                  "Sessions are blocked and revoked, then history → compensation → employees → departments → memberships/users → organizations.",
+                ],
+              ].map(([title, body]) => (
+                <article
+                  className="rounded-md border border-black/10 p-5 dark:border-white/10"
+                  key={title}
+                >
+                  <h3 className="font-medium">{title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-black/60 dark:text-white/60">{body}</p>
+                </article>
+              ))}
+            </div>
+            <p className="mt-5 text-sm leading-6 text-black/60 dark:text-white/60">
+              Rollback deletes high-volume rows in 500-row bounded batches, checks that each major
+              phase is empty before continuing, and does not wrap the entire deletion in one giant
+              transaction. The advisory lock prevents a seed and rollback from running together.
+            </p>
+          </Section>
+
           <Section eyebrow="Reviewer path" id="walkthrough" title="Suggested 5-minute review">
             <ol className="grid gap-3 sm:grid-cols-2">
               {[
@@ -1093,7 +1167,18 @@ const DocsContent: FC = () => {
                   <ExternalButton href="https://assets.signalog.co/Global/Personal-Nandy/Narendra_Maurya_Cover_Letter_ATS_2026.docx">
                     Cover Letter
                   </ExternalButton>
-                  <ExternalButton href="https://github.com/nandymandy1">GitHub</ExternalButton>
+                  <ExternalButton href={links.githubProfile}>
+                    <span className="inline-flex items-center gap-2">
+                      <Image
+                        alt="GitHub"
+                        className="size-4 object-contain"
+                        height={16}
+                        src={techIcons.github}
+                        width={16}
+                      />
+                      GitHub Profile
+                    </span>
+                  </ExternalButton>
                   <ExternalButton href="https://www.youtube.com/@TheCodebookInc">
                     <span className="inline-flex items-center gap-2">
                       <Play className="size-3.5" />
