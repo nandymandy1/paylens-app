@@ -325,21 +325,21 @@ const DocsContent: FC = () => {
   }, []);
 
   return (
-    <main ref={root}>
-      <section className="relative overflow-hidden border-b border-black/8 bg-[#f7f6fb] pt-24 dark:border-white/10 dark:bg-[#070719]">
+    <main className="overflow-x-hidden" ref={root}>
+      <section className="relative overflow-hidden border-b border-black/8 bg-[#f7f6fb] pt-16 dark:border-white/10 dark:bg-[#070719] sm:pt-24">
         <div className="pointer-events-none absolute inset-0 opacity-40 [background-image:linear-gradient(to_right,rgba(124,92,255,.12)_1px,transparent_1px),linear-gradient(to_bottom,rgba(124,92,255,.12)_1px,transparent_1px)] [background-size:42px_42px] dark:opacity-25" />
         <div className="pointer-events-none absolute top-0 right-[-20%] size-[42rem] rounded-full bg-[radial-gradient(circle,#ef2cc144_0%,#7c5cff25_35%,transparent_68%)] blur-3xl" />
         <div
-          className="relative mx-auto w-full max-w-6xl px-4 pb-20 sm:px-8 sm:pb-28"
+          className="relative mx-auto w-full max-w-6xl px-4 pb-16 sm:px-8 sm:pb-28"
           data-docs-hero
         >
           <p className="font-mono text-[11px] font-medium tracking-[0.14em] text-[#9252e8] uppercase">
             PayLens / engineering
           </p>
-          <h1 className="mt-5 max-w-5xl text-5xl font-medium tracking-[-.055em] text-[#0b0b1c] dark:text-white sm:text-6xl lg:text-7xl">
+          <h1 className="mt-5 max-w-5xl text-4xl font-medium tracking-[-.055em] text-[#0b0b1c] dark:text-white sm:text-6xl lg:text-7xl">
             Built to make compensation data clear, auditable, and operational.
           </h1>
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-black/60 dark:text-white/60">
+          <p className="mt-5 max-w-2xl text-base leading-7 text-black/60 dark:text-white/60 sm:mt-6 sm:text-lg sm:leading-8">
             A technical walkthrough of the product decisions, performance work, security model, and
             deployment topology behind PayLens.
           </p>
@@ -434,7 +434,7 @@ const DocsContent: FC = () => {
                 </a>
               ))}
             </div>
-            <div className="mt-5 grid gap-3 rounded-md border border-[#bdbbff]/50 bg-[#bdbbff]/15 p-5 sm:grid-cols-[1fr_auto] dark:border-[#bdbbff]/20 dark:bg-[#bdbbff]/10">
+            <div className="mt-5 rounded-md border border-[#bdbbff]/50 bg-[#bdbbff]/15 p-5 dark:border-[#bdbbff]/20 dark:bg-[#bdbbff]/10">
               <div>
                 <p className="font-mono text-[10px] tracking-[.1em] text-[#6840ba] uppercase dark:text-[#d6ceff]">
                   Reviewer demo · email verified
@@ -469,7 +469,6 @@ const DocsContent: FC = () => {
                   <CopyTextButton text={REVIEWER_DEMO.password}>Copy Password</CopyTextButton>
                 </div>
               </div>
-              <ExternalButton href={links.app}>Open Demo</ExternalButton>
             </div>
           </Section>
 
