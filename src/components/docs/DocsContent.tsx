@@ -7,6 +7,7 @@ import gsap from "gsap";
 import {
   ArrowUpRight,
   Boxes,
+  ChartNoAxesCombined,
   Check,
   Clipboard,
   Code2,
@@ -35,6 +36,9 @@ const techIcons = {
   redis: `${ASSET_BASE_URL}/free-redis-icon-svg-download-png-1175103.png`,
   bullmq: `${ASSET_BASE_URL}/bullmq.svg`,
   r2: `${ASSET_BASE_URL}/2944787.webp`,
+  otel: `${ASSET_BASE_URL}/opentelemetry-logo-png_seeklogo-430977.png`,
+  grafana: `${ASSET_BASE_URL}/grafana-625ktq51icaz2carazn0n.webp`,
+  loki: `${ASSET_BASE_URL}/logo-grafana-loki.png`,
   openai: `${ASSET_BASE_URL}/openai.webp`,
   github: `${ASSET_BASE_URL}/2111432.png`,
   smtp: `${ASSET_BASE_URL}/email-server-png-3.png`,
@@ -59,6 +63,7 @@ const links = {
 const sectionLinks = [
   ["Reviewer dataset", "reviewer-dataset"],
   ["Architecture", "architecture"],
+  ["Observability", "observability"],
   ["Stack", "stack"],
   ["Workspace invites", "workspace-invites"],
   ["Optimizations", "optimizations"],
@@ -122,30 +127,42 @@ const TechIcon: FC<{
   tone?: "pink" | "violet" | "cyan";
   size?: "sm" | "md";
   bare?: boolean;
-}> = ({ alt, src, tone = "violet", size = "md", bare = false }) => (
-  <span
-    className={cn(
-      "relative grid shrink-0 place-items-center",
-      size === "sm" ? "size-7 p-1" : "size-11 p-2",
-      !bare &&
-        "rounded-md border bg-white/85 shadow-[0_0_22px_rgba(124,92,255,.24)] dark:bg-white/10",
-      !bare && tone === "pink" && "border-[#ef2cc1]/40 shadow-[0_0_24px_rgba(239,44,193,.36)]",
-      !bare && tone === "cyan" && "border-cyan-300/45 shadow-[0_0_24px_rgba(103,232,249,.28)]",
-      !bare && tone === "violet" && "border-[#9d6cff]/40",
-      bare && tone === "pink" && "drop-shadow-[0_0_8px_rgba(239,44,193,.5)]",
-      bare && tone === "cyan" && "drop-shadow-[0_0_8px_rgba(103,232,249,.45)]",
-      bare && tone === "violet" && "drop-shadow-[0_0_8px_rgba(124,92,255,.5)]",
-    )}
-  >
-    <Image
-      alt={alt}
-      className="size-full object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,.18)]"
-      height={size === "sm" ? 20 : 36}
-      src={src}
-      width={size === "sm" ? 20 : 36}
-    />
-  </span>
-);
+  whiteOnDark?: boolean;
+  fallback?: ReactNode;
+}> = ({ alt, src, tone = "violet", size = "md", bare = false, whiteOnDark = false, fallback }) => {
+  const [imageFailed, setImageFailed] = useState(false);
+
+  return (
+    <span
+      className={cn(
+        "relative grid shrink-0 place-items-center",
+        size === "sm" ? "size-7 p-1" : "size-11 p-2",
+        !bare &&
+          "rounded-md border bg-white/85 shadow-[0_0_22px_rgba(124,92,255,.24)] dark:bg-white/10",
+        !bare && whiteOnDark && "dark:border-white/75 dark:bg-white",
+        !bare && tone === "pink" && "border-[#ef2cc1]/40 shadow-[0_0_24px_rgba(239,44,193,.36)]",
+        !bare && tone === "cyan" && "border-cyan-300/45 shadow-[0_0_24px_rgba(103,232,249,.28)]",
+        !bare && tone === "violet" && "border-[#9d6cff]/40",
+        bare && tone === "pink" && "drop-shadow-[0_0_8px_rgba(239,44,193,.5)]",
+        bare && tone === "cyan" && "drop-shadow-[0_0_8px_rgba(103,232,249,.45)]",
+        bare && tone === "violet" && "drop-shadow-[0_0_8px_rgba(124,92,255,.5)]",
+      )}
+    >
+      {imageFailed && fallback ? (
+        fallback
+      ) : (
+        <Image
+          alt={alt}
+          className="size-full object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,.18)]"
+          height={size === "sm" ? 20 : 36}
+          onError={() => setImageFailed(true)}
+          src={src}
+          width={size === "sm" ? 20 : 36}
+        />
+      )}
+    </span>
+  );
+};
 
 const Section: FC<
   PropsWithChildren<{
@@ -471,7 +488,6 @@ const DocsContent: FC = () => {
               </div>
             </div>
           </Section>
-
           <Section
             eyebrow="Synthetic / demo data"
             id="reviewer-dataset"
@@ -532,7 +548,6 @@ const DocsContent: FC = () => {
               </p>
             </div>
           </Section>
-
           <Section
             eyebrow="System shape"
             id="architecture"
@@ -552,11 +567,11 @@ const DocsContent: FC = () => {
                   ["NestJS API", "REST, RBAC, business modules", techIcons.nest, "pink"],
                 ].map(([name, description, iconSrc, tone], i) => (
                   <div
-                    className="rounded-sm border border-black/10 p-4 dark:border-white/10"
+                    className="flex min-h-56 flex-col items-center justify-center rounded-sm border border-black/10 p-4 text-center dark:border-white/10"
                     key={`${name}-${i}`}
                   >
                     {typeof iconSrc === "string" ? (
-                      <span className="mx-auto w-fit">
+                      <span className="flex w-fit">
                         <TechIcon
                           alt={String(name)}
                           src={iconSrc}
@@ -566,8 +581,10 @@ const DocsContent: FC = () => {
                     ) : (
                       <Globe2 className="mx-auto size-5 text-[#ef2cc1]" />
                     )}
-                    <p className="mt-3 font-medium">{name}</p>
-                    <p className="mt-1 text-xs text-black/55 dark:text-white/55">{description}</p>
+                    <p className="mt-3 font-medium sm:whitespace-nowrap">{name}</p>
+                    <p className="mt-1 text-xs text-black/55 dark:text-white/55 sm:whitespace-nowrap">
+                      {description}
+                    </p>
                     {i < 2 && (
                       <svg className="mx-auto mt-4 hidden w-16 sm:block" viewBox="0 0 64 8">
                         <path
@@ -593,16 +610,16 @@ const DocsContent: FC = () => {
                   ["OIDC, SMTP, OpenAI, OTLP", Network],
                 ].map(([name, Icon], index) => (
                   <div
-                    className="rounded-sm bg-black/[.035] p-4 text-left dark:bg-white/[.06]"
+                    className="flex min-h-44 flex-col items-center justify-center rounded-sm bg-black/[.035] p-4 text-center dark:bg-white/[.06]"
                     key={`${name as string}-${index}`}
                   >
                     {name === "PostgreSQL / Prisma" ? (
-                      <span className="flex gap-1">
+                      <span className="flex justify-center gap-1">
                         <TechIcon alt="PostgreSQL" src={techIcons.postgres} tone="cyan" />
                         <TechIcon alt="Prisma" src={techIcons.prisma} tone="violet" />
                       </span>
                     ) : name === "Redis / BullMQ workers" ? (
-                      <span className="flex gap-1">
+                      <span className="flex justify-center gap-1">
                         <TechIcon alt="Redis" src={techIcons.redis} tone="pink" />
                         <TechIcon alt="BullMQ" src={techIcons.bullmq} tone="violet" />
                       </span>
@@ -612,12 +629,14 @@ const DocsContent: FC = () => {
                       <span className="flex gap-1">
                         <TechIcon alt="Google OIDC" src={techIcons.google} tone="cyan" />
                         <TechIcon alt="SMTP" src={techIcons.smtp} tone="pink" />
-                        <TechIcon alt="OpenAI" src={techIcons.openai} tone="violet" />
+                        <TechIcon alt="OpenAI" src={techIcons.openai} tone="violet" whiteOnDark />
                       </span>
                     ) : (
                       <Icon className="size-4 text-[#9252e8]" />
                     )}
-                    <p className="mt-2 text-sm font-medium">{name as string}</p>
+                    <p className="mt-3 text-[13px] font-medium sm:whitespace-nowrap">
+                      {name as string}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -628,7 +647,123 @@ const DocsContent: FC = () => {
               currently targets Cloudflare R2.
             </p>
           </Section>
+          <Section
+            eyebrow="Signals without coupling"
+            id="observability"
+            lead="OpenTelemetry is optional: PayLens keeps serving requests and Pino keeps writing to stdout when the collector, Loki, Tempo, Prometheus, or Grafana is unavailable."
+            title="OpenTelemetry, Prometheus, Grafana, and Loki"
+          >
+            <div className="overflow-hidden rounded-md border border-black/10 bg-white shadow-[0_18px_48px_rgba(8,8,25,.06)] dark:border-white/10 dark:bg-[#0b0b20]">
+              <div className="grid divide-y divide-black/8 sm:grid-cols-3 sm:divide-x sm:divide-y-0 dark:divide-white/10">
+                {[
+                  [
+                    "Application logs",
+                    "Pino writes every sanitized event to stdout first, then makes an asynchronous OTLP copy for Loki when a collector is configured.",
+                    "PINO  →  STDOUT  +  LOKI",
+                    techIcons.loki,
+                    "pink",
+                  ],
+                  [
+                    "Distributed traces",
+                    "HTTP, service, Prisma, Redis, BullMQ, and SMTP spans travel through OTLP to Tempo with trace correlation preserved.",
+                    "OTEL  →  TEMPO",
+                    techIcons.otel,
+                    "violet",
+                  ],
+                  [
+                    "Service metrics",
+                    "HTTP count, error, and duration metrics reach the collector. Prometheus scrapes its exporter; Grafana turns them into dashboards and alerts.",
+                    "OTEL  →  PROMETHEUS",
+                    techIcons.grafana,
+                    "cyan",
+                  ],
+                ].map(([title, body, route, iconSrc, tone], index) => (
+                  <article className="group relative flex min-h-96 flex-col p-6 sm:p-7" key={title}>
+                    <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#9d6cff]/70 to-transparent opacity-0 transition group-hover:opacity-100" />
+                    <div className="flex items-center gap-3">
+                      <TechIcon
+                        alt={String(title)}
+                        fallback={<ChartNoAxesCombined className="size-6 text-[#f06c32]" />}
+                        src={String(iconSrc)}
+                        tone={tone as "pink" | "violet" | "cyan"}
+                      />
+                      <div>
+                        <p className="font-mono text-[9px] tracking-[.12em] text-[#9252e8] uppercase">
+                          Signal 0{index + 1}
+                        </p>
+                        <p className="mt-0.5 text-lg font-medium text-[#0b0b1c] dark:text-white">
+                          {title}
+                        </p>
+                      </div>
+                    </div>
+                    <p className="mt-5 text-sm leading-6 text-black/60 dark:text-white/60">
+                      {body}
+                    </p>
+                    <p className="mt-auto border-t border-black/8 pt-4 font-mono text-[10px] tracking-[.08em] text-[#6840ba] dark:border-white/10 dark:text-[#d6ceff]">
+                      {route}
+                    </p>
+                  </article>
+                ))}
+              </div>
+              <div className="border-t border-black/8 bg-[#080819] px-6 py-5 font-mono text-[11px] tracking-[.04em] text-[#dcdcff] dark:border-white/10 sm:px-7">
+                <p className="text-[#bdbbff]">ONE OPTIONAL OTLP CONNECTION</p>
+                <p className="mt-2 overflow-x-auto whitespace-nowrap text-white/80">
+                  PAYLENS API <span className="text-[#ef2cc1]">→</span> OTLP / 4318{" "}
+                  <span className="text-[#ef2cc1]">→</span> COLLECTOR{" "}
+                  <span className="text-[#ef2cc1]">→</span> LOKI · TEMPO · PROMETHEUS{" "}
+                  <span className="text-[#ef2cc1]">→</span> GRAFANA
+                </p>
+              </div>
+            </div>
 
+            <div className="mt-5 grid gap-4 lg:grid-cols-2">
+              <article className="rounded-md border border-black/10 p-5 dark:border-white/10">
+                <p className="font-mono text-[10px] tracking-[.1em] text-[#9252e8] uppercase">
+                  01 · Point PayLens at the collector
+                </p>
+                <p className="mt-3 text-sm leading-6 text-black/60 dark:text-white/60">
+                  Deploy an OpenTelemetry Collector reachable from the API and give it its OTLP HTTP
+                  endpoint. This is the only PayLens telemetry setting required for traces, metrics,
+                  and the secondary log sink.
+                </p>
+                <div className="mt-4">
+                  <CopyCode>{"OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318"}</CopyCode>
+                </div>
+              </article>
+              <article className="rounded-md border border-black/10 p-5 dark:border-white/10">
+                <p className="font-mono text-[10px] tracking-[.1em] text-[#9252e8] uppercase">
+                  02 · Route and visualize the signals
+                </p>
+                <ol className="mt-3 space-y-2 text-sm leading-6 text-black/60 dark:text-white/60">
+                  <li>
+                    <span className="font-mono text-[#9252e8]">A.</span> Configure the collector to
+                    receive OTLP/HTTP on port <code>4318</code> and export logs to Loki and traces
+                    to Tempo.
+                  </li>
+                  <li>
+                    <span className="font-mono text-[#9252e8]">B.</span> Enable the collector&apos;s
+                    Prometheus exporter and have Prometheus scrape that exporter endpoint. PayLens
+                    deliberately does not expose a separate in-process <code>/metrics</code> scrape
+                    endpoint.
+                  </li>
+                  <li>
+                    <span className="font-mono text-[#9252e8]">C.</span> Add Loki, Tempo, and
+                    Prometheus as Grafana data sources. Search a Pino event by{" "}
+                    <code>requestId</code>
+                    or <code>traceId</code>, then open its Tempo trace or Prometheus chart.
+                  </li>
+                </ol>
+              </article>
+            </div>
+            <p className="mt-5 rounded-md border border-[#ef2cc1]/25 bg-[#ef2cc1]/[.06] p-5 text-sm leading-6 text-black/70 dark:bg-[#ef2cc1]/10 dark:text-white/70">
+              <strong className="text-black dark:text-white">Failure isolation:</strong> OTLP uses
+              bounded asynchronous batches with timeouts. A full queue or unreachable collector may
+              drop only the remote copy and produces throttled diagnostics; it never blocks HTTP,
+              seed execution, or terminal logging. Secrets are sanitized before either sink receives
+              an event.
+            </p>
+          </Section>
+          irtuyfjkikm
           <Section eyebrow="Product surface" id="capabilities" title="What PayLens does">
             <div className="grid gap-3 sm:grid-cols-2">
               {[
@@ -660,7 +795,6 @@ const DocsContent: FC = () => {
               ))}
             </div>
           </Section>
-
           <Section
             eyebrow="Tools with intent"
             id="stack"
@@ -717,7 +851,7 @@ const DocsContent: FC = () => {
               </article>
               <article className="rounded-md border border-[#9d6cff]/25 bg-[#bdbbff]/10 p-6 lg:col-span-2 dark:bg-[#bdbbff]/[.08]">
                 <div className="flex items-center gap-3">
-                  <TechIcon alt="OpenAI" src={techIcons.openai} tone="violet" />
+                  <TechIcon alt="OpenAI" src={techIcons.openai} tone="violet" whiteOnDark />
                   <p className="font-mono text-[10px] tracking-[.1em] text-[#6840ba] uppercase dark:text-[#d6ceff]">
                     Advisory intelligence
                   </p>
@@ -756,7 +890,6 @@ const DocsContent: FC = () => {
               </p>
             </div>
           </Section>
-
           <Section
             eyebrow="Multi-user workspace"
             id="workspace-invites"
@@ -788,7 +921,6 @@ const DocsContent: FC = () => {
               </article>
             </div>
           </Section>
-
           <Section
             eyebrow="Performance decisions"
             id="optimizations"
@@ -816,7 +948,6 @@ const DocsContent: FC = () => {
               ))}
             </div>
           </Section>
-
           <Section
             eyebrow="Boundary first"
             id="security"
@@ -849,7 +980,6 @@ const DocsContent: FC = () => {
               ))}
             </div>
           </Section>
-
           <Section
             eyebrow="Advisory only"
             id="ai"
@@ -858,7 +988,7 @@ const DocsContent: FC = () => {
           >
             <div className="grid gap-5 lg:grid-cols-[auto_1fr]">
               <div className="w-fit">
-                <TechIcon alt="OpenAI" src={techIcons.openai} tone="violet" />
+                <TechIcon alt="OpenAI" src={techIcons.openai} tone="violet" whiteOnDark />
               </div>
               <div className="rounded-md border border-[#ef2cc1]/25 bg-[#ef2cc1]/[.06] p-6 dark:bg-[#ef2cc1]/10">
                 <p className="text-sm leading-7 text-black/70 dark:text-white/70">
@@ -915,7 +1045,6 @@ const DocsContent: FC = () => {
               model name is published here.
             </p>
           </Section>
-
           <Section
             eyebrow="Scope discipline"
             id="tradeoffs"
@@ -962,7 +1091,6 @@ const DocsContent: FC = () => {
               ))}
             </div>
           </Section>
-
           <Section eyebrow="Independent deployables" id="deployment" title="Deployment topology">
             <div className="grid gap-4 lg:grid-cols-2">
               <article className="rounded-md bg-[#080819] p-6 text-white">
@@ -999,7 +1127,6 @@ const DocsContent: FC = () => {
               </article>
             </div>
           </Section>
-
           <Section eyebrow="Safe configuration" id="environment" title="Environment variables">
             <div className="rounded-md border border-black/10 p-5 dark:border-white/10">
               <p className="font-medium">Frontend</p>
@@ -1039,7 +1166,6 @@ const DocsContent: FC = () => {
               </table>
             </div>
           </Section>
-
           <Section eyebrow="Reproducible setup" id="local-setup" title="Local development">
             <p className="mb-4 text-sm text-black/60 dark:text-white/60">
               Prerequisites: Git, npm, PostgreSQL, Redis, and preferably Node 22 for frontend / Node
@@ -1064,7 +1190,6 @@ const DocsContent: FC = () => {
               </div>
             </div>
           </Section>
-
           <Section eyebrow="Confidence" id="testing" title="Quality, schema, and seed data">
             <div className="grid gap-4 lg:grid-cols-2">
               <div>
@@ -1093,7 +1218,6 @@ const DocsContent: FC = () => {
               departments, and safe demo flows without publishing account credentials.
             </p>
           </Section>
-
           <Section
             eyebrow="CLI demo data"
             id="seed-data"
@@ -1187,7 +1311,6 @@ npm run seed:verify`}</CopyCode>
               </div>
             </div>
           </Section>
-
           <Section eyebrow="Reviewer path" id="walkthrough" title="Suggested 5-minute review">
             <ol className="grid gap-3 sm:grid-cols-2">
               {[
@@ -1228,7 +1351,6 @@ npm run seed:verify`}</CopyCode>
               </figcaption>
             </figure>
           </Section>
-
           <Section eyebrow="Builder" id="about" title="About the engineer">
             <div className="grid gap-6 rounded-md border border-black/10 p-6 sm:grid-cols-[120px_1fr] dark:border-white/10">
               <Image
@@ -1274,7 +1396,6 @@ npm run seed:verify`}</CopyCode>
               </div>
             </div>
           </Section>
-
           <Section eyebrow="Beyond PayLens" id="other-work" title="Other work">
             <div className="grid gap-4 lg:grid-cols-2">
               <article className="rounded-md bg-[#080819] p-6 text-white">
