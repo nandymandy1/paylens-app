@@ -15,6 +15,7 @@ const NAV_LINKS = [
   { href: "/home#product", label: "Product" },
   { href: "/home#how-it-works", label: "How it works" },
   { href: "/home#security", label: "Security" },
+  { href: "/docs", label: "Reviewer's Guide" },
 ];
 
 const PublicLayout: FC<PropsWithChildren> = ({ children }) => {

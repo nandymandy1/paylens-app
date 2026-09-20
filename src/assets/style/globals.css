@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* Tailwind's dark utilities follow the persisted PayLens theme, not the OS
+   preference. This keeps explicit light mode readable on dark-configured
+   devices and makes the prepaint theme contract authoritative. */
+@custom-variant dark (&:where(html[data-theme="dark"], html[data-theme="dark"] *));
+
 :root,
 html[data-theme="light"] {
   --canvas: #fafafc;
