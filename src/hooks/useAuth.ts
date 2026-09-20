@@ -135,12 +135,18 @@ export const useLogout = () => {
       // new refresh/probe work, then cancel any in-flight /auth/me.
       beginLogout();
       await queryClient.cancelQueries({ queryKey: authKeys.me() });
+      await queryClient.cancelQueries({ queryKey: ["organizations"] });
+      await queryClient.cancelQueries({ queryKey: ["employees"] });
+      await queryClient.cancelQueries({ queryKey: ["employee-exports"] });
+      await queryClient.cancelQueries({ queryKey: ["employee-imports"] });
     },
     onSuccess: async () => {
       // Server revoked the session: safe to claim anonymous and drop all
       // tenant-owned query state. Auth (non-tenant) caches stay intact.
       queryClient.removeQueries({ queryKey: ["organizations"] });
       queryClient.removeQueries({ queryKey: ["employees"] });
+      queryClient.removeQueries({ queryKey: ["employee-exports"] });
+      queryClient.removeQueries({ queryKey: ["employee-imports"] });
       queryClient.removeQueries({ queryKey: ["departments"] });
       queryClient.removeQueries({ queryKey: authKeys.me() });
       endLogout();
@@ -165,6 +171,8 @@ export const useSwitchOrganization = () => {
       // Capture outgoing tenant state before the switch lands.
       await queryClient.cancelQueries({ queryKey: ["organizations"] });
       await queryClient.cancelQueries({ queryKey: ["employees"] });
+      await queryClient.cancelQueries({ queryKey: ["employee-exports"] });
+      await queryClient.cancelQueries({ queryKey: ["employee-imports"] });
       await queryClient.cancelQueries({ queryKey: ["departments"] });
     },
     onSuccess: async () => {
@@ -177,6 +185,8 @@ export const useSwitchOrganization = () => {
       if (previousOrgId) {
         queryClient.removeQueries({ queryKey: ["organizations", previousOrgId] });
         queryClient.removeQueries({ queryKey: ["employees", previousOrgId] });
+        queryClient.removeQueries({ queryKey: ["employee-exports", previousOrgId] });
+        queryClient.removeQueries({ queryKey: ["employee-imports", previousOrgId] });
         queryClient.removeQueries({ queryKey: ["departments", previousOrgId] });
       }
 

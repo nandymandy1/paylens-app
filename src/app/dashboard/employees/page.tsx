@@ -8,6 +8,8 @@ import EmployeeFilters from "@/components/employees/EmployeeFilters";
 import EmployeeDeleteDialog from "@/components/employees/EmployeeDeleteDialog";
 import EmployeeFormModal from "@/components/employees/EmployeeFormModal";
 import EmployeesTable from "@/components/employees/EmployeesTable";
+import EmployeeExportMenu from "@/components/transfers/EmployeeExportMenu";
+import EmployeeImportWizard from "@/components/transfers/EmployeeImportWizard";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import { useMe } from "@/hooks/useAuth";
@@ -88,6 +90,7 @@ const EmployeesDirectory: FC = () => {
   );
   const [cursorStack, setCursorStack] = useState<CursorState[]>([]);
   const [cursor, setCursor] = useState<CursorState>(searchParams.get("cursor"));
+  const [importOpen, setImportOpen] = useState(false);
   const lastSyncRef = useRef(searchParams.toString());
 
   const debouncedSearch = useDebouncedValue(searchInput);
@@ -283,14 +286,22 @@ const EmployeesDirectory: FC = () => {
         title="Employees"
         eyebrow="Workforce"
         actions={
-          canManage && (
-            <Button
-              prefixIcon={<Plus aria-hidden="true" className="size-4" />}
-              onClick={modal.openCreate}
-            >
-              Add employee
-            </Button>
-          )
+          <div className="flex flex-wrap items-center gap-2">
+            {canView && <EmployeeExportMenu />}
+            {canManage && (
+              <>
+                <Button onClick={() => setImportOpen(true)} variant="outline">
+                  Import
+                </Button>
+                <Button
+                  prefixIcon={<Plus aria-hidden="true" className="size-4" />}
+                  onClick={modal.openCreate}
+                >
+                  Add employee
+                </Button>
+              </>
+            )}
+          </div>
         }
       />
 
@@ -396,6 +407,7 @@ const EmployeesDirectory: FC = () => {
         employeeId={modal.mode === "delete" ? modal.entityId : null}
         onClose={modal.close}
       />
+      <EmployeeImportWizard open={importOpen} onClose={() => setImportOpen(false)} />
     </section>
   );
 };

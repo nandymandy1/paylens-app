@@ -25,6 +25,31 @@ vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
 }));
 
+// The shell also mounts the floating DataTransferCenter (React Query).
+// Nav assertions do not cover transfers, so stub the whole hook module.
+vi.mock("@/hooks/useEmployeeTransfer", () => {
+  const list = () => ({ data: [], isPending: false });
+  const control = () => ({ mutate: vi.fn(), isPending: false });
+
+  return {
+    useEmployeeExports: list,
+    useEmployeeImports: list,
+    useEmployeeExportJob: () => ({ data: null }),
+    useEmployeeImportJob: () => ({ data: null }),
+    useCreateExport: control,
+    usePauseExport: control,
+    useResumeExport: control,
+    useCancelExport: control,
+    useDownloadExport: control,
+    useStartImport: control,
+    useConfirmImport: control,
+    usePauseImport: control,
+    useResumeImport: control,
+    useCancelImport: control,
+    useDownloadImportReport: control,
+  };
+});
+
 vi.mock("next/link", () => ({
   default: ({
     children,

@@ -14,13 +14,14 @@ import cn from "@/utils/cn";
 import SidebarBody from "./SidebarBody";
 import DashboardHeader from "./DashboardHeader";
 import PayLensLogo from "@/components/brand/PayLensLogo";
+import DataTransferCenter from "@/components/transfers/DataTransferCenter";
 
 const DashboardShell: FC<PropsWithChildren> = ({ children }) => {
   const pathname = usePathname();
   const { data: session } = useMe();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const collapsed = useSidebarStore((state) => state.sidebarCollapsed);
-  const toggleSidebar = useSidebarStore((state) => state.toggleSidebar);
+  const { sidebarCollapsed: collapsed, toggleSidebar } = useSidebarStore((state) => state);
+
   const activeRole = session?.activeMembership?.role;
   const showMembersAdmin = activeRole
     ? (MEMBER_ADMIN_ROLES as readonly string[]).includes(activeRole)
@@ -112,6 +113,7 @@ const DashboardShell: FC<PropsWithChildren> = ({ children }) => {
           <div aria-hidden="true" className="dashboard-canvas-aura" />
           <div aria-hidden="true" className="dashboard-canvas-aura-secondary" />
           {children}
+          {showEmployees && <DataTransferCenter />}
         </main>
       </div>
     </div>
